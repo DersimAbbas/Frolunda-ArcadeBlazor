@@ -1,0 +1,49 @@
+pr:
+  - '*'
+
+pool:
+  vmImage: 'ubuntu-latest'
+
+variables:
+  DISCORD_WEBHOOK_URL: $(DiscordWebhookURL)
+
+jobs:
+  - job: PR_Notification
+    displayName: "Notify Discord on PR Event"
+    condition: eq(variables['Build.Reason'], 'PullRequest')
+    steps:
+      - script: |
+          echo "Processing Pull Request event..."
+        displayName: 'Process PR Data'
+
+      - script: |
+          WEBHOOK_PAYLOAD=$(cat << 'EOF'
+          {
+            "content": "",
+            "embeds": [
+              {
+                "title": "Pull Request Notification",
+                "description": "A new pull request has triggered the pipeline.",
+                "color": 15105570,
+                "fields": [
+                  {
+                    "name": "PR Title",
+                    "value": "$(System.PullRequest.Title)"
+                  },
+                  {
+                    "name": "Author",
+                    "value": "$(System.PullRequest.CreatedBy)"
+                  },
+                  {
+                    "name": "PR ID",
+                    "value": "$(System.PullRequest.PullRequestId)"
+                  }
+                ]
+              }
+            ]
+          }
+          EOF
+          )
+          echo "Sending pull request notification to Discord..."
+          curl -H "Content-Type: application/json" -X POST -d "$WEBHOOK_PAYLOAD" "$(DISCORD_WEBHOOK_URL)"
+        displayName: 'Notify Discord (Pull Request)'
