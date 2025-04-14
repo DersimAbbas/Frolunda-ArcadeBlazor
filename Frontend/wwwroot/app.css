@@ -64,11 +64,12 @@ main {
     display: flex;
     flex: 1;
     overflow: hidden;
+    background: linear-gradient(to bottom, #141414, #242424);
 }
 
 .sidebar {
     width: 250px;
-    background: linear-gradient(to bottom, #0d1a3a, #33004d);
+    background: #141414;
     padding: 1rem;
     color: white;
 }
@@ -108,4 +109,16 @@ article.content {
     line-height: 1.4;
     font-size: 1.5rem;
     color: #bf1f1f;
+}
+
+.generic-text {
+    font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
+    letter-spacing: 2px;
+    line-height: 1.4;
+    font-size: 1.5rem;
+    color: #fff;
+}
+
+h3 {
+    color: #fff;
 }
