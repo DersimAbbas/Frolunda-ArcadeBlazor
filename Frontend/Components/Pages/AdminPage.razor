@@ -3,19 +3,65 @@
 @using Frontend.DummyData
 @using Frontend.Components.Controls
 
-<h3>Admin Page</h3>
+<h3 class="welcome-text">Admin Page</h3>
 
-<!-- Filter/Search/Sort Component -->
-<ProductSorter Products="products" OnFilteredChanged="OnFilteredChanged" />
+<div class="d-flex justify-content-center mb-5">
+    <button class="btn me-2 @(IsViewingProducts ? "btn-primary" : "btn-outline-primary")"
+    @onclick="() => IsViewingProducts = true">
+        View Products
+    </button>
 
-<!-- Product Table Component -->
-<ProductEditor Products="filteredProducts" 
-              OnUpdate="UpdateProduct" 
-              OnDelete="DeleteProduct" />
+    <button class="btn @(IsViewingUsers ? "btn-outline-primary" : "btn-primary")"
+    @onclick="() => IsViewingUsers = true">
+        View Users
+    </button>
+</div>
+
+@if(IsViewingProducts)
+{
+    <ProductSorter Products="products" OnFilteredChanged="OnFilteredChanged" />
+
+    <ProductEditor Products="filteredProducts" />
+}
+else if(IsViewingUsers)
+{
+    <UserEditor />
+}
 
 @code {
     private List<Product> products = new();
     private List<Product> filteredProducts = new();
+    private List<User> users = new();
+
+    private bool _isViewingProducts = true;
+    public bool IsViewingProducts
+    {
+        get => _isViewingProducts;
+        set
+        {
+            _isViewingProducts = value;
+            if(_isViewingProducts)
+            {
+                IsViewingUsers = false;
+            }
+            StateHasChanged();
+        }
+    }
+
+    private bool _isViewingUsers = false;
+    public bool IsViewingUsers
+    {
+        get => _isViewingUsers;
+        set
+        {
+            _isViewingUsers = value;
+            if (_isViewingUsers)
+            {
+                IsViewingProducts = false;
+            }
+            StateHasChanged();
+        }
+    }
 
     /*protected override async Task OnInitializedAsync()
     {
@@ -23,40 +69,9 @@
         ApplyFilterAndSort();
     }*/
 
-    private async Task UpdateProduct(Product product)
-    {
-        /*
-        var response = await Http.PutAsJsonAsync($"api/products/{product.Id}", product);
-        if (response.IsSuccessStatusCode)
-        {
-            Console.WriteLine($"Updated product {product.Id}");
-            }
-        else
-        {
-            Console.WriteLine($"Failed to update product {product.Id}");
-            }
-        */
-    }
-
-    private async Task DeleteProduct(string productId)
-    {
-        /*
-        var response = await Http.DeleteAsync($"api/products/{productId}");
-        if (response.IsSuccessStatusCode)
-        {
-            products = products.Where(p => p.Id != productId).ToList();
-            Console.WriteLine($"Deleted product {productId}");
-            }
-        else
-        {
-            Console.WriteLine($"Failed to delete product {productId}");
-            }
-        */
-    }
-
     protected override void OnInitialized()
     {
-        products = CreateProductDummyData.GetDummyProducts();
+        products = CreateAdminPageDummyData.GetDummyProducts();
         filteredProducts = products;
     }
 

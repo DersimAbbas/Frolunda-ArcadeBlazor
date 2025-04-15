@@ -10,7 +10,7 @@
 else
 {
     <table class="table table-bordered align-middle text-light">
-        <thead>
+        <thead class="table-dark">
             <tr>
                 <th>Img</th>
                 <th>Name</th>
@@ -23,7 +23,7 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var product in Products)
+            @foreach (var product in PaginatedProducts)
             {
                 <tr>
                     <td class="text-center">
@@ -44,14 +44,20 @@ else
                     <td><input class="form-control" @bind="product.Genre" /></td>
                     <td><input class="form-control" @bind="product.Status" /></td>
                     <td><input type="number" class="form-control" @bind="product.AgeRating" /></td>
-                    <td>
-                        <button class="btn btn-success btn-sm me-1" @onclick="() => HandleUpdate(product)">Update</button>
-                        <button class="btn btn-danger btn-sm" @onclick="() => HandleDelete(product.Id)">Delete</button>
+                    <td class="text-center align-middle">
+                        <button class="btn btn-success btn-sm w-100" @onclick="() => UpdateProduct(product)">Update</button>
+                        <button class="btn btn-danger btn-sm w-100" @onclick="() => DeleteProduct(product)">Delete</button>
                     </td>
                 </tr>
             }
         </tbody>
     </table>
+
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        <button class="btn btn-secondary" @onclick="PreviousPage" disabled="@IsFirstPage">Previous</button>
+        <span>Page @CurrentPage of @TotalPages</span>
+        <button class="btn btn-secondary" @onclick="NextPage" disabled="@IsLastPage">Next</button>
+    </div>
 }
 
 @code {
@@ -61,6 +67,29 @@ else
 
     private HashSet<string> ExpandedRows = new();
 
+    // Pagination
+    private int PageSize = 15;
+    private int CurrentPage = 1;
+
+    private IEnumerable<Product> PaginatedProducts =>
+        Products.Skip((CurrentPage - 1) * PageSize).Take(PageSize);
+
+    private int TotalPages => Math.Max(1, (int)Math.Ceiling((double)Products.Count / PageSize));
+    private bool IsFirstPage => CurrentPage == 1;
+    private bool IsLastPage => CurrentPage == TotalPages;
+
+    private void PreviousPage()
+    {
+        if (CurrentPage > 1)
+            CurrentPage--;
+    }
+
+    private void NextPage()
+    {
+        if (CurrentPage < TotalPages)
+            CurrentPage++;
+    }
+
     private void ToggleImage(string id)
     {
         if (!ExpandedRows.Add(id))
@@ -69,18 +98,34 @@ else
         }
     }
 
-    private async Task HandleUpdate(Product product)
+    private async Task UpdateProduct(Product product)
     {
-        if (OnUpdate.HasDelegate)
+        /*
+        var response = await Http.PutAsJsonAsync($"api/products/{product.Id}", product);
+        if (response.IsSuccessStatusCode)
         {
-            await OnUpdate.InvokeAsync(product);
-        }
+            Console.WriteLine($"Updated product {product.Id}");
+            }
+        else
+        {
+            Console.WriteLine($"Failed to update product {product.Id}");
+            }
+        */
     }
-    private async Task HandleDelete(string id)
+
+    private async Task DeleteProduct(Product product)
     {
-        if (OnDelete.HasDelegate)
+        /*
+        var response = await Http.DeleteAsync($"api/products/{product.Id}");
+        if (response.IsSuccessStatusCode)
         {
-            await OnDelete.InvokeAsync(id);
-        }
+            products = products.Where(p => p.Id != product.Id).ToList();
+            Console.WriteLine($"Deleted product {product.Id}");
+            }
+        else
+        {
+            Console.WriteLine($"Failed to delete product {product.Id}");
+            }
+        */
     }
 }
