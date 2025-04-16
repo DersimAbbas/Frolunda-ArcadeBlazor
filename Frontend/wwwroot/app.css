@@ -123,6 +123,34 @@ h3 {
     color: #fff;
 }
 
+#ProductCard1 {
+    background-color: #444444;
+    color: #EDEDED;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #5e5e5e;
+}
+
+.btn btn-primary btn-sm {
+    background-color: #DA0037;
+}
+
+.ProductImage {
+    width: 100px;
+    height: 100px;
+    margin-right: 40px;
+}
+
+.ProductCardPrice {
+    margin-left: 50%
+}
+
+.ProductCardButton {
+    background-color: #DA0037;
+    border: none;
+    border-radius: 2%;
+}
+
 /*Modal dialog*/
 .modal-overlay {
     position: fixed;
