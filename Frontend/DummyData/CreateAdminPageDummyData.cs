@@ -16,7 +16,7 @@ namespace Frontend.DummyData
                 Description = "An epic adventure through ancient lands.",
                 Price = 29.99,
                 Genre = "RPG",
-                Status = "Available",
+                Status = "available",
                 ImageLink = "https://via.placeholder.com/60",
                 AgeRating = 12,
             };
@@ -28,7 +28,7 @@ namespace Frontend.DummyData
                 Description = "A fast-paced strategy game.",
                 Price = 19.99,
                 Genre = "Strategy",
-                Status = "Out of Stock",
+                Status = "unavailable",
                 ImageLink = "https://via.placeholder.com/60",
                 AgeRating = 16,
             };
@@ -40,7 +40,7 @@ namespace Frontend.DummyData
                 Description = "A retro-style endless runner.",
                 Price = 9.99,
                 Genre = "Arcade",
-                Status = "Available",
+                Status = "available",
                 ImageLink = "https://via.placeholder.com/60",
                 AgeRating = 3,
             };

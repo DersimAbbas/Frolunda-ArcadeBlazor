@@ -42,7 +42,12 @@ else
                     <td><input class="form-control" @bind="product.Description" /></td>
                     <td><input type="number" step="0.01" class="form-control" @bind="product.Price" /></td>
                     <td><input class="form-control" @bind="product.Genre" /></td>
-                    <td><input class="form-control" @bind="product.Status" /></td>
+                    <td>
+                        <select class="form-select" @bind="product.Status">
+                            <option value="available">Available</option>
+                            <option value="unavailable">Unavailable</option>
+                        </select>
+                    </td>
                     <td><input type="number" class="form-control" @bind="product.AgeRating" /></td>
                     <td class="text-center align-middle">
                         <button class="btn btn-success btn-sm w-100" @onclick="() => UpdateProduct(product)">Update</button>
@@ -58,6 +63,12 @@ else
         <span>Page @CurrentPage of @TotalPages</span>
         <button class="btn btn-secondary" @onclick="NextPage" disabled="@IsLastPage">Next</button>
     </div>
+
+    <button class="btn btn-primary mt-3" @onclick="() => showAddDialog = true">Add Product</button>
+
+    <AddProductDialog Visible="showAddDialog"
+                      OnCancel="() => showAddDialog = false"
+                      OnAdd="AddProduct" />
 }
 
 @code {
@@ -77,6 +88,16 @@ else
     private int TotalPages => Math.Max(1, (int)Math.Ceiling((double)Products.Count / PageSize));
     private bool IsFirstPage => CurrentPage == 1;
     private bool IsLastPage => CurrentPage == TotalPages;
+
+    private bool showAddDialog = false;
+
+    private async Task AddProduct(Product newProduct)
+    {
+        await Task.Delay(1);
+        //Call add product service
+        Products.Add(newProduct);
+        showAddDialog = false;
+    }
 
     private void PreviousPage()
     {
