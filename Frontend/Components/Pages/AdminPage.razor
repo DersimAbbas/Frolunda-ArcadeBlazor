@@ -1,6 +1,8 @@
 ﻿@page "/admin-page"
 @using Frontend.Models
 @using Frontend.DummyData
+@using Frontend.Services
+@inject IProductService ProductService
 
 <h3>AdminPage</h3>
 
@@ -72,15 +74,15 @@ else
 }
 
 @code {
-    private List<Product> products;
+    private List<Product> products { get; set; }
     private List<Product> filteredProducts;
     private HashSet<string> expandedRows = new();
     private string searchTerm = string.Empty;
     private string selectedSortOption = string.Empty;
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        products = Frontend.DummyData.CreateProductDummyData.GetDummyProducts();
+        products = await ProductService.GetAllProductsAsync() ?? new List<Product>();
         ApplyFilterAndSort();
     }
     /*protected override async Task OnInitializedAsync()
