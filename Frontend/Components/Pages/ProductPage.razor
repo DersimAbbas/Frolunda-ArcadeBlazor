@@ -1,0 +1,68 @@
+﻿@page "/product-page"
+@using Frontend.DummyData
+@using Frontend.Models
+
+<h3>Product Page</h3>
+@if (selectedProduct is not null)
+{
+    <div class="product-page-container">
+        <div class="product-main-content">
+            <!-- Product Card -->
+            <div class="product-card mb-5 p-4 text-light">
+                <h2 class="product-title">@selectedProduct.Name</h2>
+                <hr />
+                <div class="product-content row gx-4">
+                    <div class="col-lg-4 d-flex flex-column justify-content-between p-3">
+                        <p>@selectedProduct.Description</p>
+                        <div class="product-meta mt-4">
+                            <span><strong>Genre:</strong> @selectedProduct.Genre</span>
+                            <span><strong>Age Rating:</strong> @selectedProduct.AgeRating</span><br />
+                            <span><strong>Status:</strong> @selectedProduct.Status</span>
+                        </div>
+                    </div>
+                    <div class="col-lg-8 d-flex align-items-stretch p-3">
+                        <img src="@selectedProduct.ImageLink" alt="@selectedProduct.Name" class="img-fluid rounded product-img w-100" />
+                    </div>
+                </div>
+            </div>
+
+            <!-- Reviews + Related Products -->
+            <div class="product-info-card mb-5 p-4 text-light">
+                <h5 class="mb-3">Reviews</h5>
+                <div class="product-content row gx-4">
+                    <div class="col-lg-3 gx-4 p-3">
+                        <div class="review mb-3">
+                            <strong>Jane D.</strong>
+                            <p>Very cool!</p>
+                        </div>
+                        <div class="review">
+                            <strong>Max P.</strong>
+                            <p>Great game.</p>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-9 p-3">
+                        <h5 class="mb-3">Related Products</h5>
+                        <ProductCarousel Products="products" AutoScrollInterval="4000" />
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sidebar -->
+        <CheckoutSidebar Product="selectedProduct" />
+    </div>
+}
+
+@code
+{
+    private List<Product> products = new List<Product>();
+    private Product selectedProduct;
+
+    protected override void OnInitialized()
+    {
+        products = CreateAdminPageDummyData.GetDummyProducts();
+        selectedProduct = products.FirstOrDefault();
+    }
+}
+<link rel="stylesheet" href="css/ProductPageStyle.css" />
