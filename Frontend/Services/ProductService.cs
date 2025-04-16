@@ -8,10 +8,10 @@ public class ProductService(HttpClient httpClient) : IProductService
     {
         return await httpClient.GetFromJsonAsync<Product>($"api/products/{id}");
     }
-
+    
     public async Task<List<Product>?> GetAllProductsAsync()
     {
-        return await httpClient.GetFromJsonAsync<List<Product>>("api/products");
+        return await httpClient.GetFromJsonAsync<List<Product>>("https://localhost:44313/api/products");
     }
 
     public async Task<bool> AddProduct(Product cart)
