@@ -1,6 +1,11 @@
 using Frontend.Components;
+using Frontend.Services;
 
 var builder = WebApplication.CreateBuilder(args);
+
+builder.Services.AddHttpClient();
+
+builder.Services.AddScoped<IReviewService, ReviewService>();
 
 // Add services to the container.
 builder.Services.AddRazorComponents() 

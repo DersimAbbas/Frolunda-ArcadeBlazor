@@ -113,8 +113,41 @@ namespace Frontend.DummyData
                 Ratings = 4
             };
 
+            var review3 = new Review
+            {
+                Id = Guid.NewGuid().ToString(),
+                Product = new CartProductDto { Id = product1.Id, Name = product1.Name, Price = product1.Price },
+                User = dummyUser,
+                Title = "Awesome Game",
+                Comment = "Had a great time playing it!",
+                Ratings = 5
+            };
+
+            var review4 = new Review
+            {
+                Id = Guid.NewGuid().ToString(),
+                Product = new CartProductDto { Id = product1.Id, Name = product1.Name, Price = product1.Price },
+                User = dummyUser,
+                Title = "Awesome Game",
+                Comment = "Had a great time playing it!",
+                Ratings = 5
+            };
+
+            var review5 = new Review
+            {
+                Id = Guid.NewGuid().ToString(),
+                Product = new CartProductDto { Id = product1.Id, Name = product1.Name, Price = product1.Price },
+                User = dummyUser,
+                Title = "Awesome Game",
+                Comment = "Had a great time playing it!",
+                Ratings = 5
+            };
+
             product1.Reviews.Add(review1);
-            product2.Reviews.Add(review2);
+            product1.Reviews.Add(review2);
+            product1.Reviews.Add(review3);
+            product1.Reviews.Add(review4);
+            product1.Reviews.Add(review5);
 
             return new List<Product> { product1, product2, product3, product4, product5, product6, product7 };
         }
