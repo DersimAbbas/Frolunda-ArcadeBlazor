@@ -1,5 +1,6 @@
 ﻿@using Frontend.Models
 @inject IJSRuntime JSRuntime
+@implements IDisposable
 
 <div class="scroll-carousel-container position-relative text-dark">
     <button class="carousel-arrow left btn btn-light" @onclick="() => Scroll(-1)">‹</button>
@@ -45,12 +46,13 @@
     private async Task AutoScroll()
     {
         if (Products.Count == 0) return;
-        //await JSRuntime.InvokeVoidAsync("autoScrollCarousel", carouselRef);
+        await JSRuntime.InvokeVoidAsync("autoScrollCarousel", carouselRef);
     }
 
     public void Dispose()
     {
         autoScrollTimer?.Dispose();
+        autoScrollTimer = null;
     }
 }
 
