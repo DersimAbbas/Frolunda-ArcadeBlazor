@@ -1,0 +1,57 @@
+﻿
+@using Frontend.Services
+<h3>FilterBar</h3>
+
+
+<button class="btn btn-outline-secondary mb-2" @onclick="ToggleFilter">
+    @(showFilters ? "Hide Filters" : "Show Filters")
+</button>
+
+@if (showFilters){
+    <div class="mb-3">
+        <input @bind="SearchTerm" placeholder="Search..." class="form-control mb-2"/>
+        <select @bind="SelectedGenre" class="form-control mb-2">
+            <option value="">Genres</option>
+            @foreach (var g in Genres)
+            {
+                <option value="@g">@g</option>
+            }
+        </select>
+
+        <div class="d-flex gap-2 mb-2">
+            <input type="number" @bind="MinPrice" placeholder="Min Price" class="form-control" />
+            <input type="number" @bind="MaxPrice" placeholder="Max Price" class="form-control" />
+        </div>
+
+        <button class="btn btn-primary" @onclick="ApplyClicked">Apply Filters</button>
+    </div>
+}
+
+
+@code {
+    private bool showFilters = false;
+
+    private void ToggleFilter()
+    {
+        showFilters = !showFilters;
+    }
+    [Parameter] public string SearchTerm { get; set; }
+    [Parameter] public string SelectedGenre { get; set; }
+    [Parameter] public decimal? MinPrice { get; set; }
+    [Parameter] public decimal? MaxPrice { get; set; }
+    [Parameter] public EventCallback OnApplyFilters { get; set; }
+
+    [Parameter] public List<string> Genres { get; set; } = new();
+
+    protected override Task OnInitializedAsync()
+    {
+        Genres.AddRange(new[] { "Action", "RPG", "Survival Horror", "Roguelike" });
+        return Task.CompletedTask;
+    }
+    private async Task ApplyClicked()
+    {
+        if (OnApplyFilters.HasDelegate)
+            await OnApplyFilters.InvokeAsync(null);
+    }
+
+}
