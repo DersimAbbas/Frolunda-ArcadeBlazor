@@ -9,34 +9,19 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="70105c11-1027-4448-8b39-8affe02ce11b" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/Frontend/Components/Pages/Login.razor.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Frontend/Components/Pages/Register.razor.css" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Frontend/Endpoints/AuthEndpoints.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Frontend/Models/FirebaseSecret.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Frontend/Provider/FirebaseAuthProvider.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/App.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/App.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Layout/MainLayout.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Layout/MainLayout.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Layout/NavMenu.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Layout/NavMenu.razor" afterDir="false" />
+    <list default="true" id="70105c11-1027-4448-8b39-8affe02ce11b" name="Changes" comment="Add frontend login/register auth - jwt token">
+      <change afterPath="$PROJECT_DIR$/Frontend/Services/CookiesTokenService.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Frontend/Services/ICookiesTokenService.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Frontend/Services/ISessionTokenService.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Frontend/Services/SessionTokenService.cs" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/Frontend/wwwroot/js/tokenHelper.js" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.ArcadeBlazor/.idea/.name" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.ArcadeBlazor/.idea/indexLayout.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.ArcadeBlazor/.idea/projectSettingsUpdater.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.ArcadeBlazor/.idea/vcs.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.ArcadeBlazor/.idea/workspace.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/config/applicationhost.config" beforeDir="false" />
       <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/AdminPage.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Pages/AdminPage.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/Login.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Pages/Login.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/Register.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Pages/Register.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Routes.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Routes.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Frontend.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Frontend.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Handler/BearerTokenHandler.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Handler/BearerTokenHandler.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Services/CookiesTokenService.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Services/Firebase/DevFirebaseConnection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/Firebase/DevFirebaseConnection.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Services/Firebase/IServicePrincipalProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/Firebase/IServicePrincipalProvider.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Services/Firebase/ProdFirebaseConnection.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/Firebase/ProdFirebaseConnection.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Services/FirebaseAuthService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/FirebaseAuthService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Services/ICookiesTokenService.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Services/IFirebaseAuthService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/IFirebaseAuthService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Services/ISessionTokenService.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Services/SessionTokenService.cs" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/appsettings.Development.json" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/appsettings.Development.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/appsettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/appsettings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/wwwroot/js/tokenHelper.js" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -54,7 +39,29 @@
     </option>
   </component>
   <component name="Git.Settings">
+    <option name="RECENT_BRANCH_BY_REPOSITORY">
+      <map>
+        <entry key="$PROJECT_DIR$" value="temp-calle" />
+      </map>
+    </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="HighlightingSettingsPerFile">
+    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/Components/App.razor" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/Components/Layout/MainLayout.razor" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/Components/Layout/NavMenu.razor" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/Components/Pages/Login.razor" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/Components/Pages/Register.razor" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/Components/Routes.razor" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/Handler/BearerTokenHandler.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/Program.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/Services/Firebase/DevFirebaseConnection.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/Services/Firebase/IServicePrincipalProvider.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/Services/Firebase/ProdFirebaseConnection.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/Services/FirebaseAuthService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/Services/IFirebaseAuthService.cs" root0="SKIP_HIGHLIGHTING" />
+    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/appsettings.Development.json" root0="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/appsettings.json" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProjectColorInfo">{
@@ -65,20 +72,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    ".NET Launch Settings Profile.Frontend: IIS Express.executor": "Run",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "git-widget-placeholder": "Development",
-    "list.type.of.created.stylesheet": "CSS",
-    "node.js.detected.package.eslint": "true",
-    "node.js.detected.package.tslint": "true",
-    "node.js.selected.package.eslint": "(autodetect)",
-    "node.js.selected.package.tslint": "(autodetect)",
-    "nodejs_package_manager_path": "npm",
-    "vue.rearranger.settings.migration": "true"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;.NET Launch Settings Profile.Frontend: IIS Express.executor&quot;: &quot;Run&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;calle-dev&quot;,
+    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
+    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
+    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
+    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
+    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
   }
-}]]></component>
+}</component>
   <component name="RunManager" selected=".NET Launch Settings Profile.Frontend: IIS Express">
     <configuration name="Frontend: IIS Express" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/Frontend/Frontend.csproj" />
@@ -135,8 +142,16 @@
       <option name="presentableId" value="Default" />
       <updated>1744839076097</updated>
       <workItem from="1744839077126" duration="2879000" />
-      <workItem from="1744873289830" duration="17337000" />
+      <workItem from="1744873289830" duration="18410000" />
     </task>
+    <task id="LOCAL−00001" summary="Add frontend login/register auth - jwt token">
+      <option name="closed" value="true" />
+      <created>1744894738020</created>
+      <option name="number" value="LOCAL−00001" />
+      <option name="presentableId" value="LOCAL−00001" />
+      <updated>1744894738020</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -144,8 +159,21 @@
   </component>
   <component name="UnityCheckinConfiguration" checkUnsavedScenes="true" />
   <component name="UnityProjectConfiguration" hasMinimizedUI="false" />
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
   <component name="VcsManagerConfiguration">
     <option name="LOCAL_CHANGES_DETAILS_PREVIEW_SHOWN" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
+    <MESSAGE value="Add frontend login/register auth - jwt token" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add frontend login/register auth - jwt token" />
   </component>
 </project>
