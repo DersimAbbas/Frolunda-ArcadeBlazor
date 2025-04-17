@@ -1,165 +1,98 @@
 ﻿@page "/admin-page"
 @using Frontend.Models
 @using Frontend.DummyData
+@using Frontend.Components.Controls
 @using Frontend.Services
-@inject IProductService ProductService
+@inject HttpClient http
+@inject IProductService product_Service
 
-<h3>AdminPage</h3>
+<h3 class="welcome-text">Admin Page</h3>
 
-<div class="mb-3 d-flex justify-content-between align-items-center">
-    <input class="form-control w-50 me-3" placeholder="Search by name..."
-           value="@searchTerm" @oninput="OnSearchChanged" />
+<div class="d-flex justify-content-center mb-5">
+    <button class="btn me-2 @(IsViewingProducts ? "btn-primary" : "btn-outline-primary")"
+    @onclick="() => IsViewingProducts = true">
+        View Products
+    </button>
 
-    <select class="form-select w-25"
-            @bind="selectedSortOption"
-            @bind:after="ApplyFilterAndSort">
-        <option value="">Sort By</option>
-        <option value="name">Name</option>
-        <option value="genre">Genre</option>
-        <option value="age">Age Rating</option>
-        <option value="price">Price</option>
-        <option value="status">Status</option>
-    </select>
+    <button class="btn @(IsViewingUsers ? "btn-outline-primary" : "btn-primary")"
+    @onclick="() => IsViewingUsers = true">
+        View Users
+    </button>
 </div>
 
-@if (filteredProducts == null)
+@if(IsViewingProducts)
 {
-    <p>Loading...</p>
+    <ProductSorter Products="products" OnFilteredChanged="OnFilteredChanged" />
+
+    <ProductEditor Products="filteredProducts" 
+    OnAddProduct="HandleAddProduct"/>
 }
-else
+else if(IsViewingUsers)
 {
-    <table class="table table-bordered align-middle text-light">
-        <thead>
-            <tr>
-                <th>Img</th>
-                <th>Name</th>
-                <th>Description</th>
-                <th>Price</th>
-                <th>Genre</th>
-                <th>Status</th>
-                <th>Age Rating</th>
-                <th>Actions</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach (var product in filteredProducts)
-            {
-                <tr>
-                    <td class="text-center">
-                        <button class="btn btn-sm btn-secondary mb-1" @onclick="() => ToggleImage(product.Id)">
-                            @(expandedRows.Contains(product.Id) ? "▲" : "▼")
-                        </button>
-                        @if (expandedRows.Contains(product.Id))
-                        {
-                            <div class="mt-2">
-                                <img src="@product.ImageLink" width="60" height="60" class="img-thumbnail" />
-                                <input class="form-control mt-1" @bind="product.ImageLink" />
-                            </div>
-                        }
-                    </td>
-                    <td><input class="form-control" @bind="product.Name" /></td>
-                    <td><input class="form-control" @bind="product.Description" /></td>
-                    <td><input type="number" step="0.01" class="form-control" @bind="product.Price" /></td>
-                    <td><input class="form-control" @bind="product.Genre" /></td>
-                    <td><input class="form-control" @bind="product.Status" /></td>
-                    <td><input type="number" class="form-control" @bind="product.AgeRating" /></td>
-                    <td>
-                        <button class="btn btn-success btn-sm me-1" @onclick="() => UpdateProduct(product)">Update</button>
-                        <button class="btn btn-danger btn-sm" @onclick="() => DeleteProduct(product.Id)">Delete</button>
-                    </td>
-                </tr>
-            }
-        </tbody>
-    </table>
+    <UserEditor />
 }
 
 @code {
-    private List<Product> products { get; set; }
-    private List<Product> filteredProducts;
-    private HashSet<string> expandedRows = new();
-    private string searchTerm = string.Empty;
-    private string selectedSortOption = string.Empty;
+    private List<Product> products = new();
+    private List<Product> filteredProducts = new();
+    private List<User> users = new();
+
+    private bool _isViewingProducts = true;
+    public bool IsViewingProducts
+    {
+        get => _isViewingProducts;
+        set
+        {
+            _isViewingProducts = value;
+            if(_isViewingProducts)
+            {
+                IsViewingUsers = false;
+            }
+            StateHasChanged();
+        }
+    }
+
+    private bool _isViewingUsers = false;
+    public bool IsViewingUsers
+    {
+        get => _isViewingUsers;
+        set
+        {
+            _isViewingUsers = value;
+            if (_isViewingUsers)
+            {
+                IsViewingProducts = false;
+            }
+            StateHasChanged();
+        }
+    }
 
     protected override async Task OnInitializedAsync()
     {
-        products = await ProductService.GetAllProductsAsync() ?? new List<Product>();
-        ApplyFilterAndSort();
-    }
-    /*protected override async Task OnInitializedAsync()
-    {
-        products = await Http.GetFromJsonAsync<List<Product>>("api/products");
-    }*/
-
-    private async Task UpdateProduct(Product product)
-    {
-        /*
-        var response = await Http.PutAsJsonAsync($"api/products/{product.Id}", product);
-        if (response.IsSuccessStatusCode)
-        {
-            Console.WriteLine($"Updated product {product.Id}");
-        }
-        else
-        {
-            Console.WriteLine($"Failed to update product {product.Id}");
-        }
-        */
+        await Task.Delay(100);
+        products = await product_Service.GetAllProductsAsync();
+        StateHasChanged();
+        //ApplyFilterAndSort();
     }
 
-    private async Task DeleteProduct(string productId)
+    // protected override void OnInitialized()
+    // {
+    //     products = CreateAdminPageDummyData.GetDummyProducts();
+    //     filteredProducts = products;
+    // }
+
+    private async Task HandleAddProduct(Product newProduct)
     {
-        /*
-        var response = await Http.DeleteAsync($"api/products/{productId}");
-        if (response.IsSuccessStatusCode)
-        {
-            products = products.Where(p => p.Id != productId).ToList();
-            Console.WriteLine($"Deleted product {productId}");
-        }
-        else
-        {
-            Console.WriteLine($"Failed to delete product {productId}");
-        }
-        */
+        products = await product_Service.GetAllProductsAsync(); // Refresh the full product list
+        filteredProducts = products; // Update the filtered list
+        StateHasChanged(); // Trigger UI refresh
     }
+    
 
-    private void ToggleImage(string productId)
+
+
+    private void OnFilteredChanged(List<Product> filtered)
     {
-        if (!expandedRows.Add(productId))
-        {
-            expandedRows.Remove(productId);
-        }
-    }
-
-    private void OnSearchChanged(ChangeEventArgs e)
-    {
-        searchTerm = e.Value?.ToString() ?? string.Empty;
-        ApplyFilterAndSort();
-    }
-
-    private void ApplySort(ChangeEventArgs e)
-    {
-        selectedSortOption = e.Value?.ToString();
-        ApplyFilterAndSort();
-    }
-
-    private void ApplyFilterAndSort()
-    {
-        IEnumerable<Product> result = products;
-
-        if (!string.IsNullOrWhiteSpace(searchTerm))
-        {
-            result = result.Where(p => p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase));
-        }
-
-        result = selectedSortOption switch
-        {
-            "name" => result.OrderBy(p => p.Name),
-            "genre" => result.OrderBy(p => p.Genre),
-            "age" => result.OrderBy(p => p.AgeRating),
-            "price" => result.OrderBy(p => p.Price),
-            "status" => result.OrderBy(p => p.Status),
-            _ => result
-        };
-
-        filteredProducts = result.ToList();
+        filteredProducts = filtered;
     }
 }
