@@ -9,6 +9,11 @@ public class ProductService(HttpClient httpClient) : IProductService
         return await httpClient.GetFromJsonAsync<Product>($"api/products/{id}");
     }
 
+    public async Task<Product?> GetProductByNameAsync(string name)
+    {
+        return await httpClient.GetFromJsonAsync<Product>($"api/products/{name}");
+    }
+
     public async Task<List<Product>?> GetAllProductsAsync()
     {
         return await httpClient.GetFromJsonAsync<List<Product>>("api/products");
