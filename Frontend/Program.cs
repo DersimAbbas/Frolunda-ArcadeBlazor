@@ -6,6 +6,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddHttpClient();
 
 builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped<IProductService, ProductService>();
+builder.Services.AddScoped<ProductService>();
+var apiBaseUrl = builder.Configuration["ApiBaseUrl"];
+
+builder.Services.AddScoped(sp =>
+{
+    var config = sp.GetRequiredService<IConfiguration>();
+    var baseAdress = config["ApiBaseUrl"];
+    return new HttpClient { BaseAddress = new Uri(baseAdress) };
+});
 
 // Add services to the container.
 builder.Services.AddRazorComponents() 

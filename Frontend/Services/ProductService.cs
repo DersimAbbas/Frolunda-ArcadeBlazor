@@ -16,7 +16,8 @@ public class ProductService(HttpClient httpClient) : IProductService
 
     public async Task<List<Product>?> GetAllProductsAsync()
     {
-        return await httpClient.GetFromJsonAsync<List<Product>>("api/products");
+        var response = await httpClient.GetFromJsonAsync<List<Product>>("api/products");
+        return response ?? new List<Product>();
     }
 
     public async Task<bool> AddProduct(Product cart)
