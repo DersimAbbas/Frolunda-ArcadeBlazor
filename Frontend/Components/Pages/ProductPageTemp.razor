@@ -1,8 +1,7 @@
-﻿@page "/product-page/{ProductName}"
+﻿@page "/product-page-temp"
 @using Frontend.DummyData
 @using Frontend.Models
 @using Frontend.Services
-@inject ProductService ProductService
 
 <h3>Product Page</h3>
 @if (selectedProduct is not null)
@@ -51,19 +50,21 @@
 
 @code
 {
-    [Parameter] public string ProductName { get; set; }
+    public string ProductName { get; set; }
 
     private List<Product> products = new List<Product>();
     private Product selectedProduct;
 
-    protected override async Task OnInitializedAsync()
+    private bool showAllReviews = false;
+
+    protected override void OnInitialized()
     {
-        if (!string.IsNullOrEmpty(ProductName))
-        {
-            //selectedProduct = await ProductService.GetProductByNameAsync(ProductName);
-        }
-        //Temp, change with actual related items
         products = CreateAdminPageDummyData.GetDummyProducts();
+        selectedProduct = products.FirstOrDefault();
+    }
+    private void ToggleReviews()
+    {
+        showAllReviews = !showAllReviews;
     }
 }
 <link rel="stylesheet" href="css/ProductPageStyle.css" />
