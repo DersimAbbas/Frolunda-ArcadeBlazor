@@ -1,15 +1,12 @@
 using System.Net.Http.Headers;
-using Frontend.Services;
-using Microsoft.AspNetCore.Components.Authorization;
 
 namespace Frontend.Handler;
 
-public class BearerTokenHandler(IHttpContextAccessor httpContextAccessor, ICookiesTokenService cookiesTokenService) : DelegatingHandler
+public class BearerTokenHandler(IHttpContextAccessor httpContextAccessor) : DelegatingHandler
 {
     protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
-        // var token = httpContextAccessor.HttpContext?.Request.Cookies["token"];
-        var token = await cookiesTokenService.GetTokenAsync();
+        var token = httpContextAccessor.HttpContext?.Request.Cookies["token"];
 
         if (!string.IsNullOrWhiteSpace(token))
         {

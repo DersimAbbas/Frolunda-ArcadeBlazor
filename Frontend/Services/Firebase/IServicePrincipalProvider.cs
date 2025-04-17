@@ -1,7 +1,9 @@
-﻿namespace Frontend.Services.Firebase
+﻿using Frontend.Models;
+
+namespace Frontend.Services.Firebase
 {
     public interface IServicePrincipalProvider
     {
-        Task<string> GetKeyVaultSecretAsync();
+        Task<FirebaseSecret> GetKeyVaultSecretAsync();
     }
 }

@@ -1,5 +1,6 @@
 ﻿using Azure.Identity;
 using Azure.Security.KeyVault.Secrets;
+using Frontend.Models;
 
 namespace Frontend.Services.Firebase
 {
@@ -12,22 +13,28 @@ namespace Frontend.Services.Firebase
             _configuration = configuration;
         }
 
-        public async Task<string> GetKeyVaultSecretAsync()
+        public async Task<FirebaseSecret> GetKeyVaultSecretAsync()
         {
             string keyVaultUrl = _configuration["KeyVault:Uri"];
-
+            string api_Key = _configuration["KeyVault:API_KEY"];
+            string project_id = _configuration["KeyVault:PROJECT_ID"];
             if (string.IsNullOrEmpty(keyVaultUrl))
             {
                 throw new Exception("Key Vault URI is not set in the configuration.");
             }
-
             var credential = new DefaultAzureCredential();
             var client = new SecretClient(new Uri(keyVaultUrl), credential);
-            var secretName = _configuration["KeyVault:SecretName"];
+            KeyVaultSecret firebaseApiSecret = await client.GetSecretAsync(api_Key);
+            string firebaseApiKey = firebaseApiSecret.Value;
 
-            var secret = await client.GetSecretAsync(secretName);
+            KeyVaultSecret firebaseProjectIdSecret = await client.GetSecretAsync(project_id);
+            string projectId = firebaseProjectIdSecret.Value;
 
-            return secret.Value.Value;
+            return new FirebaseSecret
+            {
+                FirebaseApiKey = firebaseApiKey,
+                ProjectId = projectId
+            };
         }
     }
 }
