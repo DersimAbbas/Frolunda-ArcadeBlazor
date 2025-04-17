@@ -1,0 +1,139 @@
+﻿@using Frontend.Models
+
+<div class="mb-4 text-light">
+    <!-- Search & Sort -->
+    <div class="d-flex justify-content-between align-items-center mb-2">
+        <input class="form-control w-50 me-3" placeholder="Search by name..."
+               @bind="SearchTerm" @bind:event="oninput" />
+
+        <select class="form-select w-25" @onchange="@OnSortChanged">
+            <option value="">Sort By</option>
+            <option value="name">Name</option>
+            <option value="genre">Genre</option>
+            <option value="age">Age Rating</option>
+            <option value="price">Price</option>
+            <option value="status">Status</option>
+        </select>
+    </div>
+
+    <!-- Price Range -->
+    <div class="mb-2 d-flex justify-content-between align-items-center mt-5">
+        <label class="form-label">
+            Price Range: @SelectedMinPrice.ToString("0.00") - @SelectedMaxPrice.ToString("0.00")
+        </label>
+    </div>
+
+    <div class="d-flex align-items-center gap-3">
+        <!-- Min Price Slider -->
+        <input type="range" min="@minPrice" max="@maxPrice" step="1"
+               value="@SelectedMinPrice"
+               @oninput="@((args) => SelectedMinPrice = Convert.ToDouble(args.Value))"
+               class="form-range" style="width: 100%;" />
+
+        <!-- Max Price Slider -->
+        <input type="range" min="@minPrice" max="@maxPrice" step="1"
+               value="@SelectedMaxPrice"
+               @oninput="@((args) => SelectedMaxPrice = Convert.ToDouble(args.Value))"
+               class="form-range" style="width: 100%;" />
+    </div>
+</div>
+
+@code {
+    [Parameter] public List<Product> Products { get; set; } = new();
+    [Parameter] public EventCallback<List<Product>> OnFilteredChanged { get; set; }
+
+    private string searchTerm = string.Empty;
+    private string SearchTerm
+    {
+        get => searchTerm;
+        set
+        {
+            searchTerm = value;
+            _ = ApplyFilter();
+        }
+    }
+
+    private string selectedSortOption = string.Empty;
+    private string SelectedSortOption
+    {
+        get => selectedSortOption;
+        set
+        {
+            selectedSortOption = value;
+            _ = ApplyFilter();
+        }
+    }
+
+    private double minPrice;
+    private double maxPrice;
+
+    private double selectedMinPrice;
+    private double SelectedMinPrice
+    {
+        get => selectedMinPrice;
+        set
+        {
+            selectedMinPrice = value;
+            _ = ApplyFilter();
+        }
+    }
+
+    private double selectedMaxPrice;
+    private double SelectedMaxPrice
+    {
+        get => selectedMaxPrice;
+        set
+        {
+            selectedMaxPrice = value;
+            _ = ApplyFilter();
+        }
+    }
+
+    private bool hasInitialized = false;
+
+    protected override void OnParametersSet()
+    {
+        if (Products?.Any() == true && !hasInitialized)
+        {
+            minPrice = Products.Min(p => p.Price);
+            maxPrice = Products.Max(p => p.Price);
+
+            SelectedMinPrice = minPrice;
+            SelectedMaxPrice = maxPrice;
+            hasInitialized = true;
+        }
+    }
+
+    private async Task OnSortChanged(ChangeEventArgs e)
+    {
+        SelectedSortOption = e.Value?.ToString() ?? "";
+    }
+
+    private async Task ApplyFilter()
+    {
+        if (SelectedMinPrice > SelectedMaxPrice)
+        {
+            (SelectedMinPrice, SelectedMaxPrice) = (SelectedMaxPrice, SelectedMinPrice);
+        }
+
+        var filtered = Products
+            .Where(p =>
+                p.Price >= SelectedMinPrice &&
+                p.Price <= SelectedMaxPrice &&
+                (string.IsNullOrWhiteSpace(searchTerm) ||
+                 p.Name.Contains(searchTerm, StringComparison.OrdinalIgnoreCase)))
+            .ToList();
+
+        filtered = selectedSortOption switch
+        {
+            "name" => filtered.OrderBy(p => p.Name).ToList(),
+            "genre" => filtered.OrderBy(p => p.Genre).ToList(),
+            "age" => filtered.OrderBy(p => p.AgeRating).ToList(),
+            "price" => filtered.OrderBy(p => p.Price).ToList(),
+            "status" => filtered.OrderBy(p => p.Status).ToList(),
+            _ => filtered
+        };
+
+        await OnFilteredChanged.InvokeAsync(filtered);
+    }
+}
