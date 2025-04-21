@@ -55,15 +55,6 @@
 
     private async Task HandleAdd()
     {
-        // NewProduct.Id = newProduct.Id;
-        // NewProduct.Name = newProduct.Name;
-        // NewProduct.Description = newProduct.Description;
-        // NewProduct.Price = newProduct.Price;
-        // NewProduct.Genre = newProduct.Genre;
-        // NewProduct.Status = newProduct.Status;
-        // NewProduct.AgeRating = newProduct.AgeRating;
-        // NewProduct.ImageLink = newProduct.ImageLink;
-
         await OnAdd.InvokeAsync(NewProduct);
         await Task.Delay(50);
         StateHasChanged();

@@ -71,9 +71,29 @@ else if(IsViewingUsers)
     {
         await Task.Delay(100);
         products = await product_Service.GetAllProductsAsync();
+
+        // TODO  
+        // Isolate <Add new product button> to page otherwise cant add new product if collection is empty
+        //temp fix
+        if(products == null || products.Count == 0)
+        {
+            var product = new Product
+                {
+                    Name = "string",
+                    Status = "Unavailable",
+                    Description = "string",
+                    Genre = "string",
+                    Price = 1,
+                    ImageLink = "none",
+                    Id = "string",
+                    AgeRating = 13
+                };
+            await product_Service.AddProduct(product);
+        }
+
         StateHasChanged();
-        //ApplyFilterAndSort();
     }
+       
 
     // protected override void OnInitialized()
     // {
@@ -83,9 +103,9 @@ else if(IsViewingUsers)
 
     private async Task HandleAddProduct(Product newProduct)
     {
-        products = await product_Service.GetAllProductsAsync(); // Refresh the full product list
-        filteredProducts = products; // Update the filtered list
-        StateHasChanged(); // Trigger UI refresh
+        products = await product_Service.GetAllProductsAsync(); 
+        filteredProducts = products; 
+        StateHasChanged(); 
     }
     
 
