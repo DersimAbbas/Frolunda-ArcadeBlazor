@@ -80,7 +80,7 @@
         }
         catch
         {
-            allProducts = GetMockProducts();
+            DummyData.CreateAdminPageDummyData.GetDummyProducts();
         }
 
         CartItems = LocalCartStorageService.Cart.Select(kvp =>
@@ -108,13 +108,6 @@
 
     [JSInvokable]
     public Task CloseCart() => OnClose.InvokeAsync();
-
-    private List<Product> GetMockProducts() =>
-        new()
-            {
-            new Product { Id = "1", Name = "Arcade Pass", Price = 10 },
-            new Product { Id = "2", Name = "Game Token", Price = 5 },
-            };
 
     public async ValueTask DisposeAsync()
     {
