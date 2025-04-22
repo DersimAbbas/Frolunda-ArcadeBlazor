@@ -1,15 +1,12 @@
 using Firebase.Auth;
 using Firebase.Auth.Providers;
 using Frontend.Components;
-
 using Frontend.Endpoints;
 using Frontend.Handler;
 using Frontend.Services;
 using Frontend.Services.Firebase;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
-
-
 using MudBlazor.Services;
 
 var builder = WebApplication.CreateBuilder(args);
