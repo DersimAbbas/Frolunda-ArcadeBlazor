@@ -1,6 +1,7 @@
 using Firebase.Auth;
 using Firebase.Auth.Providers;
 using Frontend.Components;
+
 using Frontend.Endpoints;
 using Frontend.Handler;
 using Frontend.Services;
@@ -9,10 +10,14 @@ using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
+
+using MudBlazor.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
 
 var apiBaseUrl = builder.Configuration["ApiBaseUrl"];
 
@@ -88,6 +93,7 @@ builder.Services.AddScoped<ProductService>();
 builder.Services.AddScoped<LocalCartStorageService>();
 builder.Services.AddScoped<ProtectedLocalStorage>();
 
+builder.Services.AddMudServices();
 var app = builder.Build();
 
 
