@@ -53,14 +53,20 @@
     public string ProductName { get; set; }
 
     private List<Product> products = new List<Product>();
-    private Product selectedProduct;
+    private Product? selectedProduct;
 
     private bool showAllReviews = false;
 
     protected override void OnInitialized()
     {
         products = CreateAdminPageDummyData.GetDummyProducts();
+        //hard code demo: populate product with image from storage account in azure. <Azure func app>
+        // project carousel scroll is overloading with requests makes func app crash after few seconds.
+         
+        var FuncTrigger = "http://localhost:7202/api/GetImageFunction";
+        var blobName = "Dersim2.jpg";
         selectedProduct = products.FirstOrDefault();
+        selectedProduct.ImageLink = $"{FuncTrigger}?image={Uri.EscapeUriString(blobName)}";
     }
     private void ToggleReviews()
     {

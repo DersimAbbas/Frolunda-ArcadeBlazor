@@ -71,21 +71,15 @@ else if(IsViewingUsers)
     {
         await Task.Delay(100);
         products = await product_Service.GetAllProductsAsync();
-        StateHasChanged();
-        //ApplyFilterAndSort();
-    }
 
-    // protected override void OnInitialized()
-    // {
-    //     products = CreateAdminPageDummyData.GetDummyProducts();
-    //     filteredProducts = products;
-    // }
+        StateHasChanged();
+    }
 
     private async Task HandleAddProduct(Product newProduct)
     {
-        products = await product_Service.GetAllProductsAsync(); // Refresh the full product list
-        filteredProducts = products; // Update the filtered list
-        StateHasChanged(); // Trigger UI refresh
+        products = await product_Service.GetAllProductsAsync(); 
+        filteredProducts = products; 
+        StateHasChanged(); 
     }
     
 

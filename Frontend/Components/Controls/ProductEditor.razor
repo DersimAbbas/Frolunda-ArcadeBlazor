@@ -64,13 +64,12 @@ else
         <span>Page @CurrentPage of @TotalPages</span>
         <button class="btn btn-secondary" @onclick="NextPage" disabled="@IsLastPage">Next</button>
     </div>
-
-    <button class="btn btn-primary mt-3" @onclick="() => showAddDialog = true">Add Product</button>
-
-    <AddProductDialog Visible="showAddDialog"
-    OnCancel="() => showAddDialog = false"
-    OnAdd="AddProductAsync" />
 }
+<button class="btn btn-primary mt-3" @onclick="() => showAddDialog = true">Add Product</button>
+
+<AddProductDialog Visible="showAddDialog"
+                  OnCancel="() => showAddDialog = false"
+                  OnAdd="AddProductAsync" />
 
 @code {
     [Parameter] public List<Product> Products { get; set; } = new();
