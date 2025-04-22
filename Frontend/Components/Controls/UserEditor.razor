@@ -1,6 +1,11 @@
 ﻿@using Frontend.Models
 @using Microsoft.AspNetCore.Components
 @using Frontend.DummyData
+@using Frontend.Services
+@inject IFirebaseAuthService FirebaseAuthService
+@inject IUserService UserService
+@inject IOrderService OrderService
+@inject ICartService CartService
 
 <!-- Search Bars -->
 <div class="mb-3 d-flex flex-column flex-md-row gap-3">
@@ -160,11 +165,11 @@ else
     private List<CartProductDto> userCartItems = new();
     private List<Cart> carts = new();
 
-    protected override void OnInitialized()
+    protected async override void OnInitialized()
     {
-        users = CreateAdminPageDummyData.GetDummyUsers();
-        orders = CreateAdminPageDummyData.GetDummyOrders();
-        carts = CreateAdminPageDummyData.GetDummyCarts();
+        users = await UserService.GetAllUsersAsync();
+        orders = await OrderService.GetAllOrderAsync();
+        carts = await CartService.GetAllCartsAsync();
     }
 
     private List<User> filteredUsers => users
@@ -226,6 +231,13 @@ else
             Console.WriteLine($"Failed to update user {user.Id}");
             }
         */
+        var responseRole = FirebaseAuthService.AssignRole(user.Id, user.Role);
+        var responseUpdateUser = UserService.UpdateUser(user.Id, user);
+        if (responseRole.Result && responseUpdateUser.Result)
+        {
+            Console.WriteLine($"Updated user: {user}");
+        }
+        
     }
 
     private async Task DeleteUser(User user)
