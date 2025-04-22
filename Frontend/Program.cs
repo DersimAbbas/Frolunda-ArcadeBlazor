@@ -1,7 +1,6 @@
 using Firebase.Auth;
 using Firebase.Auth.Providers;
 using Frontend.Components;
-using Frontend.Endpoints;
 using Frontend.Handler;
 using Frontend.Services;
 using Frontend.Services.Firebase;
@@ -45,7 +44,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.ExpireTimeSpan = TimeSpan.FromDays(7);
         options.LoginPath = "/login";
         options.LogoutPath = "/";
-        options.AccessDeniedPath = "/access-denied";
+        options.AccessDeniedPath = "/";
     });
 builder.Services.AddAuthorization();
 if (builder.Environment.IsDevelopment())
@@ -104,7 +103,6 @@ app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseAntiforgery();
-app.MapAuthEndpoints();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();

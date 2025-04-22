@@ -149,8 +149,8 @@ else
 }
 
 @code {
-    private List<User> users = new();
-    private List<Order> orders = new();
+    private List<User>? users = new();
+    private List<Order>? orders = new();
 
     private string searchEmail = string.Empty;
     private string searchId = string.Empty;
@@ -163,13 +163,14 @@ else
 
     private string? expandedCartUserId = null;
     private List<CartProductDto> userCartItems = new();
-    private List<Cart> carts = new();
+    private List<Cart>? carts = new();
 
-    protected async override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
         users = await UserService.GetAllUsersAsync();
         orders = await OrderService.GetAllOrderAsync();
         carts = await CartService.GetAllCartsAsync();
+        
     }
 
     private List<User> filteredUsers => users

@@ -9,7 +9,6 @@ namespace Frontend.Services;
 public class FirebaseAuthService(
     FirebaseAuthClient firebaseAuthClient,
     HttpClient httpClient,
-    IHttpContextAccessor httpContextAccessor,
     IUserService userService,
     IJSRuntime JSRuntime,
     NavigationManager navigationManager)
@@ -18,10 +17,17 @@ public class FirebaseAuthService(
     public async Task<string?> RegisterUser(string email, string password)
         {
             var userCred = await firebaseAuthClient.CreateUserWithEmailAndPasswordAsync(email, password);
-            userService.AddUser(new User()
+            await userService.AddUser(new User()
             {
+                Id = userCred.User.Uid,
                 Email = email,
-                Role = "user"
+                Role = "user",
+                //Kanske flytta detta till models? Eller bara göra detta mer "clean:t"
+                FirstName = string.Empty,
+                LastName = string.Empty,
+                Password = string.Empty,
+                PhoneNumber = string.Empty,
+                Address = string.Empty,
             });
             
             var userRole = new RoleDto()
@@ -30,7 +36,7 @@ public class FirebaseAuthService(
                 Role = "user"
             };
             
-            await httpClient.PostAsJsonAsync("https://localhost:44313/api/Auth/assign-role", userRole);
+            await httpClient.PostAsJsonAsync("api/Auth/assign-role", userRole);
             
             var token = await userCred.User.GetIdTokenAsync(forceRefresh: true);
             navigationManager.NavigateTo("/login", forceLoad: true);
@@ -40,22 +46,11 @@ public class FirebaseAuthService(
 
         public async Task<string?> LoginUser(string email, string password)
         {
-            
-            
                 var userCred = await firebaseAuthClient.SignInWithEmailAndPasswordAsync(email, password);
                 var token = await userCred.User.GetIdTokenAsync(forceRefresh: true);
-                
-                // httpContextAccessor.HttpContext!.Response.Cookies.Append("token", token, new CookieOptions
-                // {
-                //     HttpOnly = true,
-                //     Secure = true,    
-                //     SameSite = SameSiteMode.Lax,
-                //     Expires = DateTimeOffset.UtcNow.AddDays(7)
-                // });
 
                 JSRuntime.InvokeVoidAsync("setCookie", "token", token);
 
-                // await JSRuntime.InvokeVoidAsync("setCookie", "token", ExtractTokenValue(cookie.ToString()));
                 navigationManager.NavigateTo("/", forceLoad: true);
                 return token;
         }
@@ -89,15 +84,5 @@ public class FirebaseAuthService(
             Console.WriteLine("User logged out and cookies cleared.");
             navigationManager.NavigateTo("/", forceLoad: true);
         }
-        
-        private string ExtractTokenValue(string cookie)
-        {
-            if (cookie != null)
-            {
-                var tokenValue = cookie.Split('=')[1];
-                return tokenValue.Trim();
-            }
 
-            return null;
-        }
     }
