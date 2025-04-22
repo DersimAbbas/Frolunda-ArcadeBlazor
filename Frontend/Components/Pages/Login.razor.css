@@ -1,0 +1,15 @@
+
+.login-text {
+    font-family: 'Press Start 2P', cursive;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    line-height: 1.4;
+    font-size: 1.5rem;
+    color: #bf1f1f;
+}
+a.generic-text.generic-text-size,
+p.generic-text.generic-text-size,
+label.generic-text.generic-text-size,
+button.generic-text.generic-text-size {
+    font-size: 1rem !important;
+}
