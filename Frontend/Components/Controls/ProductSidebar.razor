@@ -1,9 +1,7 @@
 ﻿@using Frontend.Models
 @using Frontend.Services
 @using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage
-@inject LocalCartStorageService LocalCartStorageService
-@inject CartService CartService
-@inject UserService UserService
+@inject ILocalCartStorageService LocalCartStorageService
 
 <div class="checkout-sidebar p-4 text-light">
     <div class="checkout-sidebar-content">
@@ -25,12 +23,6 @@
 
 @code {
     [Parameter] public Product Product { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        //Get from database when implemented
-        await LocalCartStorageService.LoadCartAsync();
-    }
 }
 
 <link rel="stylesheet" href="css/CheckoutSidebarStyle.css" />

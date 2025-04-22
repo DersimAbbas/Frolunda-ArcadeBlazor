@@ -2,43 +2,47 @@
 @using FirebaseAdmin.Auth
 @using Frontend.Services
 @using Frontend.Models
-@using Frontend.Provider
-@inject LocalCartStorageService LocalCartStorageService
-@inject ProductService ProductService
-@inject FirebaseAuthClient FirebaseAuthClient
+@inject ILocalCartStorageService LocalCartStorageService
+@inject IProductService ProductService
+@inject IFirebaseAuthService FirebaseAuthService
+@inject IJSRuntime JSRuntime
+@implements IAsyncDisposable
 
-<div class="shopping-cart-overlay" @onclick="CloseCart">
-    <div class="shopping-cart" @onclick:stopPropagation>
-        <h3>Your Cart</h3>
-        <hr />
-
-        @if (CartItems.Count == 0)
-        {
-            <p>Your cart is empty.</p>
-        }
-        else
-        {
-            <ul class="list-unstyled">
-                @foreach (var item in CartItems)
-                {
-                    <li class="mb-3">
-                        <strong>@item.Product.Name</strong>
-                        <span>× @item.Quantity</span>
-                        <br />
-                        <button class="btn btn-sm btn-danger mt-1" @onclick="() => RemoveFromCart(item.Product.Id)">Remove</button>
-                    </li>
-                }
-            </ul>
-
+    @if (Visible)
+    {
+    <div id="cartPopup" class="shopping-cart-popup" @onclick="() => {}" @onclick:stopPropagation="true">
+            <h3>Your Cart</h3>
             <hr />
-            <button class="btn btn-secondary" @onclick="ClearCart">Clear Cart</button>
-        }
-    </div>
-</div>
+
+            @if (CartItems.Count == 0)
+            {
+                <p>Your cart is empty.</p>
+            }
+            else
+            {
+                <ul class="list-unstyled">
+                    @foreach (var item in CartItems)
+                    {
+                        <li class="mb-3">
+                            <strong>@item.Product.Name</strong>
+                            <span>× @item.Quantity</span>
+                            <br />
+                            <button class="btn btn-sm btn-danger mt-1" @onclick="() => RemoveFromCart(item.Product.Id)">Remove</button>
+                        </li>
+                    }
+                </ul>
+
+                <hr />
+                <button class="btn btn-secondary" @onclick="ClearCart">Clear Cart</button>
+            }
+        </div>
+    }
 
 @code {
     [Parameter] public bool Visible { get; set; }
     [Parameter] public EventCallback OnClose { get; set; }
+
+    private DotNetObjectReference<ShoppingCart>? dotNetRef;
 
     private bool isFirstRender = true;
 
@@ -48,15 +52,17 @@
     {
         if (firstRender)
         {
+            dotNetRef = DotNetObjectReference.Create(this);
             LocalCartStorageService.OnChange += RefreshCart;
+            await JSRuntime.InvokeVoidAsync("cartInterop.registerOutsideClick", "cartPopup", dotNetRef, "cartToggleButton");
             await LoadCart();
         }
     }
 
     private async Task LoadCart()
     {
-
-        var user = FirebaseAuthClient.User;
+        var token = await JSRuntime.InvokeAsync<string>("getCookie", "token");
+        var user = FirebaseAuthService.VerifyTokenAsync(token);
 
         if (user is null)
         {
@@ -66,7 +72,16 @@
 
         await LocalCartStorageService.LoadCartAsync();
 
-        var allProducts = await ProductService.GetAllProductsAsync();
+        var allProducts = new List<Product>();
+
+        try
+        {
+            allProducts = await ProductService.GetAllProductsAsync();
+        }
+        catch
+        {
+            allProducts = GetMockProducts();
+        }
 
         CartItems = LocalCartStorageService.Cart.Select(kvp =>
         {
@@ -81,15 +96,18 @@
     {
         LocalCartStorageService.Cart.Remove(productId);
         await LocalCartStorageService.SaveCartAsync();
+        StateHasChanged();
     }
 
     private async Task ClearCart()
     {
         LocalCartStorageService.Cart.Clear();
         await LocalCartStorageService.SaveCartAsync();
+        StateHasChanged();
     }
 
-    private Task CloseCart() => OnClose.InvokeAsync();
+    [JSInvokable]
+    public Task CloseCart() => OnClose.InvokeAsync();
 
     private List<Product> GetMockProducts() =>
         new()
@@ -98,6 +116,9 @@
             new Product { Id = "2", Name = "Game Token", Price = 5 },
             };
 
-    public void Dispose() => LocalCartStorageService.OnChange -= RefreshCart;
+    public async ValueTask DisposeAsync()
+    {
+        dotNetRef?.Dispose();
+        await JSRuntime.InvokeVoidAsync("cartInterop.unregisterOutsideClick");
+    }
 }
-<link rel="stylesheet" href="css/ShoppingCartStyle.css" />
