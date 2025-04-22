@@ -221,22 +221,12 @@ else
 
     private async Task UpdateUser(User user)
     {
-        /*
-        var response = await Http.PutAsJsonAsync($"api/users/{user.Id}");
-        if (response.IsSuccessStatusCode)
-        {
-            Console.WriteLine($"Updated user {user.Id}");
-            }
-        else
-        {
-            Console.WriteLine($"Failed to update user {user.Id}");
-            }
-        */
         var responseRole = FirebaseAuthService.AssignRole(user.Id, user.Role);
         var responseUpdateUser = UserService.UpdateUser(user.Id, user);
-        if (responseRole.Result && responseUpdateUser.Result)
+
+        if (responseRole.IsCompleted && responseUpdateUser.IsCompleted)
         {
-            Console.WriteLine($"Updated user: {user}");
+            //
         }
         
     }

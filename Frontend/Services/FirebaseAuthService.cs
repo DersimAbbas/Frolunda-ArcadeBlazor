@@ -39,7 +39,7 @@ public class FirebaseAuthService(
             await httpClient.PostAsJsonAsync("api/Auth/assign-role", userRole);
             
             var token = await userCred.User.GetIdTokenAsync(forceRefresh: true);
-            navigationManager.NavigateTo("/login", forceLoad: true);
+            
             return token;
 
         }
@@ -51,7 +51,6 @@ public class FirebaseAuthService(
 
                 await JSRuntime.InvokeVoidAsync("setCookie", "token", token);
 
-                navigationManager.NavigateTo("/", forceLoad: true);
                 return token;
         }
 
@@ -81,7 +80,7 @@ public class FirebaseAuthService(
             }
 
             await JSRuntime.InvokeVoidAsync("clearAuthCookies");
-            Console.WriteLine("User logged out and cookies cleared.");
+            
             navigationManager.NavigateTo("/", forceLoad: true);
         }
 
