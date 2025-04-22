@@ -1,0 +1,103 @@
+﻿@using Firebase.Auth
+@using FirebaseAdmin.Auth
+@using Frontend.Services
+@using Frontend.Models
+@using Frontend.Provider
+@inject LocalCartStorageService LocalCartStorageService
+@inject ProductService ProductService
+@inject FirebaseAuthClient FirebaseAuthClient
+
+<div class="shopping-cart-overlay" @onclick="CloseCart">
+    <div class="shopping-cart" @onclick:stopPropagation>
+        <h3>Your Cart</h3>
+        <hr />
+
+        @if (CartItems.Count == 0)
+        {
+            <p>Your cart is empty.</p>
+        }
+        else
+        {
+            <ul class="list-unstyled">
+                @foreach (var item in CartItems)
+                {
+                    <li class="mb-3">
+                        <strong>@item.Product.Name</strong>
+                        <span>× @item.Quantity</span>
+                        <br />
+                        <button class="btn btn-sm btn-danger mt-1" @onclick="() => RemoveFromCart(item.Product.Id)">Remove</button>
+                    </li>
+                }
+            </ul>
+
+            <hr />
+            <button class="btn btn-secondary" @onclick="ClearCart">Clear Cart</button>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public bool Visible { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private bool isFirstRender = true;
+
+    private List<(Product Product, int Quantity)> CartItems = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            LocalCartStorageService.OnChange += RefreshCart;
+            await LoadCart();
+        }
+    }
+
+    private async Task LoadCart()
+    {
+
+        var user = FirebaseAuthClient.User;
+
+        if (user is null)
+        {
+            CartItems = new List<(Product, int)>();
+            return;
+        }
+
+        await LocalCartStorageService.LoadCartAsync();
+
+        var allProducts = await ProductService.GetAllProductsAsync();
+
+        CartItems = LocalCartStorageService.Cart.Select(kvp =>
+        {
+            var product = allProducts.FirstOrDefault(p => p.Id == kvp.Key) ?? new Product { Id = kvp.Key, Name = "Unknown", Price = 0 };
+            return (product, kvp.Value);
+        }).ToList();
+    }
+
+    private void RefreshCart() => InvokeAsync(LoadCart);
+
+    private async Task RemoveFromCart(string productId)
+    {
+        LocalCartStorageService.Cart.Remove(productId);
+        await LocalCartStorageService.SaveCartAsync();
+    }
+
+    private async Task ClearCart()
+    {
+        LocalCartStorageService.Cart.Clear();
+        await LocalCartStorageService.SaveCartAsync();
+    }
+
+    private Task CloseCart() => OnClose.InvokeAsync();
+
+    private List<Product> GetMockProducts() =>
+        new()
+            {
+            new Product { Id = "1", Name = "Arcade Pass", Price = 10 },
+            new Product { Id = "2", Name = "Game Token", Price = 5 },
+            };
+
+    public void Dispose() => LocalCartStorageService.OnChange -= RefreshCart;
+}
+<link rel="stylesheet" href="css/ShoppingCartStyle.css" />
