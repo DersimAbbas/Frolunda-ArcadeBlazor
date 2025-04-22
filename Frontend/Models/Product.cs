@@ -12,8 +12,8 @@
         
         // public string Category { get; set; } (optional)
         public string Genre { get; set; }
-        
-        public string Status { get; set; }
+
+        public string Status { get; set; } = "available";
         
         public string ImageLink { get; set; }
         
