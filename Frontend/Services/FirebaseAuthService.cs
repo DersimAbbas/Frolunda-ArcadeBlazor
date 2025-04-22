@@ -49,7 +49,7 @@ public class FirebaseAuthService(
                 var userCred = await firebaseAuthClient.SignInWithEmailAndPasswordAsync(email, password);
                 var token = await userCred.User.GetIdTokenAsync(forceRefresh: true);
 
-                JSRuntime.InvokeVoidAsync("setCookie", "token", token);
+                await JSRuntime.InvokeVoidAsync("setCookie", "token", token);
 
                 navigationManager.NavigateTo("/", forceLoad: true);
                 return token;
