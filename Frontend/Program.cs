@@ -88,7 +88,10 @@ builder.Services.AddScoped<AuthenticationStateProvider, Frontend.Provider.Fireba
 
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
+builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddScoped<LocalCartStorageService>();
 builder.Services.AddScoped<ProtectedLocalStorage>();

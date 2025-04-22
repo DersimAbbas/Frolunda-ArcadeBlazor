@@ -1,11 +1,13 @@
 ﻿@page "/register"
 @using System.Web
 @using Frontend.Models
+@using Frontend.Services
 @using Microsoft.AspNetCore.Antiforgery
 @using Microsoft.AspNetCore.WebUtilities
 @inject NavigationManager NavigationManager
 @inject IAntiforgery AntiForgery
 @inject IHttpContextAccessor HttpContextAccessor
+@inject IFirebaseAuthService FirebaseAuthService
 
 <h3 class="text-center mb-4 register-text" >Create an Account</h3>
 
@@ -13,8 +15,8 @@
     <div class="row justify-content-center gap-5">
         <div class="col-md-5" style="background-color: #444444; padding: 2rem; border: 1px solid #5e5e5e; border-radius: 2%;">
 
-            <form method="post" action="/frontend/auth/register">
-                <input name="__RequestVerificationToken" type="hidden" value="@RequestToken" />
+            @* <form method="post" action="/frontend/auth/register"> *@
+            @*     <input name="__RequestVerificationToken" type="hidden" value="@RequestToken" /> *@
 
                 @if (!string.IsNullOrEmpty(ErrorMessage))
                 {
@@ -49,7 +51,7 @@
                 </div>
 
                 <div class="form-group text-center">
-                    <button type="submit" class="btn btn-secondary px-4 generic-text generic-text-size" style="background-color: #bf1f1f; border-color: #DA0037;">
+                    <button type="submit" class="btn btn-secondary px-4 generic-text generic-text-size" style="background-color: #bf1f1f; border-color: #DA0037;" @onclick="HandleRegistration">
                         Register
                     </button>
                 </div>
@@ -57,7 +59,7 @@
                 <div class="mt-3 text-center">
                     <p>Already have an account? <a href="/login" class="text-info generic-text generic-text-size">Login here</a></p>
                 </div>
-            </form>
+            @* </form> *@
 
         </div>
     </div>
@@ -74,19 +76,24 @@
     private string? ErrorMessage { get; set; }
     private string? RequestToken { get; set; }
 
-    protected override void OnInitialized()
+    private async void HandleRegistration()
     {
-        if (HttpContextAccessor.HttpContext != null)
-        {
-            var tokens = AntiForgery.GetAndStoreTokens(HttpContextAccessor.HttpContext);
-            RequestToken = tokens.RequestToken;
-        }
-
-        var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
-        if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("error", out var errorValue))
-        {
-            ErrorMessage = HttpUtility.UrlDecode(errorValue);
-        }
+       await FirebaseAuthService.RegisterUser(_registerModel.Email, _registerModel.Password);
     }
+
+    // protected override void OnInitialized()
+    // {
+    //     if (HttpContextAccessor.HttpContext != null)
+    //     {
+    //         var tokens = AntiForgery.GetAndStoreTokens(HttpContextAccessor.HttpContext);
+    //         RequestToken = tokens.RequestToken;
+    //     }
+    //
+    //     var uri = NavigationManager.ToAbsoluteUri(NavigationManager.Uri);
+    //     if (QueryHelpers.ParseQuery(uri.Query).TryGetValue("error", out var errorValue))
+    //     {
+    //         ErrorMessage = HttpUtility.UrlDecode(errorValue);
+    //     }
+    // }
 
 } 
