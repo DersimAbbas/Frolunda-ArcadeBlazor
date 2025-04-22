@@ -1,6 +1,7 @@
 using Firebase.Auth;
 using Firebase.Auth.Providers;
 using Frontend.Components;
+
 using Frontend.Endpoints;
 using Frontend.Handler;
 using Frontend.Services;
@@ -8,10 +9,14 @@ using Frontend.Services.Firebase;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
 
+
+using MudBlazor.Services;
+
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
 
 var apiBaseUrl = builder.Configuration["ApiBaseUrl"];
 
@@ -83,6 +88,9 @@ builder.Services.AddScoped<AuthenticationStateProvider, Frontend.Provider.Fireba
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<ProductService>();
+
+
+builder.Services.AddMudServices();
 
 var app = builder.Build();
 
