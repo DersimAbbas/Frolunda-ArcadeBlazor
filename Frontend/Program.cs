@@ -1,3 +1,4 @@
+using Blazored.LocalStorage;
 using Firebase.Auth;
 using Firebase.Auth.Providers;
 using Frontend.Components;
@@ -7,12 +8,22 @@ using Frontend.Services.Firebase;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor.Services;
+using System.Text.Json.Serialization;
+using System.Text.Json;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-
+//var allowed = "localstorage";
+//builder.Services.AddCors(options =>
+//{
+//    options.AddPolicy(name: allowed,
+//        policy =>
+//        {
+//            policy.WithOrigins("https://localhost:7110/");
+//        });
+//});
 
 var apiBaseUrl = builder.Configuration["ApiBaseUrl"];
 
@@ -59,6 +70,7 @@ else
 }
 
 
+
 var credentialProvider = builder.Services.BuildServiceProvider().GetRequiredService<IServicePrincipalProvider>();
 
 var keyVaultSecret = await credentialProvider.GetKeyVaultSecretAsync();
@@ -91,6 +103,7 @@ builder.Services.AddScoped<IProductService, ProductService>();
 
 builder.Services.AddMudServices();
 
+
 var app = builder.Build();
 
 
@@ -101,10 +114,10 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
 app.UseAntiforgery();
 app.UseRouting();
+//app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseAntiforgery();
