@@ -59,7 +59,7 @@
     private List<Product>? products;
     private Product? selectedProduct;
     private const string ImageMapKey = "productImageMap";
-    private const string FuncTrigger = "http://localhost:7202/api/GetImageFunction";
+    private const string FuncTrigger = "https://frolunda-arcadefunc.azurewebsites.net/api/GetImageFunction";
     private bool showAllReviews = false;
 
     protected override async Task OnInitializedAsync()
@@ -96,7 +96,6 @@
             imageMap = JsonSerializer.Deserialize<Dictionary<string, string>>(rawJson);
             await js.InvokeVoidAsync("console.log", " deserialized map:", imageMap);
         }
-
        
         if (imageMap == null)
         {
@@ -105,7 +104,6 @@
             await js.InvokeVoidAsync("console.log", "fetched+stored map:", imageMap);
         }
 
-        
         if (products != null)
         {
             foreach (var product in products)
@@ -123,11 +121,8 @@
 
             }
         }
-
-        
         loadedImages = true;
         await InvokeAsync(StateHasChanged);
-
     }
 
     private void ToggleReviews()
