@@ -1,4 +1,8 @@
-﻿@inherits LayoutComponentBase
+﻿@inject IJSRuntime JsRuntime
+@inject AppBootId BootId
+@using Frontend.Models
+@inherits LayoutComponentBase
+
 <Header />
 <div class="page">
     <main>
@@ -28,4 +32,25 @@
 </div>
 
 <script src="/js/ScrollCarousel.js"></script>
+
 <script src="js/cart.js"></script>
+
+
+@* 
+    Detta är till för att ta bort alla cookies när man startar om hemsidan.
+    Det behövs för att firebase loggar ut dig från FirebaseAuthClient, men din token är kvar i cookies.
+    Vilket leder till att man inte kan hämta user info, men man kommar åt all auth funktionalitet.
+*@
+@code {
+    private bool _checkedBootId = false;
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender && !_checkedBootId)
+        {
+            _checkedBootId = true;
+            await JsRuntime.InvokeVoidAsync("checkAndClearTokenIfAppRestarted", BootId.Value);
+        }
+    }
+}
+
