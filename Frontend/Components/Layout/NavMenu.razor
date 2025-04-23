@@ -51,15 +51,13 @@
                 <span class="bi bi-calendar-event" aria-hidden="true"></span> Events
             </NavLink>
         </div>
-        
+
         <AuthorizeView>
             <Authorized>
                 <div class="nav-item px-3">
-                    <button @onclick="FirebaseAuthService.Logout"
-                            class="nav-link btn btn-link text-start w-100"
-                            style="text-decoration: none;">
+                    <NavLink class="nav-link" @onclick="FirebaseAuthService.Logout" href="#"  Match="NavLinkMatch.All">
                         <span class="bi bi-door-open" aria-hidden="true"></span> Logout
-                    </button>
+                    </NavLink>
                 </div>
             </Authorized>
         </AuthorizeView>

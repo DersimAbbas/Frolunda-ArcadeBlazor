@@ -7,12 +7,18 @@ using Frontend.Services.Firebase;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
 using MudBlazor.Services;
+using Firebase.Auth;
+using Frontend.Models;
+using Frontend.Provider;
+using FirebaseAuthProvider = Frontend.Provider.FirebaseAuthProvider;
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
 
+var appBootId = Guid.NewGuid().ToString();
+builder.Services.AddSingleton(new AppBootId(appBootId));
 
 var apiBaseUrl = builder.Configuration["ApiBaseUrl"];
 
@@ -70,7 +76,7 @@ builder.Services.AddScoped<FirebaseAuthClient>(provider =>
     {
         ApiKey = keyVaultSecret.FirebaseApiKey,
         AuthDomain = $"{keyVaultSecret.ProjectId}.firebaseapp.com",
-        Providers = new FirebaseAuthProvider[]
+        Providers = new Firebase.Auth.Providers.FirebaseAuthProvider[]
         {
             new EmailProvider()
         }
@@ -78,7 +84,8 @@ builder.Services.AddScoped<FirebaseAuthClient>(provider =>
 });
 
 
-builder.Services.AddScoped<AuthenticationStateProvider, Frontend.Provider.FirebaseAuthProvider>();
+
+builder.Services.AddScoped<AuthenticationStateProvider, FirebaseAuthProvider>();
 
 
 builder.Services.AddScoped<IReviewService, ReviewService>();
