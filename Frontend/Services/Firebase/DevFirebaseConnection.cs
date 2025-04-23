@@ -39,7 +39,6 @@ namespace Frontend.Services.Firebase
                     FirebaseApiKey = firebaseApiKey,
                     ProjectId = projectId
                 };
-
             }
             catch (Exception ex)
             {

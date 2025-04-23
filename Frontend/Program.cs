@@ -7,6 +7,10 @@ using Frontend.Services;
 using Frontend.Services.Firebase;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
+
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+
+
 using MudBlazor.Services;
 using System.Text.Json.Serialization;
 using System.Text.Json;
@@ -94,15 +98,15 @@ builder.Services.AddScoped<AuthenticationStateProvider, Frontend.Provider.Fireba
 
 
 builder.Services.AddScoped<IReviewService, ReviewService>();
-builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 
+builder.Services.AddScoped<ILocalCartStorageService, LocalCartStorageService>();
+builder.Services.AddScoped<ProtectedLocalStorage>();
 
 builder.Services.AddMudServices();
-
 
 var app = builder.Build();
 
