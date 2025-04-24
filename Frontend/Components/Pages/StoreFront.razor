@@ -4,31 +4,39 @@
 @using Frontend.Services
 @inject HttpClient http
 @inject IProductService product_Service
+@inject NavigationManager NavigationManager
 @inject FirebaseAuthClient FirebaseAuthClient
 
 <FilterBar Filter="@currentFilter" OnApplyFilters="HandleFilterApplied" />
 <ProductCard Name="testone" Genre="Action" Price="12.99" Description="Thrilling action game" />
+
+@if(@filterTest == false){
+@foreach (var product in allProducts)
+{
+    <ProductCard Name="@product.Name" Genre="@product.Genre" Price="@product.Price" Description="@product.Description" ImageLink="@product.ImageLink" />
+}}else
 @foreach (var product in filteredProducts)
 {
     <ProductCard Name="@product.Name" Genre="@product.Genre" Price="@product.Price" Description="@product.Description" ImageLink="@product.ImageLink" />
-})
+}
 
 @code {
     private ProductFilter currentFilter = new();
-
-    private List<Product> allProducts = new(); // populated from your service
+    private List<Product> allProducts = new(); 
     private List<Product> filteredProducts = new();
+    private bool filterTest = false;
 
-   protected override async Task OnInitializedAsync()
-  {
-  ProductService productService = new ProductService(http);
-        
-       allProducts = await productService.GetAllProductsAsync();
-    
-  }
+    protected override async Task OnInitializedAsync()
+    {
+        ProductService productService = new ProductService(http);
+
+        allProducts = await productService.GetAllProductsAsync();
+
+    }
 
     private async Task HandleFilterApplied(ProductFilter filter)
     {
+        filterTest = true;
         filteredProducts = allProducts
          .Where(p =>
              (string.IsNullOrEmpty(filter.SearchTerm) || p.Name.Contains(filter.SearchTerm, StringComparison.OrdinalIgnoreCase)) &&
