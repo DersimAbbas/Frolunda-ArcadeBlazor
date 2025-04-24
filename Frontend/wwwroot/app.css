@@ -199,3 +199,28 @@ main {
         box-shadow: 0 0 0 #c53a3a;
         top: 4px;
     }
+
+.arcade-text {
+    font-family: 'Press Start 2P', cursive;
+    color: var(--primary-color, #4635B1);
+    margin-top: 1rem;
+    text-shadow: 0 0 5px rgba(70, 53, 177, 0.5);
+    animation: blink 2s infinite;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+@keyframes blink {
+    0%, 100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+}
+
+.pixel-subtitle {
+    font-family: 'Press Start 2P', cursive;
+    font-size: 0.8rem;
+}

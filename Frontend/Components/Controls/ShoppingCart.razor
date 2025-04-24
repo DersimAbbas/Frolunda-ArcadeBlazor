@@ -12,55 +12,60 @@
     @if (Visible)
     {
     <div id="cartPopup" class="shopping-cart-popup" @onclick="() => {}" @onclick:stopPropagation="true">
-            <h3 class="text-dark">Your Cart</h3>
+            <h3 class="cart-header">Your Cart</h3>
             <hr />
 
-        @if (CartItems.Count == 0)
-        {
-            <p>Your cart is empty.</p>
-        }
-        else
-        {
-            <ul class="list-unstyled">
-                @foreach (var item in CartItems)
-                {
-                    var itemTotal = item.Quantity * item.Product.Price;
+        <div class="cart-items">
 
-                    <li class="mb-3 d-flex justify-content-between align-items-start">
-                        <div class="flex-grow-1">
-                            <strong>@item.Product.Name</strong>
-                            <div class="text-muted small">@item.Product.Price.ToString("C") each</div>
-                        </div>
+            @if (CartItems.Count == 0)
+            {
+            
+            
+                <p class="empty-cart">Your cart is empty.</p>
+            }
+            else
+            {
+                <ul class="list-unstyled">
+                    @foreach (var item in CartItems)
+                    {
+                        var itemTotal = item.Quantity * item.Product.Price;
 
-                        <div class="d-flex flex-column align-items-center">
-                            <div class="d-flex align-items-center mb-1">
-                                <button class="btn btn-sm btn-outline-secondary me-1" @onclick="() => DecreaseQuantity(item.Product.Id)">−</button>
-                                <span class="mx-2">@item.Quantity</span>
-                                <button class="btn btn-sm btn-outline-secondary ms-1" @onclick="() => IncreaseQuantity(item.Product.Id)">+</button>
+                        <li class="mb-3 d-flex justify-content-between align-items-start">
+                            <div class="flex-grow-1">
+                                <strong class="cart-item-name">@item.Product.Name</strong>
+                                <div class="text-muted small">@item.Product.Price.ToString("C") each</div>
                             </div>
 
-                            <div class="text-end small mb-1">
-                                <strong>@itemTotal.ToString("C")</strong>
+                            <div class="d-flex flex-column align-items-center">
+                                <div class="d-flex align-items-center mb-1">
+                                    <button class="btn btn-sm btn-outline-secondary me-1" @onclick="() => DecreaseQuantity(item.Product.Id)">−</button>
+                                    <span class="mx-2">@item.Quantity</span>
+                                    <button class="btn btn-sm btn-outline-secondary ms-1" @onclick="() => IncreaseQuantity(item.Product.Id)">+</button>
+                                </div>
+
+                                <div class="cart-item-price">
+                                    <strong>@itemTotal.ToString("C")</strong>
+                                </div>
+
+                                <button class="btn btn-sm arcade-btn" @onclick="() => RemoveFromCart(item.Product.Id)">Remove</button>
                             </div>
+                        </li>
+                    }
+                </ul>
 
-                            <button class="btn btn-sm btn-danger" @onclick="() => RemoveFromCart(item.Product.Id)">Remove</button>
-                        </div>
-                    </li>
-                }
-            </ul>
+                <hr />
 
-            <hr />
+                <div class="text-end mb-3">
+                    <strong>Total:</strong> @CartItems.Sum(i => i.Quantity * i.Product.Price).ToString("C")
+                </div>
 
-            <div class="text-end mb-3">
-                <strong>Total:</strong> @CartItems.Sum(i => i.Quantity * i.Product.Price).ToString("C")
-            </div>
-
-            <div class="d-flex justify-content-between">
-                <button class="btn btn-secondary" @onclick="ClearCart">Clear Cart</button>
-                <button class="btn btn-primary" @onclick="Checkout">Checkout</button>
-            </div>
-        }
+                <div class="d-flex justify-content-between">
+                    <button class="arcade-btn" @onclick="ClearCart">Clear Cart</button>
+                    <button class="arcade-btn" @onclick="Checkout">Checkout</button>
+                </div>
+            }
         </div>
+     </div>
     }
 
 @code {
