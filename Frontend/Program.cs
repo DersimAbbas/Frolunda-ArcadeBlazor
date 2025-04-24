@@ -96,7 +96,6 @@ builder.Services.AddScoped<FirebaseAuthClient>(provider =>
 });
 
 builder.Services.AddScoped<AuthenticationStateProvider, FirebaseAuthProvider>();
-builder.Services.AddScoped<ILocalLinkStorageService, LocalLinkStorageService>();
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<ICartService, CartService>();
