@@ -63,8 +63,7 @@
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        
-        
+               
         if (firstRender)
         {
             products = await product_service.GetAllProductsAsync();
