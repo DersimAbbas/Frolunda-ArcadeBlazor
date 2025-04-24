@@ -6,8 +6,6 @@
 @inject IProductService product_service
 @inject HttpClient http
 @inject IJSRuntime js
-@inject ILocalLinkStorageService imageMapService
-
 <h3>Product Page</h3>
 @if (selectedProduct is not null)
 {
@@ -37,7 +35,7 @@
                 <h5 class="mb-3">Reviews</h5>
                 <div class="product-content row gx-4">
                     <div class="col-lg-3 gx-4 p-3">
-                        <ReviewViewer Reviews="selectedProduct.Reviews" />
+                        <ReviewViewer Reviews="selectedProduct.Reviews" SelectedProduct="selectedProduct" />
                     </div>
 
                     <div class="col-lg-9 p-3">
@@ -62,57 +60,6 @@
     private const string ImageMapKey = "productImageMap";
     private const string FuncTrigger = "https://frolunda-arcadefunc.azurewebsites.net/api/GetImageFunction";
     private bool showAllReviews = false;
-
-    // protected override async Task OnInitializedAsync()
-    // {
-
-    //     loadedImages = true;
-    //     products = await product_service.GetAllProductsAsync();
-    //     if(products != null)
-    //     {
-    //         foreach (var product in products)
-    //         {
-    //             product.ImageLink = $"https:i0.wp.com/port2flavors.com/wp-content/uploads/2022/07/placeholder-614.png?fit=1200%2C800&ssl=1";
-    //         }
-
-    //         selectedProduct = products.FirstOrDefault();
-    //     }
-    // }
-
-    // protected override async Task OnAfterRenderAsync(bool firstRender)
-    // {
-    //     if (loadedImages)
-    //         return;
-
-    //     // Load the image map from local storage
-    //     await imageMapService.LoadImageMapAsync();
-
-    //     // If the image map is empty, fetch it from the Azure Function and save it
-    //     if (imageMapService.ImageMap.Count == 0)
-    //     {
-    //         var fetchedImageMap = await http.GetFromJsonAsync<Dictionary<string, string>>(FuncTrigger);
-    //         if (fetchedImageMap != null)
-    //         {
-    //             await imageMapService.SaveImageMapAsync(fetchedImageMap);
-    //         }
-    //     }
-
-    //     // Update product image links using the image map
-    //     if (products != null)
-    //     {
-    //         foreach (var product in products)
-    //         {
-    //             product.ImageLink = imageMapService.GetImageLink(product.Name)
-    //                                 ?? "https://placeholder.url"; // Fallback to placeholder if no match
-    //         }
-    //     }
-
-    //     // Mark images as loaded and trigger a re-render
-    //     loadedImages = true;
-    //     await InvokeAsync(StateHasChanged);
-    // }
-
-
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -157,15 +104,6 @@
                     {
                         product.ImageLink = url;
                     }
-                    
-                    
-                    // var match = imageMap
-                    // .Where(p => p.Key.Contains(product.Name, StringComparison.OrdinalIgnoreCase))
-                    // .Select(p => p.Value)
-                    // .FirstOrDefault();
-
-                    // if(!string.IsNullOrEmpty(match))
-                    //     product.ImageLink = match.Trim().Trim('"');
 
                 }
 

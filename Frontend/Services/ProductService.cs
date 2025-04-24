@@ -20,6 +20,17 @@ public class ProductService(HttpClient httpClient) : IProductService
         return response ?? new List<Product>();
     }
 
+    public async Task<List<Review>?> GetReviewsByProductIdAsync(string id)
+    {
+        return await httpClient.GetFromJsonAsync<List<Review>>($"api/products/{id}/reviews/");
+    }
+
+    public async Task<bool> AddReviewAsync(string id, Review review)
+    {
+        var response = await httpClient.PostAsJsonAsync($"api/products/{id}/reviews", review);
+        return response.IsSuccessStatusCode;
+    }
+
     public async Task<bool> AddProduct(Product cart)
     {
         var response = await httpClient.PostAsJsonAsync("api/products", cart);

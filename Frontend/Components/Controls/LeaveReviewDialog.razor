@@ -1,23 +1,31 @@
-﻿@using Frontend.Models
+﻿@using Firebase.Auth
+@using FirebaseAdmin.Auth
+@using Frontend.Models
+@using Frontend.Services
+@using User = Frontend.Models.User
+@inject IFirebaseAuthService FirebaseAuthService
+@inject IJSRuntime JsRuntime
+@inject FirebaseAuthClient FirebaseAuthClient
+@inject IUserService UserService
 
 @if (Visible)
 {
     <div class="modal-overlay">
-        <div class="modal-content bg-dark text-light rounded p-4 shadow">
-            <h4>Leave a Review</h4>
+        <div class="modal-content bg-dark text-light p-4 shadow" style="background-color: #444444; border: 1px solid #5e5e5e; border-radius: 2%; max-width: 600px; margin: auto;">
+            <h4 class="text-center generic-text mb-4" style="color: #EDEDED;">Leave a Review</h4>
 
             <div class="form-group mb-3">
-                <label>Title</label>
-                <input class="form-control" @bind="NewReview.Title" />
+                <label class="form-label generic-text-size generic-text ">Title</label>
+                <input class="form-control bg-dark text-light border-secondary" @bind="NewReview.Title" />
             </div>
 
             <div class="form-group mb-3">
-                <label>Comment</label>
-                <textarea class="form-control" rows="4" @bind="NewReview.Comment"></textarea>
+                <label class="form-label generic-text-size generic-text ">Comment</label>
+                <textarea class="form-control bg-dark text-light border-secondary" rows="4" @bind="NewReview.Comment" style="resize: vertical;"></textarea>
             </div>
 
             <div class="form-group mb-3">
-                <label>Rating</label>
+                <label class="form-label generic-text-size generic-text ">Rating</label>
                 <div class="stars">
                     @for (int i = 1; i <= 5; i++)
                     {
@@ -30,8 +38,8 @@
             </div>
 
             <div class="d-flex justify-content-end gap-2 mt-4">
-                <button class="btn btn-secondary" @onclick="HandleCancel">Cancel</button>
-                <button class="btn btn-primary" @onclick="HandleSubmit">Submit</button>
+                <button class="btn px-4 generic-text-size generic-text" style="background-color: #6c757d; border-color: #6c757d;" @onclick="HandleCancel">Cancel</button>
+                <button class="btn px-4 generic-text-size generic-text" style="background-color: #bf1f1f; border-color: #DA0037;" @onclick="HandleSubmit">Submit</button>
             </div>
         </div>
     </div>
@@ -41,12 +49,41 @@
     [Parameter] public bool Visible { get; set; }
     [Parameter] public EventCallback<bool> VisibleChanged { get; set; }
     [Parameter] public EventCallback<Review> OnSubmit { get; set; }
+    [Parameter] public Product SelectedProduct { get; set; }
+    private Review NewReview { get; set; }
 
-    private Review NewReview { get; set; } = new()
+    protected override async Task OnParametersSetAsync()
+    {
+        var reviewProduct = new CartProductDto()
+        {
+            Id = SelectedProduct.Id,
+            ImageLink = SelectedProduct.ImageLink,
+            Name = SelectedProduct.Name,
+            Price = SelectedProduct.Price
+        };
+        
+        NewReview = new Review
         {
             Ratings = 1,
-            User = new User { FirstName = "Anonymous", LastName = "" }
+            User = new User(),
+            Product = reviewProduct
         };
+
+        var token = await JsRuntime.InvokeAsync<string>("getCookie", "token");
+
+        if (!string.IsNullOrEmpty(token))
+        {
+            var tokenVerified = await FirebaseAuthService.VerifyTokenAsync(token);
+
+            if (tokenVerified && FirebaseAuthClient.User is not null)
+            {
+                var firebaseAuthUserId = FirebaseAuthClient.User.Uid;
+                NewReview.User = await UserService.GetUserByIdAsync(firebaseAuthUserId);
+
+                StateHasChanged();
+            }
+        }
+    }
 
     private async Task HandleSubmit()
     {
@@ -64,7 +101,7 @@
         NewReview = new()
             {
                 Ratings = 1,
-                User = new User { FirstName = "Anonymous", LastName = "" }
+                User = new User()
             };
         await VisibleChanged.InvokeAsync(false);
     }

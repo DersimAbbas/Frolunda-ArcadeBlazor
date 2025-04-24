@@ -15,12 +15,12 @@
 <h2 class="text-center welcome-text mb-5">Your Profile</h2>
 
 <div class="d-flex flex-column flex-md-row justify-content-center gap-5 m-5">
-    <div class="col-12 col-md-7">
+    <div class="col-12 col-md-6">
         <div class="generic-text mb-3">
             Your account information
         </div>
-    
         <div class="p-4" style="background-color: #444444; border: 1px solid #5e5e5e; border-radius: 2%;">
+    
             <EditForm Model="@UserProfile" OnValidSubmit="UpdateProfile">
                 <DataAnnotationsValidator />
                 <ValidationSummary />
@@ -49,8 +49,8 @@
         </div>
     </div>
 
-    <div class="col-12 col-md-6 mx-auto" style="font-family: 'Futura', sans-serif;">
-        <div class="text-center fs-4 mb-4 fw-semibold" style="color: #EDEDED;">Your Order History</div>
+    <div class="col-12 col-md-6" style="font-family: 'Futura', sans-serif;">
+        <div class="generic-text mb-3" style="color: #EDEDED;">Your Order History</div>
 
         @if (UserOrderHistory?.Any() == true)
         {
