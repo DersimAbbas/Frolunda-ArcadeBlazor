@@ -1,13 +1,40 @@
 ﻿@page "/store-front"
+@using Firebase.Auth
+@using Frontend.Models
+@using Frontend.Services
+@inject HttpClient http
+@inject IProductService product_Service
+@inject FirebaseAuthClient FirebaseAuthClient
 
-<FilterBar/>
+<FilterBar Filter="@currentFilter" OnApplyFilters="HandleFilterApplied" />
 <ProductCard Name="testone" Genre="Action" Price="12.99" Description="Thrilling action game" />
-<ProductCard/>
-<ProductCard />
+@foreach (var product in filteredProducts)
+{
+    <ProductCard Name="@product.Name" Genre="@product.Genre" Price="@product.Price" Description="@product.Description" ImageLink="@product.ImageLink" />
+})
 
 @code {
+    private ProductFilter currentFilter = new();
 
-	
+    private List<Product> allProducts = new(); // populated from your service
+    private List<Product> filteredProducts = new();
 
+   protected override async Task OnInitializedAsync()
+  {
+  ProductService productService = new ProductService(http);
+        
+       allProducts = await productService.GetAllProductsAsync();
+    
+  }
 
+    private async Task HandleFilterApplied(ProductFilter filter)
+    {
+        filteredProducts = allProducts
+         .Where(p =>
+             (string.IsNullOrEmpty(filter.SearchTerm) || p.Name.Contains(filter.SearchTerm, StringComparison.OrdinalIgnoreCase)) &&
+             (string.IsNullOrEmpty(filter.SelectedGenre) || p.Genre == filter.SelectedGenre) &&
+             (!filter.MinPrice.HasValue || p.Price >= filter.MinPrice.Value) &&
+             (!filter.MaxPrice.HasValue || p.Price <= filter.MaxPrice.Value)
+         ).ToList();
+    }
 }
