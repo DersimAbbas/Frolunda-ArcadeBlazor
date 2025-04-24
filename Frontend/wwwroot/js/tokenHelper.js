@@ -28,18 +28,3 @@ window.clearAuthCookies = function () {
     document.cookie = "token=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
     console.log("Cookies cleared.");
 };
-
-window.checkAndClearTokenIfAppRestarted = function (currentBootId) {
-    const bootIdKey = "app_boot_id";
-    const tokenKey = "token";
-
-    const storedBootId = localStorage.getItem(bootIdKey);
-
-    if (storedBootId !== currentBootId) {
-        // App was restarted
-        document.cookie = tokenKey + "=; Max-Age=0; path=/;";
-        console.log("Cleared token because app was restarted");
-
-        localStorage.setItem(bootIdKey, currentBootId);
-    }
-};
