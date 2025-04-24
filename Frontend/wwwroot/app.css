@@ -173,3 +173,29 @@ main {
         width: 100%;
         max-width: 500px;
     }
+
+.arcade-btn {
+    display: inline-block;
+    background-color: #4635B1;
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+    margin-top: 1rem;
+    transition: all 0.3s;
+    box-shadow: 0 4px 0 #c53a3a;
+    position: relative;
+    top: 0;
+    cursor: pointer;
+}
+
+    .arcade-btn:hover {
+        box-shadow: 0 2px 0 #c53a3a;
+        top: 2px;
+    }
+
+    .arcade-btn:active {
+        box-shadow: 0 0 0 #c53a3a;
+        top: 4px;
+    }
