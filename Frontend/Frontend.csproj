@@ -24,6 +24,7 @@
 	
   <ItemGroup>
     <PackageReference Include="MudBlazor" Version="8.5.1" />
+    <PackageReference Include="Stripe.net" Version="48.0.2" />
   </ItemGroup>
 
 </Project>

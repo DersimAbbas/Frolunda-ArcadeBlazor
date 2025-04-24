@@ -43,5 +43,29 @@ public class LocalCartStorageService : ILocalCartStorageService
         OnChange?.Invoke();
     }
 
+    public async Task RemoveFromCart(CartProductDto product)
+    {
+        if (Cart.ContainsKey(product.Id))
+        {
+            Cart.Remove(product.Id);
+            await SaveCartAsync();
+        }
+    }
+
+    public async Task ClearCartAsync()
+    {
+        Cart.Clear();
+        await SaveCartAsync();
+    }
+
     public int GetCartItemCount() => Cart.Values.Sum();
+
+    public decimal GetCartCost(List<Product> allProducts)
+    {
+        return Cart.Sum(item =>
+        {
+            var product = allProducts.FirstOrDefault(p => p.Id == item.Key);
+            return product != null ? (decimal)product.Price * item.Value : 0;
+        });
+    }
 }
