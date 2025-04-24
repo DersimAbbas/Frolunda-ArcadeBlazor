@@ -7,7 +7,7 @@
 @inject IFirebaseAuthService FirebaseAuthService
 @inject IJSRuntime JSRuntime
 @inject NavigationManager NavigationManager
-@implements IAsyncDisposable
+@*@implements IAsyncDisposable*@
 
     @if (Visible)
     {
@@ -168,6 +168,9 @@
     [JSInvokable]
     public Task CloseCart() => OnClose.InvokeAsync();
 
+
+
+    //redudant code cant pre render with JS interop crashes server (caching and cart works fine without it.)
     public async ValueTask DisposeAsync()
     {
         dotNetRef?.Dispose();

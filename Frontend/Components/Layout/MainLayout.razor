@@ -41,7 +41,7 @@
     Det behövs för att firebase loggar ut dig från FirebaseAuthClient, men din token är kvar i cookies.
     Vilket leder till att man inte kan hämta user info, men man kommar åt all auth funktionalitet.
 *@
-@code {
+@* @code {
     private bool _checkedBootId = false;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
@@ -52,5 +52,5 @@
             await JsRuntime.InvokeVoidAsync("checkAndClearTokenIfAppRestarted", BootId.Value);
         }
     }
-}
+} *@
 
