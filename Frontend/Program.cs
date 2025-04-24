@@ -37,11 +37,6 @@ builder.Services.AddRazorComponents()
 //        });
 //});
 
-
-var appBootId = Guid.NewGuid().ToString();
-builder.Services.AddSingleton(new AppBootId(appBootId));
-
-
 var apiBaseUrl = builder.Configuration["ApiBaseUrl"];
 
 builder.Services.AddScoped(sp =>
