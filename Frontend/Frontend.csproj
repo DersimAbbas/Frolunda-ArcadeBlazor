@@ -21,6 +21,10 @@
   <ItemGroup>
     <_ContentIncludedByDefault Remove="wwwroot\js\tokenHelper.js" />
   </ItemGroup>
+
+  <ItemGroup>
+    <None Include="wwwroot\css\ReceiptStyle.css" />
+  </ItemGroup>
 	
   <ItemGroup>
     <PackageReference Include="MudBlazor" Version="8.5.1" />
