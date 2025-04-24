@@ -12,13 +12,21 @@ using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
 
 using MudBlazor.Services;
+
 using System.Text.Json.Serialization;
 using System.Text.Json;
+
+using Firebase.Auth;
+using Frontend.Models;
+using Frontend.Provider;
+using FirebaseAuthProvider = Frontend.Provider.FirebaseAuthProvider;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
+
 //var allowed = "localstorage";
 //builder.Services.AddCors(options =>
 //{
@@ -28,6 +36,11 @@ builder.Services.AddRazorComponents()
 //            policy.WithOrigins("https://localhost:7110/");
 //        });
 //});
+
+
+var appBootId = Guid.NewGuid().ToString();
+builder.Services.AddSingleton(new AppBootId(appBootId));
+
 
 var apiBaseUrl = builder.Configuration["ApiBaseUrl"];
 
@@ -86,7 +99,7 @@ builder.Services.AddScoped<FirebaseAuthClient>(provider =>
     {
         ApiKey = keyVaultSecret.FirebaseApiKey,
         AuthDomain = $"{keyVaultSecret.ProjectId}.firebaseapp.com",
-        Providers = new FirebaseAuthProvider[]
+        Providers = new Firebase.Auth.Providers.FirebaseAuthProvider[]
         {
             new EmailProvider()
         }
@@ -94,7 +107,8 @@ builder.Services.AddScoped<FirebaseAuthClient>(provider =>
 });
 
 
-builder.Services.AddScoped<AuthenticationStateProvider, Frontend.Provider.FirebaseAuthProvider>();
+
+builder.Services.AddScoped<AuthenticationStateProvider, FirebaseAuthProvider>();
 
 
 builder.Services.AddScoped<IReviewService, ReviewService>();

@@ -14,6 +14,11 @@ public class OrderService(HttpClient httpClient) : IOrderService
         return await httpClient.GetFromJsonAsync<List<Order>>("api/orders");
     }
 
+    public async Task<List<Order>?> GetOrdersByUserIdAsync(string id)
+    {
+        return await httpClient.GetFromJsonAsync<List<Order>>("api/orders/user/" + id);
+    }
+
     public async Task<bool> AddOrder(Order order)
     {
         var result = await httpClient.PostAsJsonAsync("api/orders", order);
