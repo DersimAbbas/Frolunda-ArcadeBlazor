@@ -6,7 +6,6 @@
 @inject IProductService product_service
 @inject HttpClient http
 @inject IJSRuntime js
-
 <h3>Product Page</h3>
 @if (selectedProduct is not null)
 {
@@ -62,67 +61,57 @@
     private const string FuncTrigger = "https://frolunda-arcadefunc.azurewebsites.net/api/GetImageFunction";
     private bool showAllReviews = false;
 
-    protected override async Task OnInitializedAsync()
-    {
-
-        //loadedImages = true;
-        products = await product_service.GetAllProductsAsync();
-        if(products != null)
-        {
-            foreach (var product in products)
-            {
-                product.ImageLink = $"https://i0.wp.com/port2flavors.com/wp-content/uploads/2022/07/placeholder-614.png?fit=1200%2C800&ssl=1";
-            }
-
-            selectedProduct = products.FirstOrDefault();
-        }
-    }
-    private async Task SetImageMapAsync(Dictionary<string, string> imageMap)
-    {
-        var json = JsonSerializer.Serialize(imageMap);
-        await js.InvokeVoidAsync("myLocalStorage.setItem", ImageMapKey, json);
-    }
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        loadedImages = false; // Reset loadedImages to false on each render
-        if (!firstRender) return;
-        var rawJson = await js.InvokeAsync<string>("myLocalStorage.getItem", ImageMapKey);
-        Console.WriteLine(rawJson);
-        await js.InvokeVoidAsync("console.log", "rawJson:", rawJson);
-        Dictionary<string, string>? imageMap = null;
-        if (!string.IsNullOrEmpty(rawJson))
+        
+        
+        if (firstRender)
         {
-            imageMap = JsonSerializer.Deserialize<Dictionary<string, string>>(rawJson);
-            await js.InvokeVoidAsync("console.log", " deserialized map:", imageMap);
-        }
-       
-        if (imageMap == null)
-        {
-            imageMap = await http.GetFromJsonAsync<Dictionary<string, string>>(FuncTrigger);
-            await SetImageMapAsync(imageMap);
-            await js.InvokeVoidAsync("console.log", "fetched+stored map:", imageMap);
-        }
-
-        if (products != null)
-        {
-            foreach (var product in products)
+            products = await product_service.GetAllProductsAsync();
+            if (products != null)
             {
-                var match = imageMap
-                    .Where(p => p.Key.Equals(product.Name, StringComparison.OrdinalIgnoreCase))
-                    .Select(p => p.Value)
-                    .FirstOrDefault();
-                Console.WriteLine(match);
-                if (!string.IsNullOrEmpty(match))
+                foreach (var product in products)
                 {
-                    product.ImageLink = match.Trim().Trim('"');
-                    Console.WriteLine($"Image link for {product.Name}: {product.ImageLink}");
+                    product.ImageLink = $"https://i0.wp.com/port2flavors.com/wp-content/uploads/2022/07/placeholder-614.png?fit=1200%2C800&ssl=1";
                 }
 
+                selectedProduct = products.FirstOrDefault();
             }
-        }
-        loadedImages = true;
-        await InvokeAsync(StateHasChanged);
+
+            var rawJson = await js.InvokeAsync<string>("localStorage.getItem", ImageMapKey);
+            Dictionary<string, string>? imageMap = null;
+
+            if (!string.IsNullOrWhiteSpace(rawJson))
+                imageMap = JsonSerializer.Deserialize<Dictionary<string, string>>(rawJson);   
+
+            if(imageMap == null)
+            {
+                imageMap = await http.GetFromJsonAsync<Dictionary<string, string>>(FuncTrigger);
+                await js.InvokeVoidAsync("localStorage.setItem", ImageMapKey,
+                    JsonSerializer.Serialize(imageMap));
+            }
+
+            if (imageMap != null)
+            {
+                foreach (var product in products!)
+                {
+                    var matchKey = imageMap.Keys
+                     .FirstOrDefault(k =>
+                         string.Equals(k, product.Name, StringComparison.OrdinalIgnoreCase)
+                     );
+
+                    if (matchKey != null && imageMap.TryGetValue(matchKey, out var url))
+                    {
+                        product.ImageLink = url;
+                    }
+
+                }
+
+                await InvokeAsync(StateHasChanged);
+            }
+
+        } 
+
     }
 
     private void ToggleReviews()
