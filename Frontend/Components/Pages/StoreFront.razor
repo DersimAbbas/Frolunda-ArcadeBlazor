@@ -4,6 +4,7 @@
 @using Frontend.Services
 @inject HttpClient http
 @inject IProductService product_Service
+@inject NavigationManager NavigationManager
 @inject FirebaseAuthClient FirebaseAuthClient
 
 <FilterBar Filter="@currentFilter" OnApplyFilters="HandleFilterApplied" />
