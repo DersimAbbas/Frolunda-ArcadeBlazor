@@ -1,0 +1,28 @@
+﻿@using Frontend.Models
+@using Frontend.Services
+@using Frontend.Services.Interfaces
+@inject ILocalCartStorageService LocalCartStorageService
+
+<div class="checkout-sidebar p-4 text-light">
+    <div class="checkout-sidebar-content">
+        @if (Product is not null)
+        {
+            <h3>@Product.Name</h3>
+            <hr />
+            <p><strong>Price:</strong> $@Product.Price</p>
+            <div class="d-flex justify-content-between align-items-center">
+                <button class="btn btn-primary" @onclick="() => LocalCartStorageService.AddToCart(Product)">Add to Cart</button>
+            </div>
+        }
+        else
+        {
+            <p>No product selected</p>
+        }
+    </div>
+</div>
+
+@code {
+    [Parameter] public Product Product { get; set; }
+}
+
+<link rel="stylesheet" href="css/CheckoutSidebarStyle.css" />
