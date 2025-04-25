@@ -1,0 +1,47 @@
+﻿@using Frontend.Services
+@using Frontend.Components.Store.Components
+@using Frontend.Services.Interfaces
+@inject ILocalCartStorageService LocalCartStorageService
+
+<div class="header">
+    <a href="" class="header-logo">
+        <img src="images/logo.png" alt="Logo" />
+    </a>
+    <div class="header-title">Frölunda Arcade</div>
+
+    <div class="cart-button-wrapper">
+        <button id="cartToggleButton" class="cart-btn btn btn-outline-light position-relative" @onclick="ToggleCart">
+            🛒
+            @if (_cartItemCount > 0)
+            {
+                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+                    @_cartItemCount
+                </span>
+            }
+        </button>
+        <ShoppingCart Visible="_isCartOpen" OnClose="ToggleCart" />
+    </div>
+</div>
+
+<link rel="stylesheet" href="css/HeaderStyle.css" />
+
+@code {
+    private bool _isCartOpen = false;
+    private int _cartItemCount;
+
+    protected override void OnInitialized()
+    {
+        LocalCartStorageService.OnChange += StateHasChanged;
+        _cartItemCount = LocalCartStorageService.GetCartItemCount();
+    }
+
+    public void Dispose()
+    {
+        LocalCartStorageService.OnChange -= StateHasChanged;
+    }
+
+    private void ToggleCart()
+    {
+        _isCartOpen = !_isCartOpen;
+    }
+}
