@@ -1,5 +1,6 @@
 using Firebase.Auth;
 using Frontend.Models;
+using Frontend.Services.Interfaces;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using User = Frontend.Models.User;

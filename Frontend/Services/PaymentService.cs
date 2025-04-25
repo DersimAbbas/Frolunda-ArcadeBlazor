@@ -1,19 +1,13 @@
 ﻿using Frontend.Models;
+using Frontend.Services.Interfaces;
 
 namespace Frontend.Services;
 
-public class PaymentService : IPaymentService
+public class PaymentService(HttpClient httpClient) : IPaymentService
 {
-    private readonly HttpClient _httpClient;
-
-    public PaymentService(HttpClient httpClient)
-    {
-        _httpClient = httpClient;
-    }
-
     public async Task<PaymentIntentResponse> ProcessPayment(string paymentMethodId, decimal amount)
     {
-        var response = await _httpClient.PostAsJsonAsync("/api/payment", new
+        var response = await httpClient.PostAsJsonAsync("/api/payment", new
         {
             PaymentMethodId = paymentMethodId,
             Amount = amount
@@ -37,7 +31,7 @@ public class PaymentService : IPaymentService
 
     public async Task<bool> ConfirmPayment(string clientSecret)
     {
-        var response = await _httpClient.PostAsJsonAsync("/api/payment/confirm", new { ClientSecret = clientSecret });
+        var response = await httpClient.PostAsJsonAsync("/api/payment/confirm", new { ClientSecret = clientSecret });
 
         if (response.IsSuccessStatusCode)
         {
