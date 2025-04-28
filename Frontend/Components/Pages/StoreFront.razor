@@ -13,11 +13,11 @@
 @if(@filterTest == false){
 @foreach (var product in allProducts)
 {
-    <ProductCard Name="@product.Name" Genre="@product.Genre" Price="@product.Price" Description="@product.Description" ImageLink="@product.ImageLink" />
+    <ProductCard Name="@product.Name" Genre="@product.Genre" Price="@product.Price" Description="@product.Description" ImageLink="@product.ImageLink" ButtonId1="@product.Id" ButtonId2="@product.Name"/>
 }}else
 @foreach (var product in filteredProducts)
 {
-    <ProductCard Name="@product.Name" Genre="@product.Genre" Price="@product.Price" Description="@product.Description" ImageLink="@product.ImageLink" />
+        <ProductCard Name="@product.Name" Genre="@product.Genre" Price="@product.Price" Description="@product.Description" ImageLink="@product.ImageLink" ButtonId1="@product.Id" ButtonId2="@product.Name" />
 }
 
 @code {

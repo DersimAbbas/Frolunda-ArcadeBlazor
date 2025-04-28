@@ -3,15 +3,15 @@
 
 <h3>FilterBar</h3>
 
-<button class="btn btn-outline-secondary mb-2" @onclick="ToggleFilter">
+<button id="tester5" class="btn btn-outline-secondary mb-2" @onclick="ToggleFilter">
     @(showFilters ? "Hide Filters" : "Show Filters")
 </button>
 
 @if (showFilters)
 {
     <div class="mb-3">
-        <input @bind="Filter.SearchTerm" placeholder="Search..." class="form-control mb-2" />
-        <select @bind="Filter.SelectedGenre" class="form-control mb-2">
+        <input id="tester4" @bind="Filter.SearchTerm" placeholder="Search..." class="form-control mb-2" />
+        <select id="tester" @bind="Filter.SelectedGenre" class="form-control mb-2">
             <option value="">Genres</option>
             @foreach (var g in Genres)
             {
@@ -20,11 +20,11 @@
         </select>
 
         <div class="d-flex gap-2 mb-2">
-            <input type="number" @bind="Filter.MinPrice" placeholder="Min Price" class="form-control" />
-            <input type="number" @bind="Filter.MaxPrice" placeholder="Max Price" class="form-control" />
+            <input id="tester1" type="number" @bind="Filter.MinPrice" placeholder="Min Price" class="form-control" />
+            <input id="tester2" type="number" @bind="Filter.MaxPrice" placeholder="Max Price" class="form-control" />
         </div>
 
-        <button class="btn btn-primary" @onclick="ApplyClicked">Apply Filters</button>
+        <button id="tester3" class="btn btn-primary" @onclick="ApplyClicked">Apply Filters</button>
     </div>
 }
 

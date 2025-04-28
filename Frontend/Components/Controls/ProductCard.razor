@@ -6,8 +6,8 @@
         <div class="flex-grow-1">
             <h5 class="card-title fw-bold mb-1">@Name</h5>
             <p class="card-text mb-2">@Description</p>
-            <button id="ProductCardButton" type="button" class="btn btn-primary btn-sm">Buy</button>
-            <button id="ProductCardButton" type="button" class="btn btn-primary btn-sm" @onclick="NavigateToProductPage">Show Productpage</button>
+            <button id="@ButtonId1" type="button" class="btn btn-primary btn-sm">Buy</button>
+            <button id="@ButtonId2" type="button" class="btn btn-primary btn-sm" @onclick="NavigateToProductPage">Show Productpage</button>
         </div>
             <MudRating SelectedValue="3" Class="justify-content-sm-center" />
         <div class="text-nowrap text-end">
@@ -37,6 +37,8 @@
     [Parameter] public string? Genre { get; set; }
 
     [Parameter] public string? ImageLink { get; set; }
+    [Parameter] public string? ButtonId1 { get; set; }
+    [Parameter] public string? ButtonId2 { get; set; }
 
 
     private void NavigateToProductPage()
