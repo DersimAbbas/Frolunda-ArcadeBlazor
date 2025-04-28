@@ -1,4 +1,5 @@
 using Frontend.Models;
+using Frontend.Services.Interfaces;
 
 namespace Frontend.Services;
 
@@ -12,6 +13,11 @@ public class OrderService(HttpClient httpClient) : IOrderService
     public async Task<List<Order>?> GetAllOrderAsync()
     {
         return await httpClient.GetFromJsonAsync<List<Order>>("api/orders");
+    }
+
+    public async Task<List<Order>?> GetOrdersByUserIdAsync(string id)
+    {
+        return await httpClient.GetFromJsonAsync<List<Order>>("api/orders/user/" + id);
     }
 
     public async Task<bool> AddOrder(Order order)

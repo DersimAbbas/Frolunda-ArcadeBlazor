@@ -2,7 +2,7 @@
 {
     public class Product
     {
-        public string Id { get; set; } = string.Empty;
+        public string Id { get; set; } = "";
 
         public string Name { get; set; }
         
@@ -12,8 +12,8 @@
         
         // public string Category { get; set; } (optional)
         public string Genre { get; set; }
-        
-        public string Status { get; set; }
+
+        public string Status { get; set; } = "available";
         
         public string ImageLink { get; set; }
         

@@ -1,4 +1,5 @@
 using Frontend.Models;
+using Frontend.Services.Interfaces;
 
 namespace Frontend.Services;
 

@@ -1,6 +1,8 @@
 using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
+using Firebase.Auth;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.JSInterop;
 
 namespace Frontend.Provider;
 
@@ -57,4 +59,5 @@ public class FirebaseAuthProvider(IHttpContextAccessor httpContextAccessor) : Au
             return Task.FromResult(new AuthenticationState(new ClaimsPrincipal(new ClaimsIdentity())));
         }
     }
+
 }

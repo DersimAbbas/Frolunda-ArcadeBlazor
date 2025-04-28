@@ -1,0 +1,60 @@
+﻿@using Frontend.Models
+@inject IJSRuntime JsRuntime
+@implements IDisposable
+
+<div class="scroll-carousel-container position-relative text-dark">
+    <button class="carousel-arrow left btn btn-light" @onclick="() => Scroll(-1)">‹</button>
+
+    <div class="scroll-carousel" @ref="_carouselRef">
+        @foreach (var product in Products)
+        {
+            <div class="carousel-item-card">
+                <div class="card h-100">
+                    <img src="@product.ImageLink" class="card-img-top" alt="@product.Name" />
+                    <div class="text-overlay p-2">
+                        <h5 class="card-title">@product.Name</h5>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <button class="carousel-arrow right btn btn-light" @onclick="() => Scroll(1)">›</button>
+</div>
+@code {
+    [Parameter] public List<Product> Products { get; set; } = new();
+    [Parameter] public int AutoScrollInterval { get; set; } = 0;
+
+    private ElementReference _carouselRef;
+    private Timer? _autoScrollTimer;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender && AutoScrollInterval > 0)
+        {
+            _autoScrollTimer = new Timer(async _ => await AutoScroll(), null, AutoScrollInterval, AutoScrollInterval);
+        }
+    }
+
+    private async Task Scroll(int direction)
+    {
+        await JsRuntime.InvokeVoidAsync("scrollCarousel", _carouselRef, direction);
+        Dispose();
+        _autoScrollTimer = new Timer(async _ => await AutoScroll(), null, AutoScrollInterval, AutoScrollInterval);
+    }
+
+    private async Task AutoScroll()
+    {
+        if (Products.Count == 0) return;
+        //await JSRuntime.InvokeVoidAsync("autoScrollCarousel", carouselRef);
+        //TODO Fix crash :)
+    }
+
+    public void Dispose()
+    {
+        _autoScrollTimer?.Dispose();
+        _autoScrollTimer = null;
+    }
+}
+
+<link rel="stylesheet" href="css/ProductCarouselStyle.css"/>
