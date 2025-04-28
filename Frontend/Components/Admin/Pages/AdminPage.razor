@@ -1,0 +1,90 @@
+﻿@page "/admin-page"
+@using Frontend.Models
+@using Frontend.Services
+@using User = Frontend.Models.User
+@using Frontend.Components.Store.Components
+@using Frontend.Components.Admin.Components
+@using Frontend.Services.Interfaces
+@inject IProductService ProductService
+
+<h3 class="welcome-text">Admin Page</h3>
+
+<div class="d-flex justify-content-center mb-5">
+    <button class="btn me-2 @(IsViewingProducts ? "btn-primary" : "btn-outline-primary")"
+    @onclick="() => IsViewingProducts = true">
+        View Products
+    </button>
+
+    <button id="user-button"class="btn @(IsViewingUsers ? "btn-outline-primary" : "btn-primary")"
+    @onclick="() => IsViewingUsers = true">
+        View Users
+    </button>
+</div>
+
+@if(IsViewingProducts)
+{
+    <ProductSorter Products="_products" OnFilteredChanged="OnFilteredChanged" />
+
+    <ProductEditor Products="_filteredProducts" 
+    OnAddProduct="HandleAddProduct"/>
+}
+else if(IsViewingUsers)
+{
+    <UserEditor />
+}
+
+@code {
+    private List<Product> _products = new();
+    private List<Product> _filteredProducts = new();
+
+    private bool _isViewingProducts = true;
+
+    private bool IsViewingProducts
+    {
+        get => _isViewingProducts;
+        set
+        {
+            _isViewingProducts = value;
+            if(_isViewingProducts)
+            {
+                IsViewingUsers = false;
+            }
+            StateHasChanged();
+        }
+    }
+
+    private bool _isViewingUsers = false;
+
+    private bool IsViewingUsers
+    {
+        get => _isViewingUsers;
+        set
+        {
+            _isViewingUsers = value;
+            if (_isViewingUsers)
+            {
+                IsViewingProducts = false;
+            }
+            StateHasChanged();
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _products = await ProductService.GetAllProductsAsync();
+
+        StateHasChanged();
+    }
+
+    private async Task HandleAddProduct(Product newProduct)
+    {
+        _products = await ProductService.GetAllProductsAsync(); 
+        _filteredProducts = _products; 
+        StateHasChanged(); 
+    }
+
+    private void OnFilteredChanged(List<Product> filtered)
+    {
+        _filteredProducts = filtered;
+    }
+}

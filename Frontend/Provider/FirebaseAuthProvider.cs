@@ -6,7 +6,7 @@ using Microsoft.JSInterop;
 
 namespace Frontend.Provider;
 
-public class FirebaseAuthProvider(IHttpContextAccessor httpContextAccessor, FirebaseAuthClient firebaseAuthClient) : AuthenticationStateProvider
+public class FirebaseAuthProvider(IHttpContextAccessor httpContextAccessor) : AuthenticationStateProvider
 {
     public override Task<AuthenticationState> GetAuthenticationStateAsync()
     {
