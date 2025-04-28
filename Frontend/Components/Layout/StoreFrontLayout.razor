@@ -1,7 +1,5 @@
-﻿@using Frontend.Components.Layout
-@using Frontend.Components
+﻿@using Frontend.Components.User.Components
 @inherits LayoutComponentBase
-@using Frontend.Components.User.Components
 <Header />
 <div class="page">
     <main>
@@ -9,13 +7,10 @@
             <NavMenu />
         </div>
 
-        <article class="content">
+        <article class="storefront-main">
             @Body
         </article>
     </main>
-    @*To be fixed: <div class="position-absolute bottom-0 start-50 translate-middle-x w-100 h-25">
-        <Footer />
-    </div> *@
 </div>
 @* Required *@
 <MudThemeProvider />

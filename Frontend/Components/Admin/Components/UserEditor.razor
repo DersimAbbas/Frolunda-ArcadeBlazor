@@ -45,14 +45,14 @@ else
                     <td><input class="form-control" @bind="user.Address" /></td>
                     <td><input class="form-control" @bind="user.PhoneNumber" /></td>
                     <td>
-                        <select class="form-select" @bind="user.Role">
+                        <select class="form-select"id="role-select" @bind="user.Role">
                             <option value="user">User</option>
                             <option value="admin">Admin</option>
                         </select>
                     </td>
                     <td class="text-center align-middle">
                         <div class="d-flex flex-column gap-1" style="min-width: 120px;">
-                            <button class="btn btn-success btn-sm w-100" @onclick="() => UpdateUser(user)">Update</button>
+                            <button id="Update-button" class="btn btn-success btn-sm w-100" @onclick="() => UpdateUser(user)">Update</button>
                             <button class="btn btn-danger btn-sm w-100" @onclick="() => DeleteUser(user)">Delete</button>
                             <button class="btn btn-secondary btn-sm w-100" @onclick="() => ToggleExpanded(user.Id)">
                                 @(_expandedUserId == user.Id ? "▼ Hide Orders" : "▲ Show Orders")
