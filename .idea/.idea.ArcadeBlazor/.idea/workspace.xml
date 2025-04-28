@@ -9,19 +9,67 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="70105c11-1027-4448-8b39-8affe02ce11b" name="Changes" comment="Add frontend login/register auth - jwt token">
-      <change afterPath="$PROJECT_DIR$/Frontend/Services/CookiesTokenService.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Frontend/Services/ICookiesTokenService.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Frontend/Services/ISessionTokenService.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Frontend/Services/SessionTokenService.cs" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/Frontend/wwwroot/js/tokenHelper.js" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.ArcadeBlazor/.idea/.name" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.ArcadeBlazor/.idea/indexLayout.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.ArcadeBlazor/.idea/projectSettingsUpdater.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.ArcadeBlazor/.idea/vcs.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/.idea.ArcadeBlazor/.idea/workspace.xml" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/config/applicationhost.config" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/AdminPage.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Pages/AdminPage.razor" afterDir="false" />
+    <list default="true" id="70105c11-1027-4448-8b39-8affe02ce11b" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.idea.ArcadeBlazor/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ArcadeBlazor/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/App.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/App.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/AddProductDialog.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Admin/Components/AddProductDialog.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/Component.razor" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/FilterBar.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Store/Components/FilterBar.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/Header.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/User/Components/Header.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/Header.razor.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/User/Components/Header.razor.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/LeaveReviewDialog.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/User/Components/LeaveReviewDialog.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/LeaveReviewDialog.razor.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/User/Components/LeaveReviewDialog.razor.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/ProductCard.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Store/Components/ProductCard.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/ProductCard.razor.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Store/Components/ProductCard.razor.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/ProductCarousel.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Store/Components/ProductCarousel.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/ProductEditor.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Admin/Components/ProductEditor.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/ProductSidebar.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Store/Components/ProductSidebar.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/ProductSorter.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Store/Components/ProductSorter.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/ReceiptPopup.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Store/Components/ReceiptPopup.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/ReviewViewer.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/User/Components/ReviewViewer.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/ReviewViewer.razor.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/User/Components/ReviewViewer.razor.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/ShoppingCart.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Store/Components/ShoppingCart.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/UserEditor.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Admin/Components/UserEditor.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Layout/MainLayout.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Layout/MainLayout.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Layout/NavMenu.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Layout/NavMenu.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/AdminPage.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Admin/Pages/AdminPage.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/Checkout.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Store/Pages/Checkout.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/Counter.razor" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/Error.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/User/Pages/Error.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/Events.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/User/Pages/Events.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/Forum.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/User/Pages/Forum.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/Home.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/User/Pages/Home.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/Login.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Auth/Pages/Login.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/Login.razor.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Auth/Pages/Login.razor.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/ProductPage.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Store/Pages/ProductPage.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/ProductPageTemp.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Store/Pages/ProductPageTemp.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/ProfilePage.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Auth/Pages/ProfilePage.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/ProfilePage.razor.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Auth/Pages/ProfilePage.razor.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/Register.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Auth/Pages/Register.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/Register.razor.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Auth/Pages/Register.razor.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/StoreFront.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Store/Pages/StoreFront.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/Weather.razor" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Frontend.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Frontend.csproj" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Models/TokenDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Models/TokenDto.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Program.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Properties/launchSettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Properties/launchSettings.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Provider/FirebaseAuthProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Provider/FirebaseAuthProvider.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Services/CartService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/CartService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Services/FirebaseAuthService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/FirebaseAuthService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Services/ICartService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/Interfaces/ICartService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Services/IFirebaseAuthService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/Interfaces/IFirebaseAuthService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Services/ILocalCartStorageService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/Interfaces/ILocalCartStorageService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Services/IOrderService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/Interfaces/IOrderService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Services/IPaymentService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/Interfaces/IPaymentService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Services/IProductService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/Interfaces/IProductService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Services/IReviewService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/Interfaces/IReviewService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Services/IUserService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/Interfaces/IUserService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Services/LocalCartStorageService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/LocalCartStorageService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Services/OrderService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/OrderService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Services/PaymentService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/PaymentService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Services/ProductService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/ProductService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Services/ReviewService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/ReviewService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Services/UserService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/UserService.cs" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -41,33 +89,20 @@
   <component name="Git.Settings">
     <option name="RECENT_BRANCH_BY_REPOSITORY">
       <map>
-        <entry key="$PROJECT_DIR$" value="temp-calle" />
+        <entry key="$PROJECT_DIR$" value="Development" />
       </map>
     </option>
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
     <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/Components/App.razor" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/Components/Layout/MainLayout.razor" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/Components/Layout/NavMenu.razor" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/Components/Pages/Login.razor" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/Components/Pages/Register.razor" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/Components/Routes.razor" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/Handler/BearerTokenHandler.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/Program.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/Services/Firebase/DevFirebaseConnection.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/Services/Firebase/IServicePrincipalProvider.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/Services/Firebase/ProdFirebaseConnection.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/Services/FirebaseAuthService.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/Services/IFirebaseAuthService.cs" root0="SKIP_HIGHLIGHTING" />
-    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/appsettings.Development.json" root0="FORCE_HIGHLIGHTING" />
-    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/appsettings.json" root0="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 8
 }</component>
   <component name="ProjectId" id="2vpPWtkthmZ2CB3Kw4SbE49qhzw" />
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectViewState">
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
@@ -143,6 +178,8 @@
       <updated>1744839076097</updated>
       <workItem from="1744839077126" duration="2879000" />
       <workItem from="1744873289830" duration="18410000" />
+      <workItem from="1745481993973" duration="10323000" />
+      <workItem from="1745581481561" duration="2879000" />
     </task>
     <task id="LOCAL−00001" summary="Add frontend login/register auth - jwt token">
       <option name="closed" value="true" />
@@ -151,7 +188,14 @@
       <option name="presentableId" value="LOCAL−00001" />
       <updated>1744894738020</updated>
     </task>
-    <option name="localTasksCounter" value="2" />
+    <task id="LOCAL−00002" summary="Add reviews for a product">
+      <option name="closed" value="true" />
+      <created>1745499941795</created>
+      <option name="number" value="LOCAL−00002" />
+      <option name="presentableId" value="LOCAL−00002" />
+      <updated>1745499941795</updated>
+    </task>
+    <option name="localTasksCounter" value="3" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -174,6 +218,7 @@
     <option name="LOCAL_CHANGES_DETAILS_PREVIEW_SHOWN" value="false" />
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="Add frontend login/register auth - jwt token" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add frontend login/register auth - jwt token" />
+    <MESSAGE value="Add reviews for a product" />
+    <option name="LAST_COMMIT_MESSAGE" value="Add reviews for a product" />
   </component>
 </project>

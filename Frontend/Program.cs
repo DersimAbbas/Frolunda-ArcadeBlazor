@@ -1,12 +1,16 @@
 using Firebase.Auth;
 using Firebase.Auth.Providers;
 using Frontend.Components;
-using Frontend.Endpoints;
 using Frontend.Handler;
 using Frontend.Services;
 using Frontend.Services.Firebase;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
+using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
+using MudBlazor.Services;
+using Frontend.Services.Interfaces;
+using FirebaseAuthProvider = Frontend.Provider.FirebaseAuthProvider;
+
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -45,7 +49,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.ExpireTimeSpan = TimeSpan.FromDays(7);
         options.LoginPath = "/login";
         options.LogoutPath = "/";
-        options.AccessDeniedPath = "/access-denied";
+        options.AccessDeniedPath = "/";
     });
 builder.Services.AddAuthorization();
 if (builder.Environment.IsDevelopment())
@@ -56,6 +60,7 @@ else
 {
     builder.Services.AddScoped<IServicePrincipalProvider, ProdFirebaseConnection>();
 }
+
 
 
 var credentialProvider = builder.Services.BuildServiceProvider().GetRequiredService<IServicePrincipalProvider>();
@@ -69,20 +74,26 @@ builder.Services.AddScoped<FirebaseAuthClient>(provider =>
     {
         ApiKey = keyVaultSecret.FirebaseApiKey,
         AuthDomain = $"{keyVaultSecret.ProjectId}.firebaseapp.com",
-        Providers = new FirebaseAuthProvider[]
+        Providers = new Firebase.Auth.Providers.FirebaseAuthProvider[]
         {
             new EmailProvider()
         }
     });
 });
 
-
-builder.Services.AddScoped<AuthenticationStateProvider, Frontend.Provider.FirebaseAuthProvider>();
-
+builder.Services.AddScoped<AuthenticationStateProvider, FirebaseAuthProvider>();
 
 builder.Services.AddScoped<IReviewService, ReviewService>();
+builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<ICartService, CartService>();
+builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IProductService, ProductService>();
-builder.Services.AddScoped<ProductService>();
+builder.Services.AddScoped<IPaymentService, PaymentService>();
+
+builder.Services.AddScoped<ILocalCartStorageService, LocalCartStorageService>();
+builder.Services.AddScoped<ProtectedLocalStorage>();
+
+builder.Services.AddMudServices();
 
 var app = builder.Build();
 
@@ -94,14 +105,12 @@ if (!app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
-
 app.UseStaticFiles();
 app.UseAntiforgery();
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseAntiforgery();
-app.MapAuthEndpoints();
 
 app.MapRazorComponents<App>()
     .AddInteractiveServerRenderMode();

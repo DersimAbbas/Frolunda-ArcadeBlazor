@@ -1,0 +1,97 @@
+﻿@using Frontend.Models
+@using Frontend.Services
+@using Frontend.Services.Interfaces
+@inject IProductService ProductService
+
+<div style="font-family: 'Futura', sans-serif;">
+    @if (Reviews != null && Reviews.Any())
+    {
+    var displayedReviews = _showAllReviews
+    ? Reviews
+    : Reviews.Take(3);
+
+    foreach (var review in displayedReviews)
+    {
+        <div class="p-4 mb-4" style="background-color: #444444; border: 1px solid #5e5e5e; border-radius: 8px; color: #EDEDED;">
+            <div class="d-flex justify-content-between align-items-center mb-2">
+                <div class="fw-semibold" style="font-size: 0.95rem; white-space: pre-wrap; overflow-wrap: break-word; word-break: break-word;">
+                    @review.User.Email
+                </div>
+                <div class="text-warning d-flex gap-1">
+                    @for (int i = 0; i < 5; i++)
+                    {
+                        <span style="font-size: 20px">@((i < review.Ratings) ? "★" : "☆")</span>
+                    }
+                </div>
+            </div>
+            <div class="mb-1">
+                <h6 class="fw-bold mb-0" style="white-space: pre-wrap; word-wrap: break-word;">
+                    @review.Title
+                </h6>
+            </div>
+            <div>
+                <p class="mb-0" style="white-space: pre-wrap; word-wrap: break-word;">
+                    @review.Comment
+                </p>
+            </div>
+        </div>
+    }
+
+    @if (Reviews.Count > 3)
+    {
+    <div class="text-center mb-3">
+        <button class="btn px-4 generic-text-size generic-text " style="background-color: #6c757d; border-color: #6c757d;" @onclick="ToggleReviews">
+            @(_showAllReviews ? "Show Less" : "Show All Reviews")
+        </button>
+    </div>
+    }
+
+    <div class="text-center">
+        <button class="btn px-4 generic-text-size generic-text " style="background-color: #bf1f1f; border-color: #DA0037;" @onclick="() => _isDialogOpen = true">
+            Leave a Review
+        </button>
+    </div>
+    }
+    else
+    {
+    <div class="text-center p-4" style="background-color: #444444; border: 1px solid #5e5e5e; border-radius: 2%; color: #EDEDED;">
+        <p>No reviews yet. Be the first to leave one!</p>
+        <button class="btn px-4 generic-text generic-text-size mt-2" style="background-color: #bf1f1f; border-color: #DA0037;" @onclick="() => _isDialogOpen = true">
+            Leave a Review
+        </button>
+    </div>
+    }
+
+    <LeaveReviewDialog Visible="@_isDialogOpen"
+                       SelectedProduct="SelectedProduct"
+                       VisibleChanged="@((bool val) => _isDialogOpen = val)"
+                       OnSubmit="HandleNewReview" />
+</div>
+
+@code {
+    [Parameter] public List<Review> Reviews { get; set; } = new();
+    [Parameter] public Product SelectedProduct { get; set; }
+    private bool _showAllReviews = false;
+    private bool _isDialogOpen = false;
+
+    private void ToggleReviews() => _showAllReviews = !_showAllReviews;
+
+    protected override async Task OnInitializedAsync()
+    {
+        Reviews = await ProductService.GetReviewsByProductIdAsync(SelectedProduct.Id) ?? new List<Review>();
+    }
+
+    private async Task HandleNewReview(Review review)
+    {
+        var response = await ProductService.AddReviewAsync(SelectedProduct.Id, review);
+        if (response)
+        {
+            Reviews = await ProductService.GetReviewsByProductIdAsync(SelectedProduct.Id);
+            StateHasChanged();
+        }
+        else
+        {
+            //If error give popup
+        }
+    }
+}

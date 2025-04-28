@@ -1,4 +1,5 @@
 ﻿@using Frontend.Services
+@using Frontend.Services.Interfaces
 @using Microsoft.AspNetCore.Components.Authorization
 @inject IFirebaseAuthService FirebaseAuthService
 <input type="checkbox" title="Navigation menu" class="navbar-toggler" />
@@ -35,7 +36,7 @@
             <Authorized>
                 <div class="nav-item px-3">
                     <NavLink class="nav-link" href="/admin-page" Match="NavLinkMatch.All">
-                        <span class="bi bi-lock" aria-hidden="true"></span> Admin Page
+                        <span class="bi bi-lock" aria-hidden="true" ></span> Admin Page
                     </NavLink>
                 </div>
             </Authorized>
@@ -51,15 +52,13 @@
                 <span class="bi bi-calendar-event" aria-hidden="true"></span> Events
             </NavLink>
         </div>
-        
+
         <AuthorizeView>
             <Authorized>
                 <div class="nav-item px-3">
-                    <form method="post" action="frontend/auth/logout" style="margin: 0;">
-                        <button type="submit" class="nav-link btn btn-link text-start w-100" style="text-decoration: none;">
-                            <span class="bi bi-door-open" aria-hidden="true"></span> Logout
-                        </button>
-                    </form>
+                    <NavLink class="nav-link" @onclick="FirebaseAuthService.Logout" href="#"  Match="NavLinkMatch.All">
+                        <span class="bi bi-door-open" aria-hidden="true"></span> Logout
+                    </NavLink>
                 </div>
             </Authorized>
         </AuthorizeView>

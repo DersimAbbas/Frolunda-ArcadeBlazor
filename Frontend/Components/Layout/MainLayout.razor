@@ -1,4 +1,7 @@
-﻿@inherits LayoutComponentBase
+﻿@using Frontend.Components.Layout
+@using Frontend.Components
+@inherits LayoutComponentBase
+
 <Header />
 <div class="page">
     <main>
@@ -11,6 +14,15 @@
         </article>
     </main>
 </div>
+@* Required *@
+<MudThemeProvider />
+<MudPopoverProvider />
+
+@* Needed for dialogs *@
+<MudDialogProvider />
+
+@* Needed for snackbars *@
+<MudSnackbarProvider />
 
 <div id="blazor-error-ui">
     An unhandled error has occurred.
@@ -19,3 +31,5 @@
 </div>
 
 <script src="/js/ScrollCarousel.js"></script>
+
+<script src="js/cart.js"></script>

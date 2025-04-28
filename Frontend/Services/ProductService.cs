@@ -1,4 +1,5 @@
 using Frontend.Models;
+using Frontend.Services.Interfaces;
 
 namespace Frontend.Services;
 
@@ -18,6 +19,17 @@ public class ProductService(HttpClient httpClient) : IProductService
     {
         var response = await httpClient.GetFromJsonAsync<List<Product>>("api/products");
         return response ?? new List<Product>();
+    }
+
+    public async Task<List<Review>?> GetReviewsByProductIdAsync(string id)
+    {
+        return await httpClient.GetFromJsonAsync<List<Review>>($"api/products/{id}/reviews/");
+    }
+
+    public async Task<bool> AddReviewAsync(string id, Review review)
+    {
+        var response = await httpClient.PostAsJsonAsync($"api/products/{id}/reviews", review);
+        return response.IsSuccessStatusCode;
     }
 
     public async Task<bool> AddProduct(Product cart)
