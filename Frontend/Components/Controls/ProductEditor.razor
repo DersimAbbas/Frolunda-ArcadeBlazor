@@ -1,5 +1,6 @@
 ﻿@using Frontend.Models
-
+@using Frontend.Services
+@inject IProductService product_Service
 @if (Products == null || Products.Count == 0)
 {
     <div class="text-center">
@@ -50,7 +51,7 @@ else
                     </td>
                     <td><input type="number" class="form-control" @bind="product.AgeRating" /></td>
                     <td class="text-center align-middle">
-                        <button class="btn btn-success btn-sm w-100" @onclick="() => UpdateProduct(product)">Update</button>
+                        <button class="btn btn-success btn-sm w-100" @onclick="() => UpdateProductAsync(product)">Update</button>
                         <button class="btn btn-danger btn-sm w-100" @onclick="() => DeleteProduct(product)">Delete</button>
                     </td>
                 </tr>
@@ -63,18 +64,19 @@ else
         <span>Page @CurrentPage of @TotalPages</span>
         <button class="btn btn-secondary" @onclick="NextPage" disabled="@IsLastPage">Next</button>
     </div>
-
-    <button class="btn btn-primary mt-3" @onclick="() => showAddDialog = true">Add Product</button>
-
-    <AddProductDialog Visible="showAddDialog"
-                      OnCancel="() => showAddDialog = false"
-                      OnAdd="AddProduct" />
 }
+<button class="btn btn-primary mt-3" @onclick="() => showAddDialog = true">Add Product</button>
+
+<AddProductDialog Visible="showAddDialog"
+                  OnCancel="() => showAddDialog = false"
+                  OnAdd="AddProductAsync" />
 
 @code {
     [Parameter] public List<Product> Products { get; set; } = new();
     [Parameter] public EventCallback<Product> OnUpdate { get; set; }
     [Parameter] public EventCallback<string> OnDelete { get; set; }
+    [Parameter] public Product Product { get; set; } = default!;
+    [Parameter] public EventCallback<Product> OnAddProduct { get; set; }
 
     private HashSet<string> ExpandedRows = new();
 
@@ -91,12 +93,24 @@ else
 
     private bool showAddDialog = false;
 
-    private async Task AddProduct(Product newProduct)
+    private async Task AddProductAsync(Product newProduct)
     {
         await Task.Delay(1);
         //Call add product service
-        Products.Add(newProduct);
+        //Product = newProduct;
+        await product_Service.AddProduct(newProduct);
+        await OnAddProduct.InvokeAsync(newProduct);
         showAddDialog = false;
+
+        await LoadProductsAsync();
+        StateHasChanged();
+
+    }
+
+    private async Task LoadProductsAsync()
+    {
+        await Task.Delay(1);
+        Products = await product_Service.GetAllProductsAsync();
     }
 
     private void PreviousPage()
@@ -119,34 +133,20 @@ else
         }
     }
 
-    private async Task UpdateProduct(Product product)
+    private async Task UpdateProductAsync(Product product)
     {
-        /*
-        var response = await Http.PutAsJsonAsync($"api/products/{product.Id}", product);
-        if (response.IsSuccessStatusCode)
-        {
-            Console.WriteLine($"Updated product {product.Id}");
-            }
-        else
-        {
-            Console.WriteLine($"Failed to update product {product.Id}");
-            }
-        */
+        var request = await product_Service.UpdateProduct(product.Id, product);
     }
 
     private async Task DeleteProduct(Product product)
     {
-        /*
-        var response = await Http.DeleteAsync($"api/products/{product.Id}");
-        if (response.IsSuccessStatusCode)
-        {
-            products = products.Where(p => p.Id != product.Id).ToList();
-            Console.WriteLine($"Deleted product {product.Id}");
-            }
-        else
-        {
-            Console.WriteLine($"Failed to delete product {product.Id}");
-            }
-        */
+        var response = await product_Service.DeleteProduct(product.Id);
+        await LoadProductsAsync();
+        //await OnDelete.InvokeAsync(product.Id);
+        StateHasChanged();
     }
+
+
+        
+        
 }

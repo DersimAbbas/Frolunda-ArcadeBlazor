@@ -1,7 +1,14 @@
 ﻿@page "/admin-page"
+@using Firebase.Auth
 @using Frontend.Models
 @using Frontend.DummyData
 @using Frontend.Components.Controls
+@using Frontend.Services
+@using Microsoft.AspNetCore.Authorization
+@using User = Frontend.Models.User
+@inject HttpClient http
+@inject IProductService product_Service
+@inject FirebaseAuthClient FirebaseAuthClient
 
 <h3 class="welcome-text">Admin Page</h3>
 
@@ -21,7 +28,8 @@
 {
     <ProductSorter Products="products" OnFilteredChanged="OnFilteredChanged" />
 
-    <ProductEditor Products="filteredProducts" />
+    <ProductEditor Products="filteredProducts" 
+    OnAddProduct="HandleAddProduct"/>
 }
 else if(IsViewingUsers)
 {
@@ -63,17 +71,23 @@ else if(IsViewingUsers)
         }
     }
 
-    /*protected override async Task OnInitializedAsync()
+    protected override async Task OnInitializedAsync()
     {
-        products = await Http.GetFromJsonAsync<List<Product>>("api/products");
-        ApplyFilterAndSort();
-    }*/
+        await Task.Delay(100);
+        products = await product_Service.GetAllProductsAsync();
 
-    protected override void OnInitialized()
-    {
-        products = CreateAdminPageDummyData.GetDummyProducts();
-        filteredProducts = products;
+        StateHasChanged();
     }
+
+    private async Task HandleAddProduct(Product newProduct)
+    {
+        products = await product_Service.GetAllProductsAsync(); 
+        filteredProducts = products; 
+        StateHasChanged(); 
+    }
+    
+
+
 
     private void OnFilteredChanged(List<Product> filtered)
     {

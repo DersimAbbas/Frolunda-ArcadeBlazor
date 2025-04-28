@@ -1,4 +1,6 @@
 ﻿@using Frontend.Models
+@using Frontend.Services
+@inject IProductService service
 @if (Visible)
 {
     <div class="modal-overlay">
@@ -54,6 +56,9 @@
     private async Task HandleAdd()
     {
         await OnAdd.InvokeAsync(NewProduct);
+        await Task.Delay(50);
+        StateHasChanged();
         NewProduct = new();
+        
     }
 }

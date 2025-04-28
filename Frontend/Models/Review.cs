@@ -2,11 +2,11 @@
 {
     public class Review
     {
-        public string Id { get; set; }
+        public string Id { get; set; } = "";
         
         public CartProductDto Product { get; set; }
         
-        public User User { get; set; }
+        public User? User { get; set; }
         
         public string Title { get; set; }
         

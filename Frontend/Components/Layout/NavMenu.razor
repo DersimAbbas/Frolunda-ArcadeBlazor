@@ -1,4 +1,7 @@
-﻿<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+﻿@using Frontend.Services
+@using Microsoft.AspNetCore.Components.Authorization
+@inject IFirebaseAuthService FirebaseAuthService
+<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
 
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
     <nav class="flex-column">
@@ -7,24 +10,37 @@
                 <span class="bi bi-house" aria-hidden="true"></span> Home
             </NavLink>
         </div>
-        <!--Display when not authenticated-->
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/sign-in" Match="NavLinkMatch.All">
-                <span class="bi bi-box-arrow-in-right" aria-hidden="true"></span> Sign in
-            </NavLink>
-        </div>
-        <!--Display when authenticated-->
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/profile-page" Match="NavLinkMatch.All">
-                <span class="bi bi-person" aria-hidden="true"></span> Profile Page
-            </NavLink>
-        </div>
-        <!--Display when authorized admin-->
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/admin-page" Match="NavLinkMatch.All">
-                <span class="bi bi-lock" aria-hidden="true"></span> Admin Page
-            </NavLink>
-        </div>
+        
+        <AuthorizeView>
+            <NotAuthorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/login" Match="NavLinkMatch.All">
+                        <span class="bi bi-box-arrow-in-right" aria-hidden="true"></span> Login
+                    </NavLink>
+                </div>
+            </NotAuthorized>
+        </AuthorizeView>
+
+        <AuthorizeView>
+            <Authorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/profile-page" Match="NavLinkMatch.All">
+                        <span class="bi bi-person" aria-hidden="true"></span> Profile Page
+                    </NavLink>
+                </div>
+            </Authorized>
+        </AuthorizeView>
+
+        <AuthorizeView Roles="admin">
+            <Authorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" href="/admin-page" Match="NavLinkMatch.All">
+                        <span class="bi bi-lock" aria-hidden="true" ></span> Admin Page
+                    </NavLink>
+                </div>
+            </Authorized>
+        </AuthorizeView>
+        
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="/forum" Match="NavLinkMatch.All">
                 <span class="bi bi-people" aria-hidden="true"></span> Forum
@@ -35,12 +51,17 @@
                 <span class="bi bi-calendar-event" aria-hidden="true"></span> Events
             </NavLink>
         </div>
-        <!--Display when authenticated-->
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="sign-out" Match="NavLinkMatch.All">
-                <span class="bi bi-door-open" aria-hidden="true"></span> Sign out
-            </NavLink>
-        </div>
+
+        <AuthorizeView>
+            <Authorized>
+                <div class="nav-item px-3">
+                    <NavLink class="nav-link" @onclick="FirebaseAuthService.Logout" href="#"  Match="NavLinkMatch.All">
+                        <span class="bi bi-door-open" aria-hidden="true"></span> Logout
+                    </NavLink>
+                </div>
+            </Authorized>
+        </AuthorizeView>
+       
     </nav>
 </div>
 

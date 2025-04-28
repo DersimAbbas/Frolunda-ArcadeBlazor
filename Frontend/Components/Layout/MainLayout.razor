@@ -1,4 +1,7 @@
-﻿@inherits LayoutComponentBase
+﻿@inject IJSRuntime JsRuntime
+@using Frontend.Models
+@inherits LayoutComponentBase
+
 <Header />
 <div class="page">
     <main>
@@ -26,3 +29,17 @@
     <a href="" class="reload">Reload</a>
     <a class="dismiss">🗙</a>
 </div>
+
+<script src="/js/ScrollCarousel.js"></script>
+
+<script src="js/cart.js"></script>
+
+
+@* 
+    Detta är till för att ta bort alla cookies när man startar om hemsidan.
+    Det behövs för att firebase loggar ut dig från FirebaseAuthClient, men din token är kvar i cookies.
+    Vilket leder till att man inte kan hämta user info, men man kommar åt all auth funktionalitet.
+*@
+@code {
+}
+

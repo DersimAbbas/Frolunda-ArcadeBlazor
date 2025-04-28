@@ -17,7 +17,7 @@ namespace Frontend.DummyData
                 Price = 29.99,
                 Genre = "RPG",
                 Status = "available",
-                ImageLink = "https://via.placeholder.com/60",
+                ImageLink = "https://i0.wp.com/port2flavors.com/wp-content/uploads/2022/07/placeholder-614.png?fit=1200%2C800&ssl=1",
                 AgeRating = 12,
             };
 
@@ -29,7 +29,7 @@ namespace Frontend.DummyData
                 Price = 19.99,
                 Genre = "Strategy",
                 Status = "unavailable",
-                ImageLink = "https://via.placeholder.com/60",
+                ImageLink = "https://i0.wp.com/port2flavors.com/wp-content/uploads/2022/07/placeholder-614.png?fit=1200%2C800&ssl=1",
                 AgeRating = 16,
             };
 
@@ -41,7 +41,55 @@ namespace Frontend.DummyData
                 Price = 9.99,
                 Genre = "Arcade",
                 Status = "available",
-                ImageLink = "https://via.placeholder.com/60",
+                ImageLink = "https://i0.wp.com/port2flavors.com/wp-content/uploads/2022/07/placeholder-614.png?fit=1200%2C800&ssl=1",
+                AgeRating = 3,
+            };
+
+            var product4 = new Product
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "Pixel Runner",
+                Description = "A retro-style endless runner.",
+                Price = 9.99,
+                Genre = "Arcade",
+                Status = "available",
+                ImageLink = "https://i0.wp.com/port2flavors.com/wp-content/uploads/2022/07/placeholder-614.png?fit=1200%2C800&ssl=1",
+                AgeRating = 3,
+            };
+
+            var product5 = new Product
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "Pixel Runner",
+                Description = "A retro-style endless runner.",
+                Price = 9.99,
+                Genre = "Arcade",
+                Status = "available",
+                ImageLink = "https://i0.wp.com/port2flavors.com/wp-content/uploads/2022/07/placeholder-614.png?fit=1200%2C800&ssl=1",
+                AgeRating = 3,
+            };
+
+            var product6 = new Product
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "Pixel Runner",
+                Description = "A retro-style endless runner.",
+                Price = 9.99,
+                Genre = "Arcade",
+                Status = "available",
+                ImageLink = "https://i0.wp.com/port2flavors.com/wp-content/uploads/2022/07/placeholder-614.png?fit=1200%2C800&ssl=1",
+                AgeRating = 3,
+            };
+
+            var product7 = new Product
+            {
+                Id = Guid.NewGuid().ToString(),
+                Name = "Pixel Runner",
+                Description = "A retro-style endless runner.",
+                Price = 9.99,
+                Genre = "Arcade",
+                Status = "available",
+                ImageLink = "https://i0.wp.com/port2flavors.com/wp-content/uploads/2022/07/placeholder-614.png?fit=1200%2C800&ssl=1",
                 AgeRating = 3,
             };
 
@@ -65,10 +113,43 @@ namespace Frontend.DummyData
                 Ratings = 4
             };
 
-            product1.Reviews.Add(review1);
-            product2.Reviews.Add(review2);
+            var review3 = new Review
+            {
+                Id = Guid.NewGuid().ToString(),
+                Product = new CartProductDto { Id = product1.Id, Name = product1.Name, Price = product1.Price },
+                User = dummyUser,
+                Title = "Awesome Game",
+                Comment = "Had a great time playing it!",
+                Ratings = 5
+            };
 
-            return new List<Product> { product1, product2, product3 };
+            var review4 = new Review
+            {
+                Id = Guid.NewGuid().ToString(),
+                Product = new CartProductDto { Id = product1.Id, Name = product1.Name, Price = product1.Price },
+                User = dummyUser,
+                Title = "Awesome Game",
+                Comment = "Had a great time playing it!",
+                Ratings = 5
+            };
+
+            var review5 = new Review
+            {
+                Id = Guid.NewGuid().ToString(),
+                Product = new CartProductDto { Id = product1.Id, Name = product1.Name, Price = product1.Price },
+                User = dummyUser,
+                Title = "Awesome Game",
+                Comment = "Had a great time playing it!",
+                Ratings = 5
+            };
+
+            product1.Reviews.Add(review1);
+            product1.Reviews.Add(review2);
+            product1.Reviews.Add(review3);
+            product1.Reviews.Add(review4);
+            product1.Reviews.Add(review5);
+
+            return new List<Product> { product1, product2, product3, product4, product5, product6, product7 };
         }
 
         public static List<User> GetDummyUsers()

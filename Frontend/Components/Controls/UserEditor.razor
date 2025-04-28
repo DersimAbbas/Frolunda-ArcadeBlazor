@@ -1,6 +1,11 @@
 ﻿@using Frontend.Models
 @using Microsoft.AspNetCore.Components
 @using Frontend.DummyData
+@using Frontend.Services
+@inject IFirebaseAuthService FirebaseAuthService
+@inject IUserService UserService
+@inject IOrderService OrderService
+@inject ICartService CartService
 
 <!-- Search Bars -->
 <div class="mb-3 d-flex flex-column flex-md-row gap-3">
@@ -144,8 +149,8 @@ else
 }
 
 @code {
-    private List<User> users = new();
-    private List<Order> orders = new();
+    private List<User>? users = new();
+    private List<Order>? orders = new();
 
     private string searchEmail = string.Empty;
     private string searchId = string.Empty;
@@ -158,13 +163,14 @@ else
 
     private string? expandedCartUserId = null;
     private List<CartProductDto> userCartItems = new();
-    private List<Cart> carts = new();
+    private List<Cart>? carts = new();
 
-    protected override void OnInitialized()
+    protected override async Task OnInitializedAsync()
     {
-        users = CreateAdminPageDummyData.GetDummyUsers();
-        orders = CreateAdminPageDummyData.GetDummyOrders();
-        carts = CreateAdminPageDummyData.GetDummyCarts();
+        users = await UserService.GetAllUsersAsync();
+        orders = await OrderService.GetAllOrderAsync();
+        carts = await CartService.GetAllCartsAsync();
+        
     }
 
     private List<User> filteredUsers => users
@@ -215,17 +221,14 @@ else
 
     private async Task UpdateUser(User user)
     {
-        /*
-        var response = await Http.PutAsJsonAsync($"api/users/{user.Id}");
-        if (response.IsSuccessStatusCode)
+        var responseRole = FirebaseAuthService.AssignRole(user.Id, user.Role);
+        var responseUpdateUser = UserService.UpdateUser(user.Id, user);
+
+        if (responseRole.IsCompleted && responseUpdateUser.IsCompleted)
         {
-            Console.WriteLine($"Updated user {user.Id}");
-            }
-        else
-        {
-            Console.WriteLine($"Failed to update user {user.Id}");
-            }
-        */
+            //
+        }
+        
     }
 
     private async Task DeleteUser(User user)
