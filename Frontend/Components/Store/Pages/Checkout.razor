@@ -89,7 +89,7 @@
 
         var PaymentMethodId = await JsRuntime.InvokeAsync<string>("stripeInterop.createPaymentMethod", _customerName, _customerEmail);
         string userId = "123";
-        var result = await PaymentService.ProcessPayment(PaymentMethodId, Amount, userId);
+        var result = await PaymentService.ProcessPayment(PaymentMethodId, Amount, userId, CartItems);
 
         if (!result.IsSuccess)
         {
@@ -106,8 +106,9 @@
             _paymentComplete = confirmed;
             return;
         }
-
+        
         _paymentComplete = true;
+        await PaymentService.RegisterOrderAfterPayment(_customerEmail,CartItems);
         _statusMessage = "Payment successful!";
     }
 
