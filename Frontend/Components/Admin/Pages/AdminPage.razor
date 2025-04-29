@@ -25,7 +25,7 @@
     </button>
 
     <button class="btn @(IsViewingHighscores ? "btn-outline-primary" : "btn-primary")"
-            @onclick="() => IsViewingHighscores = true">
+    @onclick="() => IsViewingHighscores = true">
         View Highscores
     </button>
 </div>
@@ -35,7 +35,7 @@
     <ProductSorter Products="_products" OnFilteredChanged="OnFilteredChanged" />
 
     <ProductEditor Products="_filteredProducts" 
-    OnAddProduct="HandleAddProduct"/>
+    OnAddProduct="RefreshProduct"/>
 }
 else if(IsViewingUsers)
 {
@@ -43,7 +43,7 @@ else if(IsViewingUsers)
 }
 else if(IsViewingHighscores)
 {
-    <HighscoresEditor HighscoresList="_highscores" />
+    <HighscoresEditor HighscoresList="_highscores" OnChange="RefreshHighscores" />
 }
 
 @code {
@@ -116,15 +116,27 @@ else if(IsViewingHighscores)
         StateHasChanged();
     }
 
-    private async Task HandleAddProduct(Product newProduct)
+    private async Task RefreshProduct(Product newProduct)
     {
         _products = await ProductService.GetAllProductsAsync(); 
         _filteredProducts = _products; 
         StateHasChanged(); 
     }
 
+    private async Task RefreshHighscores(Highscores newHighscores)
+    {
+        _highscores = await HighscoresService.GetAllHighscoresAsync();
+        StateHasChanged();
+    }
+
     private void OnFilteredChanged(List<Product> filtered)
     {
         _filteredProducts = filtered;
+    }
+
+    private async Task RefreshHighscores()
+    {
+        _highscores = await HighscoresService.GetAllHighscoresAsync();
+        StateHasChanged();
     }
 }
