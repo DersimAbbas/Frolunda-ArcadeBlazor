@@ -5,11 +5,12 @@ namespace Frontend.Services;
 
 public class PaymentService(HttpClient httpClient) : IPaymentService
 {
-    public async Task<PaymentIntentResponse> ProcessPayment(string paymentMethodId, decimal amount)
+    public async Task<PaymentIntentResponse> ProcessPayment(string paymentMethodId, decimal amount, string userId)
     {
         var response = await httpClient.PostAsJsonAsync("/api/payment", new
         {
             PaymentMethodId = paymentMethodId,
+            userId = userId, // Replace with actual user ID
             Amount = amount
         });
 

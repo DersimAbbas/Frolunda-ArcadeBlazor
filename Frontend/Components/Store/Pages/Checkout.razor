@@ -36,11 +36,11 @@
 {
     <div id="receipt-overlay" class="receipt-overlay">
         <ReceiptPopup TicketNumber="R2-9R-S2"
-                      DateTime="@DateTime.Now.ToString("yyyy-MM-dd, HH:mm:ss")"
-                      Cart="@CartStorageService.Cart"
-                      Products="@AllProducts"
-                      Amount="@Amount"
-                      OnClose="@(() => _paymentComplete = false)" />
+        DateTime="@DateTime.Now.ToString("yyyy-MM-dd, HH:mm:ss")"
+        Cart="@CartStorageService.Cart"
+        Products="@AllProducts"
+        Amount="@Amount"
+        OnClose="@(() => _paymentComplete = false)" />
     </div>
 }
 
@@ -88,8 +88,8 @@
         _statusMessage = "Processing payment...";
 
         var PaymentMethodId = await JsRuntime.InvokeAsync<string>("stripeInterop.createPaymentMethod", _customerName, _customerEmail);
-
-        var result = await PaymentService.ProcessPayment(PaymentMethodId, Amount);
+        string userId = "123";
+        var result = await PaymentService.ProcessPayment(PaymentMethodId, Amount, userId);
 
         if (!result.IsSuccess)
         {
