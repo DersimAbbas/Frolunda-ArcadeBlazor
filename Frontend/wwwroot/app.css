@@ -154,6 +154,15 @@ main {
     border-radius: 2%;
 }
 
+.generic-card {
+    background-color: #444444;
+    color: #EDEDED;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #5e5e5e;
+    padding: 1rem;
+    margin-bottom: 1rem;
+}
 
     /*Modal dialog*/
     .modal-overlay {
