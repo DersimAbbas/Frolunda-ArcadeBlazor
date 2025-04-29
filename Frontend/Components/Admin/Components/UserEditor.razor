@@ -148,8 +148,9 @@ else
 }
 
 @code {
-    private List<User>? _users = new();
-    private List<Order>? _orders = new();
+    [Parameter] public List<User>? Users { get; set; }
+    [Parameter] public List<Order>? Orders { get; set; }
+    [Parameter] public List<Cart>? Carts { get; set; }
 
     private string _searchEmail = string.Empty;
     private string _searchId = string.Empty;
@@ -162,17 +163,8 @@ else
 
     private string? _expandedCartUserId = null;
     private List<CartProductDto> _userCartItems = new();
-    private List<Cart>? _carts = new();
 
-    protected override async Task OnInitializedAsync()
-    {
-        _users = await UserService.GetAllUsersAsync();
-        _orders = await OrderService.GetAllOrderAsync();
-        _carts = await CartService.GetAllCartsAsync();
-        
-    }
-
-    private List<User> filteredUsers => _users
+    private List<User> filteredUsers => Users
         .Where(u =>
             (string.IsNullOrWhiteSpace(_searchEmail) || u.Email.Contains(_searchEmail, StringComparison.OrdinalIgnoreCase)) &&
             (string.IsNullOrWhiteSpace(_searchId) || u.Id.Contains(_searchId, StringComparison.OrdinalIgnoreCase)))
@@ -200,7 +192,7 @@ else
             _expandedUserId = null;
             _userOrders.Clear();
 
-            var cart = _carts.FirstOrDefault(c => c.User.Id == userId);
+            var cart = Carts.FirstOrDefault(c => c.User.Id == userId);
             if (cart != null)
             {
                 _userCartItems = cart.CartItems;
@@ -248,7 +240,7 @@ else
             _expandedCartUserId = null;
             _userOrders.Clear();
 
-            var user = _users.FirstOrDefault(u => u.Id == userId);
+            var user = Users.FirstOrDefault(u => u.Id == userId);
             if (user != null)
             {
                 _userOrders = GetUserOrders(user);
@@ -258,6 +250,6 @@ else
 
     private List<Order> GetUserOrders(User user)
     {
-        return _orders.Where(o => o.User.Id == user.Id).ToList();
+        return Orders.Where(o => o.User.Id == user.Id).ToList();
     }
 }
