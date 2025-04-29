@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 using MudBlazor.Services;
 using Frontend.Services.Interfaces;
 using FirebaseAuthProvider = Frontend.Provider.FirebaseAuthProvider;
+using static Frontend.Components.User.Pages.Contact;
 
 
 var builder = WebApplication.CreateBuilder(args);
@@ -89,7 +90,7 @@ builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
-
+builder.Services.AddScoped<IHighscoresService, HighscoresService>();
 builder.Services.AddScoped<ILocalCartStorageService, LocalCartStorageService>();
 builder.Services.AddScoped<ProtectedLocalStorage>();
 

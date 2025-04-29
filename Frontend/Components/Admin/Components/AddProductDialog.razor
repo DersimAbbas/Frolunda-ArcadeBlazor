@@ -57,8 +57,6 @@
     private async Task HandleAdd()
     {
         await OnAdd.InvokeAsync(NewProduct);
-        StateHasChanged();
         NewProduct = new();
-        
     }
 }

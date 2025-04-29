@@ -13,7 +13,6 @@
 }
 
 .product-content {
-    display: flex;
     flex-wrap: wrap;
 }
 
@@ -41,4 +40,10 @@
     .product-main-content {
         flex-direction: column-reverse;
     }
+}
+
+img {
+    width: 100%;
+    height: auto;
+    object-fit: contain; 
 }

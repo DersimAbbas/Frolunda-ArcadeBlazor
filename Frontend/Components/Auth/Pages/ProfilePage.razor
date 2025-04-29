@@ -115,9 +115,17 @@
 
 
 
-    private void UpdateProfile()
+    private async Task UpdateProfile()
     {
-        // Logik för uppdatera
+        var response = await UserService.UpdateUser(UserProfile.Id, UserProfile);
+        if (response)
+        {
+            //Blev klart
+        }
+        else
+        {
+            
+        }
     }
 
 

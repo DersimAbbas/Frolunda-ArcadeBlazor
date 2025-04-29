@@ -15,7 +15,11 @@
         <AuthorizeView>
             <NotAuthorized>
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/login" Match="NavLinkMatch.All">
+
+          
+
+                    <NavLink class="nav-link" id="nav-login" href="/login" Match="NavLinkMatch.All">
+
                         <span class="bi bi-box-arrow-in-right" aria-hidden="true"></span> Login
                     </NavLink>
                 </div>
@@ -35,7 +39,7 @@
         <AuthorizeView Roles="admin">
             <Authorized>
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/admin-page" Match="NavLinkMatch.All">
+                    <NavLink class="nav-link" id="nav-admin" href="/admin-page" Match="NavLinkMatch.All">
                         <span class="bi bi-lock" aria-hidden="true" ></span> Admin Page
                     </NavLink>
                 </div>
@@ -50,6 +54,12 @@
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="/events" Match="NavLinkMatch.All">
                 <span class="bi bi-calendar-event" aria-hidden="true"></span> Events
+            </NavLink>
+        </div>
+
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/contact" Match="NavLinkMatch.All">
+                <span class="bi bi-pin-map-fill" aria-hidden="true"></span> Contact
             </NavLink>
         </div>
 
