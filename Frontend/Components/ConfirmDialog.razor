@@ -1,0 +1,37 @@
+﻿@if (_visible)
+{
+    <div class="modal-overlay">
+        <div class="modal-content bg-dark text-light rounded p-4 shadow">
+            <h5>@_title</h5>
+            <p>@_message</p>
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <button class="btn btn-secondary" @onclick="() => Close(false)">Cancel</button>
+                <button class="btn btn-danger" @onclick="() => Close(true)">Confirm</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    private bool _visible = false;
+    private string _title = "Confirm";
+    private string _message = "";
+    private TaskCompletionSource<bool>? _tcs;
+
+    public Task<bool> ShowAsync(string title, string message)
+    {
+        _title = title;
+        _message = message;
+        _visible = true;
+        StateHasChanged();
+        _tcs = new TaskCompletionSource<bool>();
+        return _tcs.Task;
+    }
+
+    private void Close(bool result)
+    {
+        _visible = false;
+        StateHasChanged();
+        _tcs?.SetResult(result);
+    }
+}
