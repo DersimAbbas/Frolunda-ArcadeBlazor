@@ -38,7 +38,7 @@ else
             @foreach (var user in paginatedUsers)
             {
                 <tr>
-                    <td><input class="form-control" @bind="user.Email" /></td>
+                    <td><input class="form-control" id="@user.Email" @bind="user.Email" /></td>
                     <td><input class="form-control" @bind="user.FirstName" /></td>
                     <td><input class="form-control" @bind="user.LastName" /></td>
                     <td><input class="form-control" @bind="user.Id" /></td>
