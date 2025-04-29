@@ -1,0 +1,80 @@
+﻿@page "/contact"
+
+@using Frontend.Components.User.Components
+<PageTitle>Contact</PageTitle>
+<ContactSupportModal @ref="modalTicket"></ContactSupportModal>
+<div class="container mt-5">
+    <div class="row">
+        <div class="col-12 text-center mb-5">
+            <h1 class="welcome-text">About Frölunda Arcade</h1>
+            <p class="body-text">Your Ultimate Gaming Destination</p>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-md-6">
+            <h2 class="welcome-text">Our Story</h2>
+            <div class="body-text">
+                <p>Frölunda Arcade was founded in 2024 with a simple mission: to bring the joy of classic and modern gaming to everyone. What started as a small arcade has grown into a premier gaming destination, offering an extensive collection of games across all genres.</p>
+                <p>Our passion for gaming and commitment to quality has made us a favorite spot for gamers of all ages. We pride ourselves on maintaining the perfect balance between nostalgic classics and cutting-edge new releases.</p>
+
+            </div>
+        </div>
+        <div class="col-md-6">
+            <img src="/Images/frolunda-arcade.jpg" alt="Frölunda Arcade Interior" class="img-fluid rounded shadow" />
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-12">
+            <h2 class="welcome-text">What Makes Us Special</h2>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body bg-dark">
+                    <h3 class="card-title">Extensive Game Library</h3>
+                    <p class="body-text">With over 50+ games in our collection, we offer something for everyone. From classic arcade games to the latest releases, our selection is constantly growing.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body bg-dark">
+                    <h3 class="card-title">Community Focus</h3>
+                    <p class="body-text">We host regular gaming tournaments, special events, and community meetups. Our space is designed to bring gamers together and create lasting memories.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100">
+                <div class="card-body bg-dark">
+                    <h3 class="card-title">Quality Experience</h3>
+                    <p class="body-text">All our games are maintained to the highest standards, ensuring the best possible gaming experience for our visitors.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row mb-5">
+        <div class="col-12 text-center">
+            <h2 class="welcome-text">Visit Us</h2>
+            <p>Come experience the magic of Frölunda Arcade for yourself!</p>
+            <iframe style="min-height: 400px; min-width: 350px;" class="img-fluid"
+                    src="https://www.google.com/maps/embed?pb=!1m17!1m8!1m3!1d448.78995229473395!2d11.910708370378963!3d57.651600819879384!3m2!1i1024!2i768!4f13.1!4m6!3e1!4m0!4m3!3m2!1d57.651467499999995!2d11.910746699999999!5e0!3m2!1sen!2sse!4v1745923504935!5m2!1sen!2sse">
+                allowfullscreen
+                loading="lazy"
+                referrerpolicy="no-referrer-when-downgrade">
+            </iframe>
+            <button class="arcade-btn" @onclick="OpenContactModal">Contact Support</button>
+        </div>
+    </div>
+</div>
+@code {
+
+    private ContactSupportModal modalTicket = default!;
+    private void OpenContactModal()
+    {
+        modalTicket.Show();
+    }
+    
+}
