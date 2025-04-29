@@ -90,6 +90,7 @@ builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
+builder.Services.AddScoped<IHighscoresService, HighscoresService>();
 builder.Services.AddScoped<ILocalCartStorageService, LocalCartStorageService>();
 builder.Services.AddScoped<ProtectedLocalStorage>();
 
