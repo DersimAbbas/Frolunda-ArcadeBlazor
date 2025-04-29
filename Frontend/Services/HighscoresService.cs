@@ -28,6 +28,11 @@ namespace Frontend.Services
             return await httpClient.GetFromJsonAsync<Highscores>($"api/highscores/{highscoresId}");
         }
 
+        public async Task<Highscores?> GetHighscoresByNameAsync(string name)
+        {
+            return await httpClient.GetFromJsonAsync<Highscores>($"api/highscores/get-by-name/{name}");
+        }
+
         public async Task<bool> UpdateUserHighscoreAsync(string id, Highscores highscores)
         {
             var response = await httpClient.PostAsJsonAsync($"api/highscores/{id}/update-user-score", highscores);

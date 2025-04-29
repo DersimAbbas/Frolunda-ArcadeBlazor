@@ -1,0 +1,39 @@
+﻿@page "/highscores-viewer"
+@using Frontend.Models
+@using Frontend.Services
+@using Frontend.Services.Interfaces
+@inject IHighscoresService HighscoresService
+
+<div id="HighscoresContainer" class="d-inline-flex flex-column align-items-center p-3">
+    <h2 class="mb-4">Top Scores - @Name</h2>
+
+    <div class="w-100" style="max-width: 400px;">
+        @foreach (var score in _topUserScores)
+        {
+            <div class="d-flex justify-content-between border-bottom py-2">
+                <span class="fw-bold">@score.Key</span>
+                <span>@score.Value</span>
+            </div>
+        }
+    </div>
+</div>
+@code {
+    [Parameter] public string Name { get; set; } = "Pac-Man";
+
+    private Highscores? _highscores;
+    private Dictionary<string, int> _topUserScores = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _highscores = await HighscoresService.GetHighscoresByNameAsync(Name);
+            _topUserScores = _highscores.UserScores
+                .OrderByDescending(x => x.Value)
+                .Take(3)
+                .ToDictionary(x => x.Key, x => x.Value);
+
+            StateHasChanged();
+        }
+    }
+}
