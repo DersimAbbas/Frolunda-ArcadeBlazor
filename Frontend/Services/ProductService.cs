@@ -70,24 +70,46 @@ public class ProductService : IProductService
     public async Task<bool> AddReviewAsync(string id, Review review)
     {
         var response = await _httpClient.PostAsJsonAsync($"api/products/{id}/reviews", review);
+
+        var product = await GetProductByIdAsync(id);
+        if (response.IsSuccessStatusCode)
+        {
+            var productJson = JsonSerializer.Serialize(product);
+            await _jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", _productsKey, productJson);
+        }
+
         return response.IsSuccessStatusCode;
     }
 
-    public async Task<bool> AddProduct(Product cart)
+    public async Task<bool> AddProduct(Product product)
     {
-        var response = await _httpClient.PostAsJsonAsync("api/products", cart);
+        var response = await _httpClient.PostAsJsonAsync("api/products", product);
+        var productJson = JsonSerializer.Serialize(product);
+        await _jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", _productsKey, productJson);
+
         return response.IsSuccessStatusCode;
     }
 
     public async Task<bool> UpdateProduct(string id, Product product)
     {
         var response = await _httpClient.PutAsJsonAsync($"api/products/{id}", product);
+        var productJson = JsonSerializer.Serialize(product);
+        await _jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", _productsKey, productJson);
+
         return response.IsSuccessStatusCode;
     }
 
     public async Task<bool> DeleteProduct(string id)
     {
+        var product = await GetProductByIdAsync(id);
         var response = await _httpClient.DeleteAsync($"api/products/{id}");
+
+        if(response.IsSuccessStatusCode)
+        {
+            var productJson = JsonSerializer.Serialize(product);
+            await _jsRuntime.InvokeVoidAsync("myLocalStorage.removeItem", _productsKey, productJson);
+        }
+
         return response.IsSuccessStatusCode;
     }
 }
