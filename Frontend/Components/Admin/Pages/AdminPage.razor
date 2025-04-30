@@ -32,10 +32,7 @@
 
 @if(IsViewingProducts)
 {
-    <ProductSorter Products="_products" OnFilteredChanged="OnFilteredChanged" />
-
-    <ProductEditor Products="_filteredProducts" 
-    OnAddProduct="RefreshProduct"/>
+    <ProductEditor/>
 }
 else if(IsViewingUsers)
 {
@@ -47,7 +44,6 @@ else if(IsViewingHighscores)
 }
 
 @code {
-    private List<Product>? _products = new();
     private List<Product> _filteredProducts = new();
     private List<Highscores>? _highscores = new();
 
@@ -104,17 +100,9 @@ else if(IsViewingHighscores)
 
     protected override async Task OnInitializedAsync()
     {
-        _products = await ProductService.GetAllProductsAsync();
         _highscores = await HighscoresService.GetAllHighscoresAsync();
 
         StateHasChanged();
-    }
-
-    private async Task RefreshProduct(Product newProduct)
-    {
-        _products = await ProductService.GetAllProductsAsync(); 
-        _filteredProducts = _products; 
-        StateHasChanged(); 
     }
 
     private async Task RefreshHighscores(Highscores newHighscores)
@@ -123,14 +111,10 @@ else if(IsViewingHighscores)
         StateHasChanged();
     }
 
-    private void OnFilteredChanged(List<Product> filtered)
-    {
-        _filteredProducts = filtered;
-    }
-
     private async Task RefreshHighscores()
     {
         _highscores = await HighscoresService.GetAllHighscoresAsync();
         StateHasChanged();
     }
+
 }

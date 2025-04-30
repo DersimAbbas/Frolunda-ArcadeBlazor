@@ -10,7 +10,7 @@ public class OrderService : IOrderService
     private readonly HttpClient _httpClient;
     private readonly IJSRuntime _jsRuntime;
 
-    private const string _cartsKey = "orders";
+    private const string _ordersKey = "orders";
     private const string _timestampKey = "ordersTimestamp";
 
     public OrderService(HttpClient httpClient, IJSRuntime jsRuntime)
@@ -26,7 +26,7 @@ public class OrderService : IOrderService
 
     public async Task<List<Order>?> GetAllOrdersAsync()
     {
-        var json = await _jsRuntime.InvokeAsync<string>("myLocalStorage.getItem", _cartsKey);
+        var json = await _jsRuntime.InvokeAsync<string>("myLocalStorage.getItem", _ordersKey);
         var timestampString = await _jsRuntime.InvokeAsync<string>("myLocalStorage.getItem", _timestampKey);
 
         if (!string.IsNullOrEmpty(json) && long.TryParse(timestampString, out var ticks))
@@ -50,7 +50,7 @@ public class OrderService : IOrderService
         var orders = await _httpClient.GetFromJsonAsync<List<Order>>("api/orders") ?? new List<Order>();
 
         var orderJson = JsonSerializer.Serialize(orders);
-        await _jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", _cartsKey, orderJson);
+        await _jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", _ordersKey, orderJson);
         await _jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", _timestampKey, DateTime.UtcNow.Ticks.ToString());
 
         return orders;
@@ -64,18 +64,36 @@ public class OrderService : IOrderService
     public async Task<bool> AddOrder(Order order)
     {
         var result = await _httpClient.PostAsJsonAsync("api/orders", order);
+        if (result.IsSuccessStatusCode)
+        {
+            var orderJson = JsonSerializer.Serialize(order);
+            await _jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", _ordersKey, orderJson);
+        }
         return result.IsSuccessStatusCode;
     }
 
     public async Task<bool> UpdateOrder(string id, Order order)
     {
         var result = await _httpClient.PutAsJsonAsync($"api/orders/{id}", order);
+        if (result.IsSuccessStatusCode)
+        {
+            var orderJson = JsonSerializer.Serialize(order);
+            await _jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", _ordersKey, orderJson);
+        }
         return result.IsSuccessStatusCode;
     }
 
     public async Task<bool> DeleteOrder(string id)
     {
+        var order = await GetOrderByIdAsync(id);
         var result = await _httpClient.DeleteAsync($"api/orders/{id}");
+
+        if (result.IsSuccessStatusCode)
+        {
+            var orderJson = JsonSerializer.Serialize(order);
+            await _jsRuntime.InvokeVoidAsync("myLocalStorage.removeItem", _ordersKey, orderJson);
+        }
+
         return result.IsSuccessStatusCode;
     }
 

@@ -59,18 +59,34 @@ public class CartService : ICartService
     public async Task<bool> AddCart(Cart cart)
     {
         var result = await _httpClient.PostAsJsonAsync("api/carts", cart);
+        if (result.IsSuccessStatusCode)
+        {
+            var cartJson = JsonSerializer.Serialize(cart);
+            await _jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", _cartsKey, cartJson);
+        }
         return result.IsSuccessStatusCode;
     }
 
     public async Task<bool> UpdateCart(string id, Cart cart)
     {
         var result = await _httpClient.PutAsJsonAsync($"api/carts/{id}", cart);
+        if (result.IsSuccessStatusCode)
+        {
+            var cartJson = JsonSerializer.Serialize(cart);
+            await _jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", _cartsKey, cartJson);
+        }
         return result.IsSuccessStatusCode;
     }
     
     public async Task<bool> DeleteCart(string id)
     {
-        var result = await _httpClient.DeleteAsync($"api/carts/{id}"); 
+        var cart = await GetCartByIdAsync(id);
+        var result = await _httpClient.DeleteAsync($"api/carts/{id}");
+        if (result.IsSuccessStatusCode)
+        {
+            var cartJson = JsonSerializer.Serialize(cart);
+            await _jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", _cartsKey, cartJson);
+        }
         return result.IsSuccessStatusCode;
     }
 }
