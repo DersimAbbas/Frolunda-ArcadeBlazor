@@ -145,12 +145,18 @@ else
         <span>Page @_currentPage of @TotalPages</span>
         <button class="btn btn-secondary" @onclick="GoToNextPage" disabled="@IsLastPage">Next</button>
     </div>
+
+    <ConfirmDialog @ref="_confirmDialogRef" />
+    <MessageDialog @ref="_messageDialog" />
 }
 
 @code {
     private List<User>? _users { get; set; }
     private List<Cart>? _carts { get; set; }
     private List<Order>? _orders { get; set; }
+
+    private ConfirmDialog? _confirmDialogRef;
+    private MessageDialog? _messageDialog;
 
     private string _searchEmail = string.Empty;
     private string _searchId = string.Empty;
@@ -180,11 +186,15 @@ else
     private bool IsFirstPage => _currentPage == 1;
     private bool IsLastPage => _currentPage == TotalPages;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _users = await UserService.GetAllUsersAsync();
-        _orders = await OrderService.GetAllOrdersAsync();
-        _carts = await CartService.GetAllCartsAsync();
+        if (firstRender)
+        {
+            _users = await UserService.GetAllUsersAsync();
+            _orders = await OrderService.GetAllOrdersAsync();
+            _carts = await CartService.GetAllCartsAsync();
+            StateHasChanged();
+        }
     }
 
     private void ToggleCart(string userId)
@@ -225,14 +235,37 @@ else
 
         if (responseRole && responseUpdateUser)
         {
-            //Give prompt
+            var index = _users.FindIndex(u => u.Id == user.Id);
+            if (index != -1)
+            {
+                _users[index] = user;
+            }
+            await _messageDialog!.ShowAsync(
+            "User Updated",
+            $"User with id: {user.Id} updated"
+            );
         }
         
     }
 
     private async Task DeleteUser(User user)
     {
-        //TODO Add logic
+        var confirmed = await _confirmDialogRef!.ShowAsync(
+        "Delete Product",
+        $"Are you sure you want to delete user with id: {user.Id}?"
+        );
+        if (!confirmed)
+            return;
+        var response = await UserService.DeleteUser(user.Id);
+
+        if (response)
+        {
+            _users = _users.Where(u => u.Id != user.Id).ToList();
+            await _messageDialog!.ShowAsync(
+            "User Deleted",
+            $"User with id: {user.Id} deleted"
+            );
+        }
     }
 
     private void ToggleExpanded(string userId)

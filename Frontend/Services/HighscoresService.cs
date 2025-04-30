@@ -8,34 +8,60 @@ namespace Frontend.Services;
 
 public class HighscoresService : IHighscoresService
 {
-    private readonly HttpClient httpClient;
-    private readonly IJSRuntime jsRuntime;
+    private readonly HttpClient _httpClient;
+    private readonly IJSRuntime _jsRuntime;
 
-    private const string HighscoresKey = "highscores";
-    private const string TimestampKey = "highscoresTimestamp";
+    private const string _highscoresKey = "highscores";
+    private const string _timestampKey = "highscoresTimestamp";
 
     public HighscoresService(HttpClient httpClient, IJSRuntime jsRuntime)
     {
-        this.httpClient = httpClient;
-        this.jsRuntime = jsRuntime;
+        _httpClient = httpClient;
+        _jsRuntime = jsRuntime;
     }
 
     public async Task<bool> AddNewHighscoresAsync(string name)
     {
-        var result = await httpClient.PostAsJsonAsync("api/highscores", name);
-        return result.IsSuccessStatusCode;
+        var response = await _httpClient.PostAsJsonAsync("api/highscores", name);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var created = await response.Content.ReadFromJsonAsync<Highscores>();
+
+            var highscores = await GetAllHighscoresAsync();
+            highscores.Add(created);
+
+            var updatedJson = JsonSerializer.Serialize(highscores);
+            await _jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", _highscoresKey, updatedJson);
+        }
+
+        return response.IsSuccessStatusCode;
     }
 
     public async Task<bool> DeleteHighscoresAsync(string highscoresId)
     {
-        var result = await httpClient.DeleteAsync($"api/highscores/{highscoresId}");
+        var result = await _httpClient.DeleteAsync($"api/highscores/{highscoresId}");
+
+        if (result.IsSuccessStatusCode)
+        {
+            var highscores = await GetAllHighscoresAsync();
+            var toRemove = highscores.FirstOrDefault(h => h.Id == highscoresId);
+            if (toRemove != null)
+            {
+                highscores.Remove(toRemove);
+
+                var updatedJson = JsonSerializer.Serialize(highscores);
+                await _jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", _highscoresKey, updatedJson);
+            }
+        }
+
         return result.IsSuccessStatusCode;
     }
 
     public async Task<List<Highscores>?> GetAllHighscoresAsync()
     {
-        var json = await jsRuntime.InvokeAsync<string>("myLocalStorage.getItem", HighscoresKey);
-        var timestampString = await jsRuntime.InvokeAsync<string>("myLocalStorage.getItem", TimestampKey);
+        var json = await _jsRuntime.InvokeAsync<string>("myLocalStorage.getItem", _highscoresKey);
+        var timestampString = await _jsRuntime.InvokeAsync<string>("myLocalStorage.getItem", _timestampKey);
 
         if (!string.IsNullOrEmpty(json) && long.TryParse(timestampString, out var ticks))
         {
@@ -55,23 +81,23 @@ public class HighscoresService : IHighscoresService
             }
         }
 
-        var highscores = await httpClient.GetFromJsonAsync<List<Highscores>>("api/highscores") ?? new List<Highscores>();
+        var highscores = await _httpClient.GetFromJsonAsync<List<Highscores>>("api/highscores") ?? new List<Highscores>();
 
         var highscoresJson = JsonSerializer.Serialize(highscores);
-        await jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", HighscoresKey, highscoresJson);
-        await jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", TimestampKey, DateTime.UtcNow.Ticks.ToString());
+        await _jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", _highscoresKey, highscoresJson);
+        await _jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", _timestampKey, DateTime.UtcNow.Ticks.ToString());
 
         return highscores;
     }
 
     public async Task<Highscores?> GetHighscoresAsync(string highscoresId)
     {
-        return await httpClient.GetFromJsonAsync<Highscores>($"api/highscores/{highscoresId}");
+        return await _httpClient.GetFromJsonAsync<Highscores>($"api/highscores/{highscoresId}");
     }
 
     public async Task<Highscores?> GetHighscoresByNameAsync(string name)
     {
-        return await httpClient.GetFromJsonAsync<Highscores>($"api/highscores/get-by-name/{name}");
+        return await _httpClient.GetFromJsonAsync<Highscores>($"api/highscores/get-by-name/{name}");
     }
 
     public async Task<bool> UpdateUserHighscoreAsync(string highscoresId, string userId, int score)
@@ -82,7 +108,21 @@ public class HighscoresService : IHighscoresService
             Score = score
         };
 
-        var response = await httpClient.PostAsJsonAsync($"api/highscores/{highscoresId}/update-user-score", dto);
+        var response = await _httpClient.PostAsJsonAsync($"api/highscores/{highscoresId}/update-user-score", dto);
+
+        if (response.IsSuccessStatusCode)
+        {
+            var highscores = await GetAllHighscoresAsync();
+            var highscore = highscores.FirstOrDefault(h => h.Id == highscoresId);
+            if (highscore != null)
+            {
+                highscore.UserScores[userId] = score;
+
+                var updatedJson = JsonSerializer.Serialize(highscores);
+                await _jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", _highscoresKey, updatedJson);
+            }
+        }
+
         return response.IsSuccessStatusCode;
     }
 }

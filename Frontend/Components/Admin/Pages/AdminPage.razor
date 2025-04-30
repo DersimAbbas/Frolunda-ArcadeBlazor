@@ -98,11 +98,14 @@ else if(IsViewingHighscores)
         }
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _highscores = await HighscoresService.GetAllHighscoresAsync();
+        if (firstRender)
+        {
+            _highscores = await HighscoresService.GetAllHighscoresAsync();
 
-        StateHasChanged();
+            StateHasChanged();
+        }
     }
 
     private async Task RefreshHighscores(Highscores newHighscores)
