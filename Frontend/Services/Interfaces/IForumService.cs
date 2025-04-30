@@ -11,4 +11,5 @@ public interface IForumService
     Task<bool> UpdateForumPostAsync(string id, ForumPost forumPost);
     Task<bool> DeleteForumPostAsync(string id);
     Task<bool> AddForumPostComment(string forumPostId, ForumComment forumComment);
+    Task<bool> DeleteForumPostComment(string forumPostId, ForumComment forumComment);
 }
