@@ -121,8 +121,8 @@ else
                                         {
                                             <tr>
                                                 <!--Bind other properties when endpoints are fixed-->
-                                                <td>@item.Name</td>
-                                                <td>@item.Price</td>
+                                                <td>@item.Key</td>
+                                                <td>@item.Value</td>
                                             </tr>
                                         }
                                     </tbody>
@@ -162,7 +162,7 @@ else
     private List<Order> _userOrders = new();
 
     private string? _expandedCartUserId = null;
-    private List<CartProductDto> _userCartItems = new();
+    private Dictionary<string, int> _userCartItems = new();
 
     private List<User> filteredUsers => _users == null ? new List<User>() :
     _users
@@ -200,10 +200,14 @@ else
             _expandedUserId = null;
             _userOrders.Clear();
 
-            var cart = _carts.FirstOrDefault(c => c.User.Id == userId);
+
+            
+
+            var cart = _carts.FirstOrDefault(c => c.UserId == userId);
+
             if (cart != null)
             {
-                _userCartItems = cart.CartItems;
+                _userCartItems = cart.cartItems;
             }
         }
     }

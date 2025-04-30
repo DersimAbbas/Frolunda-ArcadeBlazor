@@ -46,9 +46,9 @@ public class ProductService : IProductService
                     if (cachedProducts != null)
                         return cachedProducts;
                 }
-                catch
+                catch(Exception ex)
                 {
-                    
+                    Console.WriteLine($"Error deserializing cached products: {ex.Message}");
                 }
             }
         }
