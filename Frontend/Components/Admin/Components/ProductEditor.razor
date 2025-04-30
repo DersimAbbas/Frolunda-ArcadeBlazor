@@ -72,8 +72,8 @@ else
 <button class="btn btn-primary mt-3" @onclick="() => _showAddDialog = true">Add Product</button>
 
 <AddProductDialog Visible="_showAddDialog"
-                  OnCancel="() => _showAddDialog = false"
-                  OnAdd="AddProductAsync" />
+OnCancel="() => _showAddDialog = false"
+OnAdd="AddProductAsync" />
 
 <ConfirmDialog @ref="_confirmDialogRef" />
 
@@ -99,19 +99,27 @@ else
 
     private bool _showAddDialog = false;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        await LoadProductsAsync();
-        _filteredProducts = _products;
+        if(firstRender)
+        {
+            await LoadProductsAsync();
+            _filteredProducts = _products;
+            StateHasChanged();
+        }
     }
 
     private async Task AddProductAsync(Product newProduct)
     {
-        await ProductService.AddProduct(newProduct);
+        var result = await ProductService.AddProduct(newProduct);
         _showAddDialog = false;
 
-        await LoadProductsAsync();
-        StateHasChanged();
+        if(result)
+        {
+            _products.Add(newProduct);
+            _filteredProducts.Add(newProduct);
+            StateHasChanged();
+        }
     }
 
     private async Task LoadProductsAsync()
@@ -144,6 +152,16 @@ else
     private async Task UpdateProductAsync(Product product)
     {
         var response = await ProductService.UpdateProduct(product.Id, product);
+        if (response)
+        {
+            var index = _products.FindIndex(p => p.Id == product.Id);
+            if (index != -1)
+            {
+                _products[index] = product;
+                _filteredProducts[index] = product;
+                StateHasChanged();
+            }
+        }
     }
 
     private async Task DeleteProduct(Product product)
@@ -156,8 +174,12 @@ else
             return;
 
         var response = await ProductService.DeleteProduct(product.Id);
-
-        await LoadProductsAsync();
+        if (response)
+        {
+            _products.Remove(product);
+            _filteredProducts.Remove(product);
+            StateHasChanged();
+        }
     }
 
     private void OnFilteredChanged(List<Product> filtered)

@@ -110,6 +110,7 @@ else if (IsViewingEvents)
         }
     }
 
+
     private bool _isViewingEvents = false;
 
     private bool IsViewingEvents
@@ -128,11 +129,14 @@ else if (IsViewingEvents)
         }
     }
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        _highscores = await HighscoresService.GetAllHighscoresAsync();
+        if (firstRender)
+        {
+            _highscores = await HighscoresService.GetAllHighscoresAsync();
 
-        StateHasChanged();
+            StateHasChanged();
+        }
     }
 
     private async Task RefreshHighscores(Highscores newHighscores)

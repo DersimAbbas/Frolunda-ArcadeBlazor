@@ -84,32 +84,65 @@ public class ProductService : IProductService
     public async Task<bool> AddProduct(Product product)
     {
         var response = await _httpClient.PostAsJsonAsync("api/products", product);
-        var productJson = JsonSerializer.Serialize(product);
-        await _jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", _productsKey, productJson);
+        if (!response.IsSuccessStatusCode)
+            return false;
 
-        return response.IsSuccessStatusCode;
+        var existingJson = await _jsRuntime.InvokeAsync<string>("myLocalStorage.getItem", _productsKey);
+        var products = string.IsNullOrWhiteSpace(existingJson)
+            ? new List<Product>()
+            : JsonSerializer.Deserialize<List<Product>>(existingJson)!;
+
+        products.Add(product);
+
+        var updatedJson = JsonSerializer.Serialize(products);
+        await _jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", _productsKey, updatedJson);
+
+        return true;
     }
 
     public async Task<bool> UpdateProduct(string id, Product product)
     {
         var response = await _httpClient.PutAsJsonAsync($"api/products/{id}", product);
-        var productJson = JsonSerializer.Serialize(product);
-        await _jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", _productsKey, productJson);
+        if (!response.IsSuccessStatusCode)
+            return false;
 
-        return response.IsSuccessStatusCode;
+        var existingJson = await _jsRuntime.InvokeAsync<string>("myLocalStorage.getItem", _productsKey);
+        var products = string.IsNullOrWhiteSpace(existingJson)
+            ? new List<Product>()
+            : JsonSerializer.Deserialize<List<Product>>(existingJson)!;
+
+        var index = products.FindIndex(p => p.Id == id);
+        if (index != -1)
+        {
+            products[index] = product;
+        }
+
+        var updatedJson = JsonSerializer.Serialize(products);
+        await _jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", _productsKey, updatedJson);
+
+        return true;
     }
 
     public async Task<bool> DeleteProduct(string id)
     {
-        var product = await GetProductByIdAsync(id);
         var response = await _httpClient.DeleteAsync($"api/products/{id}");
 
-        if(response.IsSuccessStatusCode)
+        if (!response.IsSuccessStatusCode)
+            return false;
+
+        var existingJson = await _jsRuntime.InvokeAsync<string>("myLocalStorage.getItem", _productsKey);
+        var products = string.IsNullOrWhiteSpace(existingJson)
+            ? new List<Product>()
+            : JsonSerializer.Deserialize<List<Product>>(existingJson)!;
+
+        var productToRemove = products.FirstOrDefault(p => p.Id == id);
+        if (productToRemove != null)
         {
-            var productJson = JsonSerializer.Serialize(product);
-            await _jsRuntime.InvokeVoidAsync("myLocalStorage.removeItem", _productsKey, productJson);
+            products.Remove(productToRemove);
+            var updatedJson = JsonSerializer.Serialize(products);
+            await _jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", _productsKey, updatedJson);
         }
 
-        return response.IsSuccessStatusCode;
+        return true;
     }
 }
