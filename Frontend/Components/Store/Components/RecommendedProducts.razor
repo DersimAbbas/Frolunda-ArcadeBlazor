@@ -1,0 +1,41 @@
+﻿@using Firebase.Auth
+@using Frontend.Models
+@using Frontend.Services.Interfaces
+@inject IUserService UserService
+@inject IOrderService OrderService
+@inject IFirebaseAuthService FirebaseAuthService
+@inject IJSRuntime JsRuntime
+@inject FirebaseAuthClient FirebaseAuthClient
+
+<ProductCarousel Products="_recommendedProducts" />
+@code {
+    [Parameter] public List<Product> Products { get; set; }
+    private List<Product> _recommendedProducts = new();
+    private List<Order> _userOrders = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(!firstRender) { return; }
+
+        var orders = await OrderService.GetAllOrdersAsync();
+
+        var firebaseAuthUserId = FirebaseAuthClient.User.Uid;
+
+        if (firebaseAuthUserId is null) { return; }
+
+        var user = await UserService.GetUserByIdAsync(firebaseAuthUserId);
+
+        var userOrders = orders.Where(o => o.User.Id == user.Id).ToList();
+
+        var lastOrder = userOrders
+            .OrderByDescending(o => o.OrderDate)
+            .FirstOrDefault();
+
+        if (lastOrder != null)
+        {
+            var genre = lastOrder.Products.FirstOrDefault().Genre;
+            _recommendedProducts = Products.Where(p => p.Genre == genre).ToList();
+            StateHasChanged();
+        }
+    }
+}
