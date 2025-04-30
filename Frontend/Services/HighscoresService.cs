@@ -1,11 +1,25 @@
 ﻿using Frontend.Models;
 using Frontend.Services.Interfaces;
+using Microsoft.JSInterop;
 using System.Net.Http;
+using System.Text.Json;
 
 namespace Frontend.Services;
 
-public class HighscoresService(HttpClient httpClient) : IHighscoresService
+public class HighscoresService : IHighscoresService
 {
+    private readonly HttpClient httpClient;
+    private readonly IJSRuntime jsRuntime;
+
+    private const string HighscoresKey = "highscores";
+    private const string TimestampKey = "highscoresTimestamp";
+
+    public HighscoresService(HttpClient httpClient, IJSRuntime jsRuntime)
+    {
+        this.httpClient = httpClient;
+        this.jsRuntime = jsRuntime;
+    }
+
     public async Task<bool> AddNewHighscoresAsync(string name)
     {
         var result = await httpClient.PostAsJsonAsync("api/highscores", name);
@@ -20,7 +34,34 @@ public class HighscoresService(HttpClient httpClient) : IHighscoresService
 
     public async Task<List<Highscores>?> GetAllHighscoresAsync()
     {
-        return await httpClient.GetFromJsonAsync<List<Highscores>>("api/highscores");
+        var json = await jsRuntime.InvokeAsync<string>("myLocalStorage.getItem", HighscoresKey);
+        var timestampString = await jsRuntime.InvokeAsync<string>("myLocalStorage.getItem", TimestampKey);
+
+        if (!string.IsNullOrEmpty(json) && long.TryParse(timestampString, out var ticks))
+        {
+            var savedTime = new DateTime(ticks);
+            if ((DateTime.UtcNow - savedTime).TotalHours < 24)
+            {
+                try
+                {
+                    var cachedHighscores = JsonSerializer.Deserialize<List<Highscores>>(json);
+                    if (cachedHighscores != null)
+                        return cachedHighscores;
+                }
+                catch
+                {
+
+                }
+            }
+        }
+
+        var highscores = await httpClient.GetFromJsonAsync<List<Highscores>>("api/highscores") ?? new List<Highscores>();
+
+        var highscoresJson = JsonSerializer.Serialize(highscores);
+        await jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", HighscoresKey, highscoresJson);
+        await jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", TimestampKey, DateTime.UtcNow.Ticks.ToString());
+
+        return highscores;
     }
 
     public async Task<Highscores?> GetHighscoresAsync(string highscoresId)
