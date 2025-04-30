@@ -46,7 +46,7 @@ else
                         <LeaveComment PostId="@PostId" OnCommentSubmitted="RefreshPost"/>
                     </div>
                 </div>
-                @if (CurrentUserEmail == ForumPost.Author.Email)
+                @if (CurrentUserEmail == ForumPost.Author.Email || IsCurrentUserAdmin)
                 {
                     <div class="mt-4">
                         <button class="btn btn-outline-light" @onclick="DeletePost">
@@ -70,6 +70,10 @@ else
                             <div class="mb-2 text-light">@comment.Comment</div>
                             <small>By @comment.User.Email</small>
                         </div>
+                        @if (IsCurrentUserAdmin)
+                        {
+                            <button class="btn btn-outline-danger mb-4" @onclick="() => DeleteComment(comment)" >Delete Comment</button>
+                        }
                     }
                 </div>
             }
@@ -79,6 +83,14 @@ else
             }
         </div>
     </div>
+    
+    <style>
+        article.content {
+            flex: 1;
+            padding: 2rem;
+            overflow-y: hidden;
+        }
+    </style>
 }
 
 @code {
@@ -86,7 +98,8 @@ else
 
     private ForumPost? ForumPost { get; set; }
     private string CurrentUserEmail { get; set; }
-
+    private bool IsCurrentUserAdmin { get; set; }
+    
     protected override async Task OnInitializedAsync()
     {
         try
@@ -115,7 +128,7 @@ else
                 var firebaseAuthUserId = FirebaseAuthClient.User.Uid;
                 var user = await UserService.GetUserByIdAsync(firebaseAuthUserId);
                 CurrentUserEmail = user.Email;
-
+                IsCurrentUserAdmin = user.Role == "admin";
                 StateHasChanged();
             } 
         }
@@ -137,6 +150,13 @@ else
     {
         ForumPost = await ForumService.GetForumPostByIdAsync(PostId);
         StateHasChanged();
+    }
+
+    private async Task DeleteComment(ForumComment forumComment)
+    {
+        await ForumService.DeleteForumPostComment(PostId, forumComment);
+
+        await RefreshPost();
     }
 
 }
