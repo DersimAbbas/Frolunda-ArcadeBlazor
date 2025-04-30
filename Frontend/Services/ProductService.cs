@@ -32,8 +32,8 @@ public class ProductService : IProductService
 
     public async Task<List<Product>> GetAllProductsAsync()
     {
-        var json = await jsRuntime.InvokeAsync<string>("LocalStorage.getItem", ProductsKey);
-        var timestampString = await jsRuntime.InvokeAsync<string>("LocalStorage.getItem", TimestampKey);
+        var json = await jsRuntime.InvokeAsync<string>("myLocalStorage.getItem", ProductsKey);
+        var timestampString = await jsRuntime.InvokeAsync<string>("myLocalStorage.getItem", TimestampKey);
 
         if (!string.IsNullOrEmpty(json) && long.TryParse(timestampString, out var ticks))
         {
@@ -56,8 +56,8 @@ public class ProductService : IProductService
         var products = await httpClient.GetFromJsonAsync<List<Product>>("api/products") ?? new List<Product>();
 
         var productJson = JsonSerializer.Serialize(products);
-        await jsRuntime.InvokeVoidAsync("LocalStorage.setItem", ProductsKey, productJson);
-        await jsRuntime.InvokeVoidAsync("LocalStorage.setItem", TimestampKey, DateTime.UtcNow.Ticks.ToString());
+        await jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", ProductsKey, productJson);
+        await jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", TimestampKey, DateTime.UtcNow.Ticks.ToString());
 
         return products;
     }
