@@ -21,7 +21,7 @@ public class CartService(HttpClient httpClient) : ICartService
         {
             var result = await httpClient.PostAsJsonAsync("api/carts", cart);
             Console.ForegroundColor = ConsoleColor.Green;
-            Console.WriteLine($"Carts Value: {cart.CartItems}, {cart.User.Id}");
+            Console.WriteLine($"Carts Value: {cart.cartItems.Values}, {cart.UserId}");
             Console.ResetColor();
             return result.IsSuccessStatusCode;
         }

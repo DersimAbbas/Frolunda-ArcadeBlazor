@@ -70,11 +70,11 @@
                 <span class="bi bi-pin-map-fill" aria-hidden="true"></span> Contact
             </NavLink>
         </div>
-            
+
         <AuthorizeView>
             <Authorized>
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link" @onclick="FirebaseAuthService.Logout" href="#" Match="NavLinkMatch.All">
+                    <NavLink class="nav-link" @onclick="OnSignOutClicked" href="#" Match="NavLinkMatch.All">
                         <span class="bi bi-door-open" aria-hidden="true"></span> Logout
                     </NavLink>
                 </div>
@@ -97,12 +97,12 @@
     private async Task OnSignOutClicked()
     {
         await cartStorage.LoadCartAsync();
-        Cart.CartItems = cartStorage.Cart;
+        Cart.cartItems = cartStorage.Cart;
         bool saveCart = await confirmed.ShowAsync(
        "Leaving So Soon?",
        "Do you want to save your shopping cart for your next session?"
        );
-        if (saveCart && Cart.CartItems.Count > 0)
+        if (saveCart && Cart.cartItems.Count > 0)
         {
             var token = await JsRuntime.InvokeAsync<string>("getCookie", "token");
 
@@ -113,14 +113,14 @@
                 if (tokenVerified && FirebaseAuthClient.User is not null)
                 {
                     var firebaseAuthUserId = FirebaseAuthClient.User.Uid;
-                    
 
-                    Cart.User = new Frontend.Models.User
-                        {
-                            Id = firebaseAuthUserId,
-                        };
+                    Cart.UserId = firebaseAuthUserId;
+
                 }
             }
+
+                   
+                   
             await CartService.AddCart(Cart);
         }
         await cartStorage.ClearCartAsync();

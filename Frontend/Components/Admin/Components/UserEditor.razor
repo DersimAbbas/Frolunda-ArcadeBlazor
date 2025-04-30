@@ -192,10 +192,10 @@ else
             _expandedUserId = null;
             _userOrders.Clear();
 
-            var cart = Carts.FirstOrDefault(c => c.User.Id == userId);
+            var cart = Carts.FirstOrDefault(c => c.UserId == userId);
             if (cart != null)
             {
-                _userCartItems = cart.CartItems;
+                _userCartItems = cart.cartItems;
             }
         }
     }
