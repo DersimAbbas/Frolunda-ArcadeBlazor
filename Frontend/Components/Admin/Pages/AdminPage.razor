@@ -39,7 +39,7 @@
 }
 else if(IsViewingUsers)
 {
-    <UserEditor Users="_users" Orders="_orders" Carts="_carts"/>
+    <UserEditor/>
 }
 else if(IsViewingHighscores)
 {
@@ -49,9 +49,6 @@ else if(IsViewingHighscores)
 @code {
     private List<Product>? _products = new();
     private List<Product> _filteredProducts = new();
-    private List<Order>? _orders = new();
-    private List<User>? _users = new();
-    private List<Cart>? _carts = new();
     private List<Highscores>? _highscores = new();
 
     private bool _isViewingProducts = true;
@@ -108,9 +105,6 @@ else if(IsViewingHighscores)
     protected override async Task OnInitializedAsync()
     {
         _products = await ProductService.GetAllProductsAsync();
-        _users = await UserService.GetAllUsersAsync();
-        _orders = await OrderService.GetAllOrdersAsync();
-        _carts = await CartService.GetAllCartsAsync();
         _highscores = await HighscoresService.GetAllHighscoresAsync();
 
         StateHasChanged();
