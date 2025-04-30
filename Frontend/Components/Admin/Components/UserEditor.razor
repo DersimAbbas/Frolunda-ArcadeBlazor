@@ -38,21 +38,21 @@ else
             @foreach (var user in paginatedUsers)
             {
                 <tr>
-                    <td><input class="form-control" @bind="user.Email" /></td>
+                    <td><input class="form-control" id="@user.Email" @bind="user.Email" /></td>
                     <td><input class="form-control" @bind="user.FirstName" /></td>
                     <td><input class="form-control" @bind="user.LastName" /></td>
                     <td><input class="form-control" @bind="user.Id" /></td>
                     <td><input class="form-control" @bind="user.Address" /></td>
                     <td><input class="form-control" @bind="user.PhoneNumber" /></td>
                     <td>
-                        <select class="form-select" @bind="user.Role">
+                        <select class="form-select"id="role-select" @bind="user.Role">
                             <option value="user">User</option>
                             <option value="admin">Admin</option>
                         </select>
                     </td>
                     <td class="text-center align-middle">
                         <div class="d-flex flex-column gap-1" style="min-width: 120px;">
-                            <button class="btn btn-success btn-sm w-100" @onclick="() => UpdateUser(user)">Update</button>
+                            <button id="Update-button" class="btn btn-success btn-sm w-100" @onclick="() => UpdateUser(user)">Update</button>
                             <button class="btn btn-danger btn-sm w-100" @onclick="() => DeleteUser(user)">Delete</button>
                             <button class="btn btn-secondary btn-sm w-100" @onclick="() => ToggleExpanded(user.Id)">
                                 @(_expandedUserId == user.Id ? "▼ Hide Orders" : "▲ Show Orders")
@@ -121,8 +121,8 @@ else
                                         {
                                             <tr>
                                                 <!--Bind other properties when endpoints are fixed-->
-                                                <td>@item.Name</td>
-                                                <td>@item.Price</td>
+                                                <td>@item.Key</td>
+                                                <td>@item.Value</td>
                                             </tr>
                                         }
                                     </tbody>
@@ -145,11 +145,18 @@ else
         <span>Page @_currentPage of @TotalPages</span>
         <button class="btn btn-secondary" @onclick="GoToNextPage" disabled="@IsLastPage">Next</button>
     </div>
+
+    <ConfirmDialog @ref="_confirmDialogRef" />
+    <MessageDialog @ref="_messageDialog" />
 }
 
 @code {
-    private List<User>? _users = new();
-    private List<Order>? _orders = new();
+    private List<User>? _users { get; set; }
+    private List<Cart>? _carts { get; set; }
+    private List<Order>? _orders { get; set; }
+
+    private ConfirmDialog? _confirmDialogRef;
+    private MessageDialog? _messageDialog;
 
     private string _searchEmail = string.Empty;
     private string _searchId = string.Empty;
@@ -161,18 +168,10 @@ else
     private List<Order> _userOrders = new();
 
     private string? _expandedCartUserId = null;
-    private List<CartProductDto> _userCartItems = new();
-    private List<Cart>? _carts = new();
+    private Dictionary<string, int> _userCartItems = new();
 
-    protected override async Task OnInitializedAsync()
-    {
-        _users = await UserService.GetAllUsersAsync();
-        _orders = await OrderService.GetAllOrderAsync();
-        _carts = await CartService.GetAllCartsAsync();
-        
-    }
-
-    private List<User> filteredUsers => _users
+    private List<User> filteredUsers => _users == null ? new List<User>() :
+    _users
         .Where(u =>
             (string.IsNullOrWhiteSpace(_searchEmail) || u.Email.Contains(_searchEmail, StringComparison.OrdinalIgnoreCase)) &&
             (string.IsNullOrWhiteSpace(_searchId) || u.Id.Contains(_searchId, StringComparison.OrdinalIgnoreCase)))
@@ -187,6 +186,17 @@ else
     private bool IsFirstPage => _currentPage == 1;
     private bool IsLastPage => _currentPage == TotalPages;
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _users = await UserService.GetAllUsersAsync();
+            _orders = await OrderService.GetAllOrdersAsync();
+            _carts = await CartService.GetAllCartsAsync();
+            StateHasChanged();
+        }
+    }
+
     private void ToggleCart(string userId)
     {
         if (_expandedCartUserId == userId)
@@ -200,10 +210,14 @@ else
             _expandedUserId = null;
             _userOrders.Clear();
 
-            var cart = _carts.FirstOrDefault(c => c.User.Id == userId);
+
+            
+
+            var cart = _carts.FirstOrDefault(c => c.UserId == userId);
+
             if (cart != null)
             {
-                _userCartItems = cart.CartItems;
+                _userCartItems = cart.cartItems;
             }
         }
     }
@@ -225,14 +239,37 @@ else
 
         if (responseRole && responseUpdateUser)
         {
-            //Give prompt
+            var index = _users.FindIndex(u => u.Id == user.Id);
+            if (index != -1)
+            {
+                _users[index] = user;
+            }
+            await _messageDialog!.ShowAsync(
+            "User Updated",
+            $"User with id: {user.Id} updated"
+            );
         }
         
     }
 
     private async Task DeleteUser(User user)
     {
-        //TODO Add logic
+        var confirmed = await _confirmDialogRef!.ShowAsync(
+        "Delete Product",
+        $"Are you sure you want to delete user with id: {user.Id}?"
+        );
+        if (!confirmed)
+            return;
+        var response = await UserService.DeleteUser(user.Id);
+
+        if (response)
+        {
+            _users = _users.Where(u => u.Id != user.Id).ToList();
+            await _messageDialog!.ShowAsync(
+            "User Deleted",
+            $"User with id: {user.Id} deleted"
+            );
+        }
     }
 
     private void ToggleExpanded(string userId)

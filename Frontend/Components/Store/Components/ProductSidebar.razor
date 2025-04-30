@@ -10,7 +10,7 @@
         {
             <h3>@Product.Name</h3>
             <hr />
-            <p><strong>Price:</strong> $@Product.Price.ToString("C", CultureInfo.CurrentCulture)</p>
+            <p><strong>Price:</strong> @Product.Price.ToString("C", CultureInfo.CurrentCulture)</p>
             <div class="d-flex justify-content-between align-items-center">
                 <button class="btn btn-primary" @onclick="() => LocalCartStorageService.AddToCart(Product)">Add to Cart</button>
             </div>

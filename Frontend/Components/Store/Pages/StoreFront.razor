@@ -4,6 +4,7 @@
 @using Frontend.Services
 @using Frontend.Components.Store.Components
 @inject HttpClient http
+@inject IJSRuntime JsRuntime
 
 <FilterBar Filter="@currentFilter" OnApplyFilters="HandleFilterApplied" />
 <ProductCard Name="testone" Genre="Action" Price="12.99" Description="Thrilling action game" />
@@ -11,11 +12,11 @@
 @if(@filterTest == false){
 @foreach (var product in allProducts)
 {
-    <ProductCard Name="@product.Name" Genre="@product.Genre" Price="@product.Price" Description="@product.Description" ImageLink="@product.ImageLink" />
+    <ProductCard Name="@product.Name" Genre="@product.Genre" Price="@product.Price" Description="@product.Description" ImageLink="@product.ImageLink" ButtonId1="@product.Id" ButtonId2="@product.Name"/>
 }}else
 @foreach (var product in filteredProducts)
 {
-    <ProductCard Name="@product.Name" Genre="@product.Genre" Price="@product.Price" Description="@product.Description" ImageLink="@product.ImageLink" />
+        <ProductCard Name="@product.Name" Genre="@product.Genre" Price="@product.Price" Description="@product.Description" ImageLink="@product.ImageLink" ButtonId1="@product.Id" ButtonId2="@product.Name" />
 }
 
 @code {
@@ -26,7 +27,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        ProductService productService = new ProductService(http);
+        ProductService productService = new ProductService(http, JsRuntime);
 
         allProducts = await productService.GetAllProductsAsync();
 

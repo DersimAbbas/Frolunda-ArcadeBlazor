@@ -1,0 +1,179 @@
+﻿@using Frontend.Models
+@using Frontend.Services.Interfaces
+@inject IHighscoresService HighscoresService
+
+@if (HighscoresList == null || HighscoresList.Count == 0)
+{
+    <div class="text-center">
+        <img src="images/no-results.png" alt="No highscores found" style="max-height: 300px;" />
+        <p class="text-muted">No highscores available.</p>
+    </div>
+}
+else
+{
+    <table class="table table-bordered align-middle text-light">
+        <thead class="table-dark">
+            <tr>
+                <th>Game</th>
+                <th>Users & Scores</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var hs in _paginatedHighscores)
+            {
+                <tr>
+                    <td>@hs.Name</td>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-secondary mb-1" @onclick="() => ToggleExpanded(hs.Id)">
+                            @(_expandedRows.Contains(hs.Id) ? "▲" : "▼")
+                        </button>
+                        @if (_expandedRows.Contains(hs.Id))
+                        {
+                            <div class="mt-2 text-start">
+                                <table class="table table-sm table-striped text-light border">
+                                    <thead>
+                                        <tr>
+                                            <th>User</th>
+                                            <th>Score</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @for (int i = 0; i < hs.UserScores.Count; i++)
+                                        {
+                                            var entry = hs.UserScores.ElementAt(i);
+                                            <tr>
+                                                <td>
+                                                    <div id="user-@hs.Id-@i" class="form-control form-control-sm bg-white" style="pointer-events: none;">
+                                                        @entry.Key
+                                                    </div>
+                                                </td>
+                                                <td>
+                                                    <input id="score-@hs.Id-@i" type="number" class="form-control form-control-sm"
+                                                    @bind="hs.UserScores[entry.Key]" />
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            </div>
+
+                            <div class="mt-3">
+                                <div class="input-group input-group-sm">
+                                    <input id="new-user-@hs.Id" class="form-control" placeholder="User ID" @bind="_newUserID" />
+                                    <button id="add-user-btn-@hs.Id" class="btn btn-outline-success" @onclick="() => AddUserScore(hs)">Add</button>
+                                </div>
+                            </div>
+                        }
+                    </td>
+                    <td class="text-center align-middle">
+                        <button id="update-btn-@hs.Id" class="btn btn-success btn-sm w-100" @onclick="() => UpdateHighscoreAsync(hs)">Update</button>
+                        <button id="delete-btn-@hs.Id" class="btn btn-danger btn-sm w-100" @onclick="() => DeleteHighscoresAsync(hs.Id)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        <button class="btn btn-secondary" @onclick="PreviousPage" disabled="@_isFirstPage">Previous</button>
+        <span>Page @_currentPage of @_totalPages</span>
+        <button class="btn btn-secondary" @onclick="NextPage" disabled="@_isLastPage">Next</button>
+    </div>
+}
+
+<button id="add-highscores-btn" class="btn btn-primary mt-3" @onclick="() => _showAddDialog = true">Add Highscores Object</button>
+
+<AddHighscoresDialog Visible="_showAddDialog"
+OnCancel="() => _showAddDialog = false"
+OnAdd="AddHighscoresAsync" />
+
+<ConfirmDialog @ref="_confirmDialogRef" />
+
+@code {
+    [Parameter] public List<Highscores> HighscoresList { get; set; } = new();
+    [Parameter] public EventCallback OnChange { get; set; }
+
+    private HashSet<string> _expandedRows = new();
+
+    private string _newUserID = string.Empty;
+
+    private int _pageSize = 10;
+    private int _currentPage = 1;
+
+    private bool _showAddDialog = false;
+
+    private ConfirmDialog? _confirmDialogRef;
+
+    private IEnumerable<Highscores> _paginatedHighscores =>
+        HighscoresList.Skip((_currentPage - 1) * _pageSize).Take(_pageSize);
+
+    private int _totalPages => Math.Max(1, (int)Math.Ceiling((double)HighscoresList.Count / _pageSize));
+    private bool _isFirstPage => _currentPage == 1;
+    private bool _isLastPage => _currentPage == _totalPages;
+
+    private void PreviousPage() => _currentPage = Math.Max(_currentPage - 1, 1);
+    private void NextPage() => _currentPage = Math.Min(_currentPage + 1, _totalPages);
+
+    private async Task UpdateHighscoreAsync(Highscores hs)
+    {
+        foreach (var entry in hs.UserScores)
+        {
+            await HighscoresService.UpdateUserHighscoreAsync(hs.Id, entry.Key, entry.Value);
+        }
+
+        await OnChange.InvokeAsync();
+    }
+
+    private async Task DeleteHighscoresAsync(string id)
+    {
+        var confirmed = await _confirmDialogRef!.ShowAsync(
+        "Delete Highscore",
+        $"Are you sure you want to delete highscores object with id: {id}?"
+        );
+
+        if(confirmed)
+        {
+            await HighscoresService.DeleteHighscoresAsync(id);
+            await OnChange.InvokeAsync();
+        }
+    }
+
+    private async Task AddHighscoresAsync(string name)
+    {
+        var response = await HighscoresService.AddNewHighscoresAsync(name);
+        _showAddDialog = false;
+        await OnChange.InvokeAsync();
+    }
+
+    private void ToggleExpanded(string id)
+    {
+        if (!_expandedRows.Add(id))
+        {
+            _expandedRows.Remove(id);
+        }
+        else
+        {
+            _expandedRows.Clear();
+            _expandedRows.Add(id);
+        }
+    }
+
+    private async Task AddUserScore(Highscores hs)
+    {
+        //Change to username when implemented
+        var Id = _newUserID.Trim();
+
+        if (string.IsNullOrWhiteSpace(Id) || hs.UserScores.ContainsKey(Id))
+            return;
+
+        var response = await HighscoresService.UpdateUserHighscoreAsync(hs.Id, Id, 0);
+        if (!response) { return; }
+
+        hs.UserScores.Add(Id, 0);
+        _newUserID = string.Empty;
+
+        StateHasChanged();
+    }
+}

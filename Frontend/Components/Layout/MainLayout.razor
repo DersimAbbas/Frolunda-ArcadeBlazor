@@ -1,7 +1,7 @@
 ﻿@using Frontend.Components.Layout
 @using Frontend.Components
 @inherits LayoutComponentBase
-
+@using Frontend.Components.User.Components
 <Header />
 <div class="page">
     <main>
@@ -13,6 +13,9 @@
             @Body
         </article>
     </main>
+    @*To be fixed: <div class="position-absolute bottom-0 start-50 translate-middle-x w-100 h-25">
+        <Footer />
+    </div> *@
 </div>
 @* Required *@
 <MudThemeProvider />
@@ -33,3 +36,4 @@
 <script src="/js/ScrollCarousel.js"></script>
 
 <script src="js/cart.js"></script>
+

@@ -1,7 +1,15 @@
-﻿@using Frontend.Services
+﻿@using Blazored.LocalStorage
+@using Firebase.Auth
+@using Frontend.Models
+@using Frontend.Services
 @using Frontend.Services.Interfaces
 @using Microsoft.AspNetCore.Components.Authorization
 @inject IFirebaseAuthService FirebaseAuthService
+@inject ILocalCartStorageService cartStorage
+@inject ICartService CartService
+@inject IJSRuntime JsRuntime
+@inject FirebaseAuthClient FirebaseAuthClient
+<ConfirmDialog @ref="confirmed" />
 <input type="checkbox" title="Navigation menu" class="navbar-toggler" />
 
 <div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
@@ -11,11 +19,15 @@
                 <span class="bi bi-house" aria-hidden="true"></span> Home
             </NavLink>
         </div>
-        
+
         <AuthorizeView>
             <NotAuthorized>
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/login" Match="NavLinkMatch.All">
+
+
+
+                    <NavLink class="nav-link" id="nav-login" href="/login" Match="NavLinkMatch.All">
+
                         <span class="bi bi-box-arrow-in-right" aria-hidden="true"></span> Login
                     </NavLink>
                 </div>
@@ -35,13 +47,13 @@
         <AuthorizeView Roles="admin">
             <Authorized>
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/admin-page" Match="NavLinkMatch.All">
+                    <NavLink class="nav-link" id="nav-admin" href="/admin-page" Match="NavLinkMatch.All">
                         <span class="bi bi-lock" aria-hidden="true" ></span> Admin Page
                     </NavLink>
                 </div>
             </Authorized>
         </AuthorizeView>
-        
+
         <div class="nav-item px-3">
             <NavLink class="nav-link" href="/forum" Match="NavLinkMatch.All">
                 <span class="bi bi-people" aria-hidden="true"></span> Forum
@@ -53,22 +65,76 @@
             </NavLink>
         </div>
 
+        <div class="nav-item px-3">
+            <NavLink class="nav-link" href="/contact" Match="NavLinkMatch.All">
+                <span class="bi bi-pin-map-fill" aria-hidden="true"></span> Contact
+            </NavLink>
+        </div>
+
         <AuthorizeView>
             <Authorized>
                 <div class="nav-item px-3">
-                    <NavLink class="nav-link" @onclick="FirebaseAuthService.Logout" href="#"  Match="NavLinkMatch.All">
+                    <NavLink class="nav-link" @onclick="OnSignOutClicked" href="#" Match="NavLinkMatch.All">
                         <span class="bi bi-door-open" aria-hidden="true"></span> Logout
                     </NavLink>
                 </div>
             </Authorized>
         </AuthorizeView>
-       
+
     </nav>
 </div>
 
 <style>
     .nav-link span {
-        font-size: 1.2rem;
-        line-height: 1;
+    font-size: 1.2rem;
+    line-height: 1;
     }
 </style>
+
+@code {
+    private ConfirmDialog confirmed = default!;
+    private Cart Cart { get; set; } = new();
+    private async Task OnSignOutClicked()
+    {
+        await cartStorage.LoadCartAsync();
+        Cart.cartItems = cartStorage.Cart;
+        bool saveCart = await confirmed.ShowAsync(
+       "Leaving So Soon?",
+       "Do you want to save your shopping cart for your next session?"
+       );
+        if (saveCart && Cart.cartItems.Count > 0)
+        {
+            var token = await JsRuntime.InvokeAsync<string>("getCookie", "token");
+
+            if (!string.IsNullOrEmpty(token))
+            {
+                var tokenVerified = await FirebaseAuthService.VerifyTokenAsync(token);
+
+                if (tokenVerified && FirebaseAuthClient.User is not null)
+                {
+                    var firebaseAuthUserId = FirebaseAuthClient.User.Uid;
+
+                    Cart.UserId = firebaseAuthUserId;
+
+                }
+            }
+
+                   
+                   
+            await CartService.AddCart(Cart);
+        }
+        await cartStorage.ClearCartAsync();
+        await FirebaseAuthService.Logout();
+        
+    }
+}
+
+
+
+                
+            
+            
+            
+            
+
+       

@@ -3,7 +3,9 @@
 @using Frontend.Services.Interfaces
 @inject IProductService ProductService
 
-@if (Products == null || Products.Count == 0)
+<ProductSorter Products="_products" OnFilteredChanged="OnFilteredChanged" />
+
+@if (_products == null || _products.Count == 0)
 {
     <div class="text-center">
         <img src="images/no-results.png" alt="No products found" style="max-height: 300px;" />
@@ -26,7 +28,7 @@ else
             </tr>
         </thead>
         <tbody>
-            @foreach (var product in PaginatedProducts)
+            @foreach (var product in _paginatedProducts)
             {
                 <tr>
                     <td class="text-center">
@@ -43,7 +45,7 @@ else
                     </td>
                     <td><input class="form-control" @bind="product.Name" /></td>
                     <td><input class="form-control" @bind="product.Description" /></td>
-                    <td><input type="number" step="0.01" class="form-control" @bind="product.Price" /></td>
+                    <td><input type="number" step="0.01" class="form-control" id="@product.Name" @bind="product.Price" /></td>
                     <td><input class="form-control" @bind="product.Genre" /></td>
                     <td>
                         <select class="form-select" @bind="product.Status">
@@ -53,7 +55,7 @@ else
                     </td>
                     <td><input type="number" class="form-control" @bind="product.AgeRating" /></td>
                     <td class="text-center align-middle">
-                        <button class="btn btn-success btn-sm w-100" @onclick="() => UpdateProductAsync(product)">Update</button>
+                        <button class="btn btn-success btn-sm w-100" id="@product.Name+1" @onclick="() => UpdateProductAsync(product)">Update</button>
                         <button class="btn btn-danger btn-sm w-100" @onclick="() => DeleteProduct(product)">Delete</button>
                     </td>
                 </tr>
@@ -70,43 +72,61 @@ else
 <button class="btn btn-primary mt-3" @onclick="() => _showAddDialog = true">Add Product</button>
 
 <AddProductDialog Visible="_showAddDialog"
-                  OnCancel="() => _showAddDialog = false"
-                  OnAdd="AddProductAsync" />
+OnCancel="() => _showAddDialog = false"
+OnAdd="AddProductAsync" />
+
+<ConfirmDialog @ref="_confirmDialogRef" />
 
 @code {
-    [Parameter] public List<Product> Products { get; set; } = new();
-    [Parameter] public EventCallback<Product> OnUpdate { get; set; }
-    [Parameter] public EventCallback<string> OnDelete { get; set; }
-    [Parameter] public Product Product { get; set; } = default!;
-    [Parameter] public EventCallback<Product> OnAddProduct { get; set; }
+    private List<Product> _products { get; set; } = new();
+    private List<Product> _filteredProducts = new();
+
+    private ConfirmDialog? _confirmDialogRef;
+
+    private string _productsKey = "products";
 
     private HashSet<string> ExpandedRows = new();
 
     private int _pageSize = 15;
     private int _currentPage = 1;
 
-    private IEnumerable<Product> PaginatedProducts =>
-        Products.Skip((_currentPage - 1) * _pageSize).Take(_pageSize);
+    private IEnumerable<Product> _paginatedProducts =>
+        _filteredProducts.Skip((_currentPage - 1) * _pageSize).Take(_pageSize);
 
-    private int TotalPages => Math.Max(1, (int)Math.Ceiling((double)Products.Count / _pageSize));
+    private int TotalPages => Math.Max(1, (int)Math.Ceiling((double)_filteredProducts.Count / _pageSize));
     private bool IsFirstPage => _currentPage == 1;
     private bool IsLastPage => _currentPage == TotalPages;
 
     private bool _showAddDialog = false;
 
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(firstRender)
+        {
+            await LoadProductsAsync();
+            _filteredProducts = _products;
+            StateHasChanged();
+        }
+    }
+
     private async Task AddProductAsync(Product newProduct)
     {
-        await ProductService.AddProduct(newProduct);
-        await OnAddProduct.InvokeAsync(newProduct);
+        var result = await ProductService.AddProduct(newProduct);
         _showAddDialog = false;
 
-        await LoadProductsAsync();
-        StateHasChanged();
+        if(result)
+        {
+            _products.Add(newProduct);
+            _filteredProducts.Add(newProduct);
+            StateHasChanged();
+        }
     }
 
     private async Task LoadProductsAsync()
     {
-        Products = await ProductService.GetAllProductsAsync();
+        _products = await ProductService.GetAllProductsAsync();
+        _filteredProducts = _products;
+        _currentPage = 1;
     }
 
     private void PreviousPage()
@@ -132,16 +152,39 @@ else
     private async Task UpdateProductAsync(Product product)
     {
         var response = await ProductService.UpdateProduct(product.Id, product);
+        if (response)
+        {
+            var index = _products.FindIndex(p => p.Id == product.Id);
+            if (index != -1)
+            {
+                _products[index] = product;
+                _filteredProducts[index] = product;
+                StateHasChanged();
+            }
+        }
     }
 
     private async Task DeleteProduct(Product product)
     {
+        var confirmed = await _confirmDialogRef!.ShowAsync(
+        "Delete Product",
+        $"Are you sure you want to delete {product.Name}?"
+        );
+        if (!confirmed)
+            return;
+
         var response = await ProductService.DeleteProduct(product.Id);
-        await LoadProductsAsync();
-        StateHasChanged();
+        if (response)
+        {
+            _products.Remove(product);
+            _filteredProducts.Remove(product);
+            StateHasChanged();
+        }
     }
 
-
-        
-        
+    private void OnFilteredChanged(List<Product> filtered)
+    {
+        _filteredProducts = filtered;
+        _currentPage = 1;
+    }
 }
