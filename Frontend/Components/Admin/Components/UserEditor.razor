@@ -121,8 +121,8 @@ else
                                         {
                                             <tr>
                                                 <!--Bind other properties when endpoints are fixed-->
-                                                <td>@item.Name</td>
-                                                <td>@item.Price</td>
+                                                <td>@item.Key</td>
+                                                <td>@item.Value</td>
                                             </tr>
                                         }
                                     </tbody>
@@ -162,7 +162,7 @@ else
     private List<Order> _userOrders = new();
 
     private string? _expandedCartUserId = null;
-    private List<CartProductDto> _userCartItems = new();
+    private Dictionary<string, int> _userCartItems = new();
 
     private List<User> filteredUsers => Users
         .Where(u =>

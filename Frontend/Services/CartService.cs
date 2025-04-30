@@ -17,8 +17,21 @@ public class CartService(HttpClient httpClient) : ICartService
 
     public async Task<bool> AddCart(Cart cart)
     {
-        var result = await httpClient.PostAsJsonAsync("api/carts", cart);
-        return result.IsSuccessStatusCode;
+        try
+        {
+            var result = await httpClient.PostAsJsonAsync("api/carts", cart);
+            Console.ForegroundColor = ConsoleColor.Green;
+            Console.WriteLine($"Carts Value: {cart.CartItems}, {cart.User.Id}");
+            Console.ResetColor();
+            return result.IsSuccessStatusCode;
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine(ex.Message);
+            return false;
+            
+        }
+        
     }
 
     public async Task<bool> UpdateCart(string id, Cart cart)
