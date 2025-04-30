@@ -4,6 +4,7 @@
 @using Frontend.Services
 @using Frontend.Components.Store.Components
 @inject HttpClient http
+@inject IJSRuntime JsRuntime
 
 <FilterBar Filter="@currentFilter" OnApplyFilters="HandleFilterApplied" />
 <ProductCard Name="testone" Genre="Action" Price="12.99" Description="Thrilling action game" />
@@ -26,7 +27,7 @@
 
     protected override async Task OnInitializedAsync()
     {
-        ProductService productService = new ProductService(http);
+        ProductService productService = new ProductService(http, JsRuntime);
 
         allProducts = await productService.GetAllProductsAsync();
 

@@ -1,10 +1,25 @@
 using Frontend.Models;
 using Frontend.Services.Interfaces;
+using Microsoft.JSInterop;
+using System.Text.Json;
+
 
 namespace Frontend.Services;
 
-public class ProductService(HttpClient httpClient) : IProductService
+public class ProductService : IProductService
 {
+    private readonly HttpClient httpClient;
+    private readonly IJSRuntime jsRuntime;
+
+    private const string ProductsKey = "products";
+    private const string TimestampKey = "productsTimestamp";
+
+    public ProductService(HttpClient httpClient, IJSRuntime jsRuntime)
+    {
+        this.httpClient = httpClient;
+        this.jsRuntime = jsRuntime;
+    }
+
     public async Task<Product?> GetProductByIdAsync(string id)
     {
         return await httpClient.GetFromJsonAsync<Product>($"api/products/{id}");
@@ -15,10 +30,36 @@ public class ProductService(HttpClient httpClient) : IProductService
         return await httpClient.GetFromJsonAsync<Product>($"api/products/{name}");
     }
 
-    public async Task<List<Product>?> GetAllProductsAsync()
+    public async Task<List<Product>> GetAllProductsAsync()
     {
-        var response = await httpClient.GetFromJsonAsync<List<Product>>("api/products");
-        return response ?? new List<Product>();
+        var json = await jsRuntime.InvokeAsync<string>("myLocalStorage.getItem", ProductsKey);
+        var timestampString = await jsRuntime.InvokeAsync<string>("myLocalStorage.getItem", TimestampKey);
+
+        if (!string.IsNullOrEmpty(json) && long.TryParse(timestampString, out var ticks))
+        {
+            var savedTime = new DateTime(ticks);
+            if ((DateTime.UtcNow - savedTime).TotalHours < 24)
+            {
+                try
+                {
+                    var cachedProducts = JsonSerializer.Deserialize<List<Product>>(json);
+                    if (cachedProducts != null)
+                        return cachedProducts;
+                }
+                catch
+                {
+                    
+                }
+            }
+        }
+
+        var products = await httpClient.GetFromJsonAsync<List<Product>>("api/products") ?? new List<Product>();
+
+        var productJson = JsonSerializer.Serialize(products);
+        await jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", ProductsKey, productJson);
+        await jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", TimestampKey, DateTime.UtcNow.Ticks.ToString());
+
+        return products;
     }
 
     public async Task<List<Review>?> GetReviewsByProductIdAsync(string id)
