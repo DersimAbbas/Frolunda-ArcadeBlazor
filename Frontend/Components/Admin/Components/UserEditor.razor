@@ -148,9 +148,9 @@ else
 }
 
 @code {
-    [Parameter] public List<User>? Users { get; set; }
-    [Parameter] public List<Order>? Orders { get; set; }
-    [Parameter] public List<Cart>? Carts { get; set; }
+    private List<User>? _users { get; set; }
+    private List<Cart>? _carts { get; set; }
+    private List<Order>? _orders { get; set; }
 
     private string _searchEmail = string.Empty;
     private string _searchId = string.Empty;
@@ -164,7 +164,8 @@ else
     private string? _expandedCartUserId = null;
     private List<CartProductDto> _userCartItems = new();
 
-    private List<User> filteredUsers => Users
+    private List<User> filteredUsers => _users == null ? new List<User>() :
+    _users
         .Where(u =>
             (string.IsNullOrWhiteSpace(_searchEmail) || u.Email.Contains(_searchEmail, StringComparison.OrdinalIgnoreCase)) &&
             (string.IsNullOrWhiteSpace(_searchId) || u.Id.Contains(_searchId, StringComparison.OrdinalIgnoreCase)))
@@ -179,6 +180,13 @@ else
     private bool IsFirstPage => _currentPage == 1;
     private bool IsLastPage => _currentPage == TotalPages;
 
+    protected override async Task OnInitializedAsync()
+    {
+        _users = await UserService.GetAllUsersAsync();
+        _orders = await OrderService.GetAllOrdersAsync();
+        _carts = await CartService.GetAllCartsAsync();
+    }
+
     private void ToggleCart(string userId)
     {
         if (_expandedCartUserId == userId)
@@ -192,7 +200,7 @@ else
             _expandedUserId = null;
             _userOrders.Clear();
 
-            var cart = Carts.FirstOrDefault(c => c.User.Id == userId);
+            var cart = _carts.FirstOrDefault(c => c.User.Id == userId);
             if (cart != null)
             {
                 _userCartItems = cart.CartItems;
@@ -240,7 +248,7 @@ else
             _expandedCartUserId = null;
             _userOrders.Clear();
 
-            var user = Users.FirstOrDefault(u => u.Id == userId);
+            var user = _users.FirstOrDefault(u => u.Id == userId);
             if (user != null)
             {
                 _userOrders = GetUserOrders(user);
@@ -250,6 +258,6 @@ else
 
     private List<Order> GetUserOrders(User user)
     {
-        return Orders.Where(o => o.User.Id == user.Id).ToList();
+        return _orders.Where(o => o.User.Id == user.Id).ToList();
     }
 }

@@ -13,18 +13,18 @@
 
 <h3 class="welcome-text" id="admin-page">Admin Page</h3>
 
-<div class="d-flex justify-content-center mb-5">
+<div id="products-button" class="d-flex justify-content-center mb-5">
     <button class="btn me-2 @(IsViewingProducts ? "btn-primary" : "btn-outline-primary")"
     @onclick="() => IsViewingProducts = true">
         View Products
     </button>
 
-    <button id="user-button"class="btn @(IsViewingUsers ? "btn-outline-primary" : "btn-primary")"
+    <button id="user-button" class="btn me-2 @(IsViewingUsers ? "btn-outline-primary" : "btn-primary")"
         @onclick="() => IsViewingUsers = true">
         View Users
     </button>
 
-    <button class="btn @(IsViewingHighscores ? "btn-outline-primary" : "btn-primary")"
+    <button id="highscores-button" class="btn @(IsViewingHighscores ? "btn-outline-primary" : "btn-primary")"
     @onclick="() => IsViewingHighscores = true">
         View Highscores
     </button>
@@ -39,7 +39,7 @@
 }
 else if(IsViewingUsers)
 {
-    <UserEditor Users="_users" Orders="_orders" Carts="_carts"/>
+    <UserEditor/>
 }
 else if(IsViewingHighscores)
 {
@@ -49,9 +49,6 @@ else if(IsViewingHighscores)
 @code {
     private List<Product>? _products = new();
     private List<Product> _filteredProducts = new();
-    private List<Order>? _orders = new();
-    private List<User>? _users = new();
-    private List<Cart>? _carts = new();
     private List<Highscores>? _highscores = new();
 
     private bool _isViewingProducts = true;
@@ -108,9 +105,6 @@ else if(IsViewingHighscores)
     protected override async Task OnInitializedAsync()
     {
         _products = await ProductService.GetAllProductsAsync();
-        _users = await UserService.GetAllUsersAsync();
-        _orders = await OrderService.GetAllOrdersAsync();
-        _carts = await CartService.GetAllCartsAsync();
         _highscores = await HighscoresService.GetAllHighscoresAsync();
 
         StateHasChanged();
