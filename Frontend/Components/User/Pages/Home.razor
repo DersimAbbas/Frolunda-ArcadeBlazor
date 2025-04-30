@@ -1,4 +1,5 @@
 ﻿@page "/"
+@using Frontend.Components.User.Components
 @inject NavigationManager Navigation
 
 <PageTitle>Home</PageTitle>
@@ -18,3 +19,26 @@
         <button type="button" class="arcade-btn w-auto" @onclick='() => Navigation.NavigateTo("/store-front")'><span class="arcade-text">View Products</span></button>
     </div>
 </div>
+
+<div class="mt-5">
+    <h3 class="text-center generic-text mb-4">Upcoming Events</h3>
+    <EventCarousel Events="@DemoEvents" AutoScrollInterval="5000" />
+</div>
+
+@code {
+    private List<EventCarousel.Event> DemoEvents = new()
+    {
+        new EventCarousel.Event { Name = "Retro Game Night", Description = "Play classics all evening!", Date = DateTime.Today.AddDays(1), Participants = new() },
+        new EventCarousel.Event { Name = "Street Fighter Showdown", Description = "Who’s the best fighter?", Date = DateTime.Today.AddDays(3), Participants = new() },
+        new EventCarousel.Event { Name = "Mario Kart Madness", Description = "Fast-paced kart battles!", Date = DateTime.Today.AddDays(5), Participants = new() },
+        new EventCarousel.Event { Name = "Indie Game Expo", Description = "Discover local devs' creations", Date = DateTime.Today.AddDays(7), Participants = new() },
+        new EventCarousel.Event { Name = "LAN Party Weekend", Description = "Bring your rig and join the fun!", Date = DateTime.Today.AddDays(9), Participants = new() },
+        new EventCarousel.Event { Name = "Pinball Tournament", Description = "Compete for the highest score!", Date = DateTime.Today.AddDays(11), Participants = new() },
+        new EventCarousel.Event { Name = "VR Experience Night", Description = "Explore virtual worlds together", Date = DateTime.Today.AddDays(13), Participants = new() },
+        new EventCarousel.Event { Name = "Smash Bros Bash", Description = "Ultimate showdown of legends", Date = DateTime.Today.AddDays(15), Participants = new() },
+        new EventCarousel.Event { Name = "Horror Game Marathon", Description = "Scary games till midnight!", Date = DateTime.Today.AddDays(17), Participants = new() },
+        new EventCarousel.Event { Name = "Speedrun Sunday", Description = "Show off your best speedruns!", Date = DateTime.Today.AddDays(19), Participants = new() },
+        new EventCarousel.Event { Name = "Board Game Bonanza", Description = "Take a break from screens", Date = DateTime.Today.AddDays(21), Participants = new() }
+    };
+
+}
