@@ -200,11 +200,11 @@ else
             _expandedUserId = null;
             _userOrders.Clear();
 
-<<<<<<< HEAD
-            var cart = Carts.FirstOrDefault(c => c.UserId == userId);
-=======
-            var cart = _carts.FirstOrDefault(c => c.User.Id == userId);
->>>>>>> origin/Development
+
+            
+
+            var cart = _carts.FirstOrDefault(c => c.UserId == userId);
+
             if (cart != null)
             {
                 _userCartItems = cart.cartItems;
