@@ -1,5 +1,6 @@
 ﻿@page "/"
 @inject NavigationManager Navigation
+@using Frontend.Components.Store.Components
 
 <PageTitle>Home</PageTitle>
 
@@ -15,6 +16,8 @@
         <div class="generic-text mb-3">
             Discover a world of classic and modern gaming at Frölunda Arcade
         </div>
-        <button type="button" class="btn btn-secondary w-auto" @onclick='() => Navigation.NavigateTo("/store-front")'>See Products</button>
+        <button type="button" class="arcade-btn w-auto" @onclick='() => Navigation.NavigateTo("/store-front")'><span class="arcade-text">View Products</span></button>
     </div>
 </div>
+   
+
