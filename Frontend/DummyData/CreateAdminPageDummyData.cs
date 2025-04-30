@@ -162,7 +162,7 @@ namespace Frontend.DummyData
                     Email = "john.doe@gmail.com",
                     FirstName = "John",
                     LastName = "Doe",
-                    Password = "temp123",
+                    // Password = "temp123",
                     Role = "user",
                     PhoneNumber = "123-456-7890",
                     Address = "123 Elm Street"
@@ -173,7 +173,7 @@ namespace Frontend.DummyData
                     Email = "jane.smith@gmail.com",
                     FirstName = "Jane",
                     LastName = "Smith",
-                    Password = "securepass456",
+                    // Password = "securepass456",
                     Role = "admin",
                     PhoneNumber = "987-654-3210",
                     Address = "456 Oak Avenue"
@@ -184,7 +184,7 @@ namespace Frontend.DummyData
                     Email = "lebron.james@gmail.com",
                     FirstName = "Lebron",
                     LastName = "James",
-                    Password = "basketball789",
+                    // Password = "basketball789",
                     Role = "user",
                     PhoneNumber = "978-654-3210",
                     Address = "789 Basketball Lane"
@@ -195,7 +195,7 @@ namespace Frontend.DummyData
                     Email = "lebron.james@gmail.com",
                     FirstName = "Lebron",
                     LastName = "James",
-                    Password = "basketball789",
+                    // Password = "basketball789",
                     Role = "user",
                     PhoneNumber = "978-654-3210",
                     Address = "789 Basketball Lane"
@@ -206,7 +206,7 @@ namespace Frontend.DummyData
                     Email = "lebron.james@gmail.com",
                     FirstName = "Lebron",
                     LastName = "James",
-                    Password = "basketball789",
+                    // Password = "basketball789",
                     Role = "user",
                     PhoneNumber = "978-654-3210",
                     Address = "789 Basketball Lane"
@@ -217,7 +217,7 @@ namespace Frontend.DummyData
                     Email = "lebron.james@gmail.com",
                     FirstName = "Lebron",
                     LastName = "James",
-                    Password = "basketball789",
+                    // Password = "basketball789",
                     Role = "user",
                     PhoneNumber = "978-654-3210",
                     Address = "789 Basketball Lane"
@@ -228,7 +228,7 @@ namespace Frontend.DummyData
                     Email = "lebron.james@gmail.com",
                     FirstName = "Lebron",
                     LastName = "James",
-                    Password = "basketball789",
+                    // Password = "basketball789",
                     Role = "user",
                     PhoneNumber = "978-654-3210",
                     Address = "789 Basketball Lane"
@@ -239,7 +239,7 @@ namespace Frontend.DummyData
                     Email = "lebron.james@gmail.com",
                     FirstName = "Lebron",
                     LastName = "James",
-                    Password = "basketball789",
+                    // Password = "basketball789",
                     Role = "user",
                     PhoneNumber = "978-654-3210",
                     Address = "789 Basketball Lane"
@@ -250,7 +250,7 @@ namespace Frontend.DummyData
                     Email = "lebron.james@gmail.com",
                     FirstName = "Lebron",
                     LastName = "James",
-                    Password = "basketball789",
+                    // Password = "basketball789",
                     Role = "user",
                     PhoneNumber = "978-654-3210",
                     Address = "789 Basketball Lane"

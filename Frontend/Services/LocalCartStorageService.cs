@@ -1,25 +1,20 @@
 ﻿using Frontend.Models;
+using Frontend.Services.Interfaces;
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
 
 namespace Frontend.Services;
 
-public class LocalCartStorageService : ILocalCartStorageService
+public class LocalCartStorageService(ProtectedLocalStorage storage) : ILocalCartStorageService
 {
-    private readonly ProtectedLocalStorage _storage;
     private const string CartKey = "cart";
 
     public Dictionary<string, int> Cart { get; private set; } = new();
 
     public event Action? OnChange;
 
-    public LocalCartStorageService(ProtectedLocalStorage storage)
-    {
-        _storage = storage;
-    }
-
     public async Task LoadCartAsync()
     {
-        var result = await _storage.GetAsync<Dictionary<string, int>>(CartKey);
+        var result = await storage.GetAsync<Dictionary<string, int>>(CartKey);
         Cart = result.Success ? result.Value : new Dictionary<string, int>();
     }
 
@@ -39,7 +34,7 @@ public class LocalCartStorageService : ILocalCartStorageService
 
     public async Task SaveCartAsync()
     {
-        await _storage.SetAsync(CartKey, Cart);
+        await storage.SetAsync(CartKey, Cart);
         OnChange?.Invoke();
     }
 

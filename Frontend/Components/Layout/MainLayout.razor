@@ -1,7 +1,7 @@
-﻿@inject IJSRuntime JsRuntime
-@using Frontend.Models
+﻿@using Frontend.Components.Layout
+@using Frontend.Components
 @inherits LayoutComponentBase
-
+@using Frontend.Components.User.Components
 <Header />
 <div class="page">
     <main>
@@ -13,6 +13,9 @@
             @Body
         </article>
     </main>
+    @*To be fixed: <div class="position-absolute bottom-0 start-50 translate-middle-x w-100 h-25">
+        <Footer />
+    </div> *@
 </div>
 @* Required *@
 <MudThemeProvider />
@@ -33,13 +36,3 @@
 <script src="/js/ScrollCarousel.js"></script>
 
 <script src="js/cart.js"></script>
-
-
-@* 
-    Detta är till för att ta bort alla cookies när man startar om hemsidan.
-    Det behövs för att firebase loggar ut dig från FirebaseAuthClient, men din token är kvar i cookies.
-    Vilket leder till att man inte kan hämta user info, men man kommar åt all auth funktionalitet.
-*@
-@code {
-}
-

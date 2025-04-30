@@ -1,0 +1,136 @@
+﻿@page "/admin-page"
+@using Frontend.Models
+@using Frontend.Services
+@using User = Frontend.Models.User
+@using Frontend.Components.Store.Components
+@using Frontend.Components.Admin.Components
+@using Frontend.Services.Interfaces
+@inject IProductService ProductService
+@inject IUserService UserService
+@inject IOrderService OrderService
+@inject ICartService CartService
+@inject IHighscoresService HighscoresService
+
+<h3 class="welcome-text" id="admin-page">Admin Page</h3>
+
+<div id="products-button" class="d-flex justify-content-center mb-5">
+    <button class="btn me-2 @(IsViewingProducts ? "btn-primary" : "btn-outline-primary")"
+    @onclick="() => IsViewingProducts = true">
+        View Products
+    </button>
+
+    <button id="user-button" class="btn me-2 @(IsViewingUsers ? "btn-outline-primary" : "btn-primary")"
+        @onclick="() => IsViewingUsers = true">
+        View Users
+    </button>
+
+    <button id="highscores-button" class="btn @(IsViewingHighscores ? "btn-outline-primary" : "btn-primary")"
+    @onclick="() => IsViewingHighscores = true">
+        View Highscores
+    </button>
+</div>
+
+@if(IsViewingProducts)
+{
+    <ProductSorter Products="_products" OnFilteredChanged="OnFilteredChanged" />
+
+    <ProductEditor Products="_filteredProducts" 
+    OnAddProduct="RefreshProduct"/>
+}
+else if(IsViewingUsers)
+{
+    <UserEditor/>
+}
+else if(IsViewingHighscores)
+{
+    <HighscoresEditor HighscoresList="_highscores" OnChange="RefreshHighscores" />
+}
+
+@code {
+    private List<Product>? _products = new();
+    private List<Product> _filteredProducts = new();
+    private List<Highscores>? _highscores = new();
+
+    private bool _isViewingProducts = true;
+
+    private bool IsViewingProducts
+    {
+        get => _isViewingProducts;
+        set
+        {
+            _isViewingProducts = value;
+            if(_isViewingProducts)
+            {
+                IsViewingUsers = false;
+                IsViewingHighscores = false;
+            }
+            StateHasChanged();
+        }
+    }
+
+    private bool _isViewingUsers = false;
+
+    private bool IsViewingUsers
+    {
+        get => _isViewingUsers;
+        set
+        {
+            _isViewingUsers = value;
+            if (_isViewingUsers)
+            {
+                IsViewingProducts = false;
+                IsViewingHighscores = false;
+            }
+            StateHasChanged();
+        }
+    }
+
+    private bool _isViewingHighscores = false;
+
+    private bool IsViewingHighscores
+    {
+        get => _isViewingHighscores;
+        set
+        {
+            _isViewingHighscores = value;
+            if (_isViewingHighscores)
+            {
+                IsViewingUsers = false;
+                IsViewingProducts = false;
+            }
+            StateHasChanged();
+        }
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        _products = await ProductService.GetAllProductsAsync();
+        _highscores = await HighscoresService.GetAllHighscoresAsync();
+
+        StateHasChanged();
+    }
+
+    private async Task RefreshProduct(Product newProduct)
+    {
+        _products = await ProductService.GetAllProductsAsync(); 
+        _filteredProducts = _products; 
+        StateHasChanged(); 
+    }
+
+    private async Task RefreshHighscores(Highscores newHighscores)
+    {
+        _highscores = await HighscoresService.GetAllHighscoresAsync();
+        StateHasChanged();
+    }
+
+    private void OnFilteredChanged(List<Product> filtered)
+    {
+        _filteredProducts = filtered;
+    }
+
+    private async Task RefreshHighscores()
+    {
+        _highscores = await HighscoresService.GetAllHighscoresAsync();
+        StateHasChanged();
+    }
+}

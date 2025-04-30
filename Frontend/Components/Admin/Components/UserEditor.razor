@@ -1,0 +1,263 @@
+﻿@using Frontend.Models
+@using Frontend.Services
+@using Frontend.Services.Interfaces
+@inject IFirebaseAuthService FirebaseAuthService
+@inject IUserService UserService
+@inject IOrderService OrderService
+@inject ICartService CartService
+
+<!-- Search Bars -->
+<div class="mb-3 d-flex flex-column flex-md-row gap-3">
+    <input class="form-control" placeholder="Search by Email..." @bind="_searchEmail" @bind:event="oninput" />
+    <input class="form-control" placeholder="Search by ID..." @bind="_searchId" @bind:event="oninput" />
+</div>
+
+@if (filteredUsers.Count == 0)
+{
+    <div class="text-center text-light">
+        <img src="images/no-users.png" alt="No users found" style="max-height: 250px;" />
+        <p class="text-muted">No users match the current filters.</p>
+    </div>
+}
+else
+{
+    <table class="table table-bordered align-middle">
+        <thead class="table-dark">
+            <tr>
+                <th>Email</th>
+                <th>First Name</th>
+                <th>Last Name</th>
+                <th>ID</th>
+                <th>Address</th>
+                <th>Phone</th>
+                <th>Role</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var user in paginatedUsers)
+            {
+                <tr>
+                    <td><input class="form-control" id="@user.Email" @bind="user.Email" /></td>
+                    <td><input class="form-control" @bind="user.FirstName" /></td>
+                    <td><input class="form-control" @bind="user.LastName" /></td>
+                    <td><input class="form-control" @bind="user.Id" /></td>
+                    <td><input class="form-control" @bind="user.Address" /></td>
+                    <td><input class="form-control" @bind="user.PhoneNumber" /></td>
+                    <td>
+                        <select class="form-select"id="role-select" @bind="user.Role">
+                            <option value="user">User</option>
+                            <option value="admin">Admin</option>
+                        </select>
+                    </td>
+                    <td class="text-center align-middle">
+                        <div class="d-flex flex-column gap-1" style="min-width: 120px;">
+                            <button id="Update-button" class="btn btn-success btn-sm w-100" @onclick="() => UpdateUser(user)">Update</button>
+                            <button class="btn btn-danger btn-sm w-100" @onclick="() => DeleteUser(user)">Delete</button>
+                            <button class="btn btn-secondary btn-sm w-100" @onclick="() => ToggleExpanded(user.Id)">
+                                @(_expandedUserId == user.Id ? "▼ Hide Orders" : "▲ Show Orders")
+                            </button>
+                            <button class="btn btn-secondary btn-sm w-100" @onclick="() => ToggleCart(user.Id)">
+                                @(_expandedCartUserId == user.Id ? "▼ Hide Cart" : "▲ Show Cart")
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+
+                @if (_expandedUserId == user.Id)
+                {
+                    <tr>
+                        <td colspan="8">
+                            @if (_userOrders.Any())
+                            {
+                                <table class="table table-bordered bg-dark text-light mt-2">
+                                    <thead class="table-secondary text-dark">
+                                        <tr>
+                                            <th>Order ID</th>
+                                            <th>Products</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var order in _userOrders)
+                                        {
+                                            <tr>
+                                                <td>@order.Id</td>
+                                                <td>
+                                                    <ul class="mb-0">
+                                                        @foreach (var product in order.Products)
+                                                        {
+                                                            <li>@product.Name (@product.Price.ToString("C"))</li>
+                                                        }
+                                                    </ul>
+                                                </td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                            else
+                            {
+                                <p class="text-muted">No orders found for this user.</p>
+                            }
+                        </td>
+                    </tr>
+                }
+                @if (_expandedCartUserId == user.Id)
+                {
+                    <tr>
+                        <td colspan="8">
+                            @if (_userCartItems.Any())
+                            {
+                                <table class="table table-bordered bg-dark text-light mt-2">
+                                    <thead class="table-secondary text-dark">
+                                        <tr>
+                                            <th>Product</th>
+                                            <th>Quantity</th>
+                                            <th>Total Price</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        @foreach (var item in _userCartItems)
+                                        {
+                                            <tr>
+                                                <!--Bind other properties when endpoints are fixed-->
+                                                <td>@item.Name</td>
+                                                <td>@item.Price</td>
+                                            </tr>
+                                        }
+                                    </tbody>
+                                </table>
+                            }
+                            else
+                            {
+                                <p class="text-muted">No items in this user's cart.</p>
+                            }
+                        </td>
+                    </tr>
+                }
+            }
+        </tbody>
+    </table>
+
+    <!-- Pagination Controls -->
+    <div class="d-flex justify-content-between align-items-center">
+        <button class="btn btn-secondary" @onclick="GoToPreviousPage" disabled="@IsFirstPage">Previous</button>
+        <span>Page @_currentPage of @TotalPages</span>
+        <button class="btn btn-secondary" @onclick="GoToNextPage" disabled="@IsLastPage">Next</button>
+    </div>
+}
+
+@code {
+    private List<User>? _users { get; set; }
+    private List<Cart>? _carts { get; set; }
+    private List<Order>? _orders { get; set; }
+
+    private string _searchEmail = string.Empty;
+    private string _searchId = string.Empty;
+
+    private int _pageSize = 20;
+    private int _currentPage = 1;
+
+    private string? _expandedUserId = null;
+    private List<Order> _userOrders = new();
+
+    private string? _expandedCartUserId = null;
+    private List<CartProductDto> _userCartItems = new();
+
+    private List<User> filteredUsers => _users == null ? new List<User>() :
+    _users
+        .Where(u =>
+            (string.IsNullOrWhiteSpace(_searchEmail) || u.Email.Contains(_searchEmail, StringComparison.OrdinalIgnoreCase)) &&
+            (string.IsNullOrWhiteSpace(_searchId) || u.Id.Contains(_searchId, StringComparison.OrdinalIgnoreCase)))
+        .ToList();
+
+    private List<User> paginatedUsers => filteredUsers
+        .Skip((_currentPage - 1) * _pageSize)
+        .Take(_pageSize)
+        .ToList();
+
+    private int TotalPages => (int)Math.Ceiling((double)filteredUsers.Count / _pageSize);
+    private bool IsFirstPage => _currentPage == 1;
+    private bool IsLastPage => _currentPage == TotalPages;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _users = await UserService.GetAllUsersAsync();
+        _orders = await OrderService.GetAllOrdersAsync();
+        _carts = await CartService.GetAllCartsAsync();
+    }
+
+    private void ToggleCart(string userId)
+    {
+        if (_expandedCartUserId == userId)
+        {
+            _expandedCartUserId = null;
+            _userCartItems.Clear();
+        }
+        else
+        {
+            _expandedCartUserId = userId;
+            _expandedUserId = null;
+            _userOrders.Clear();
+
+            var cart = _carts.FirstOrDefault(c => c.User.Id == userId);
+            if (cart != null)
+            {
+                _userCartItems = cart.CartItems;
+            }
+        }
+    }
+
+    private void GoToNextPage()
+    {
+        if (!IsLastPage) _currentPage++;
+    }
+
+    private void GoToPreviousPage()
+    {
+        if (!IsFirstPage) _currentPage--;
+    }
+
+    private async Task UpdateUser(User user)
+    {
+        var responseRole = await FirebaseAuthService.AssignRole(user.Id, user.Role);
+        var responseUpdateUser = await UserService.UpdateUser(user.Id, user);
+
+        if (responseRole && responseUpdateUser)
+        {
+            //Give prompt
+        }
+        
+    }
+
+    private async Task DeleteUser(User user)
+    {
+        //TODO Add logic
+    }
+
+    private void ToggleExpanded(string userId)
+    {
+        if (_expandedUserId == userId)
+        {
+            _expandedUserId = null;
+            _userOrders.Clear();
+        }
+        else
+        {
+            _expandedUserId = userId;
+            _expandedCartUserId = null;
+            _userOrders.Clear();
+
+            var user = _users.FirstOrDefault(u => u.Id == userId);
+            if (user != null)
+            {
+                _userOrders = GetUserOrders(user);
+            }
+        }
+    }
+
+    private List<Order> GetUserOrders(User user)
+    {
+        return _orders.Where(o => o.User.Id == user.Id).ToList();
+    }
+}

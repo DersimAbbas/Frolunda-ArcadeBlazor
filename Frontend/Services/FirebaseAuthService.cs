@@ -1,5 +1,6 @@
 using Firebase.Auth;
 using Frontend.Models;
+using Frontend.Services.Interfaces;
 using Microsoft.AspNetCore.Components;
 using Microsoft.JSInterop;
 using User = Frontend.Models.User;
@@ -25,7 +26,7 @@ public class FirebaseAuthService(
             //Kanske flytta detta till models? Eller bara göra detta mer "clean:t"
             FirstName = string.Empty,
             LastName = string.Empty,
-            Password = string.Empty,
+            // Password = string.Empty,
             PhoneNumber = string.Empty,
             Address = string.Empty,
         });

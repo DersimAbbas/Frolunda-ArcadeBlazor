@@ -1,0 +1,143 @@
+﻿@using Frontend.Models
+@using Frontend.Services
+@using Frontend.Services.Interfaces
+@inject IProductService ProductService
+
+@if (Products == null || Products.Count == 0)
+{
+    <div class="text-center">
+        <img src="images/no-results.png" alt="No products found" style="max-height: 300px;" />
+        <p class="text-muted">No products match the current filters.</p>
+    </div>
+}
+else
+{
+    <table class="table table-bordered align-middle text-light">
+        <thead class="table-dark">
+            <tr>
+                <th>Img</th>
+                <th>Name</th>
+                <th>Description</th>
+                <th>Price</th>
+                <th>Genre</th>
+                <th>Status</th>
+                <th>Age Rating</th>
+                <th>Actions</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var product in PaginatedProducts)
+            {
+                <tr>
+                    <td class="text-center">
+                        <button class="btn btn-sm btn-secondary mb-1" @onclick="() => ToggleImage(product.Id)">
+                            @(ExpandedRows.Contains(product.Id) ? "▲" : "▼")
+                        </button>
+                        @if (ExpandedRows.Contains(product.Id))
+                        {
+                            <div class="mt-2">
+                                <img src="@product.ImageLink" width="60" height="60" class="img-thumbnail" alt="product-img" />
+                                <input class="form-control mt-1" @bind="product.ImageLink" />
+                            </div>
+                        }
+                    </td>
+                    <td><input class="form-control" @bind="product.Name" /></td>
+                    <td><input class="form-control" @bind="product.Description" /></td>
+                    <td><input type="number" step="0.01" class="form-control" id="@product.Name" @bind="product.Price" /></td>
+                    <td><input class="form-control" @bind="product.Genre" /></td>
+                    <td>
+                        <select class="form-select" @bind="product.Status">
+                            <option value="available">Available</option>
+                            <option value="unavailable">Unavailable</option>
+                        </select>
+                    </td>
+                    <td><input type="number" class="form-control" @bind="product.AgeRating" /></td>
+                    <td class="text-center align-middle">
+                        <button class="btn btn-success btn-sm w-100" id="@product.Name+1" @onclick="() => UpdateProductAsync(product)">Update</button>
+                        <button class="btn btn-danger btn-sm w-100" @onclick="() => DeleteProduct(product)">Delete</button>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+
+    <div class="d-flex justify-content-between align-items-center mt-3">
+        <button class="btn btn-secondary" @onclick="PreviousPage" disabled="@IsFirstPage">Previous</button>
+        <span>Page @_currentPage of @TotalPages</span>
+        <button class="btn btn-secondary" @onclick="NextPage" disabled="@IsLastPage">Next</button>
+    </div>
+}
+<button class="btn btn-primary mt-3" @onclick="() => _showAddDialog = true">Add Product</button>
+
+<AddProductDialog Visible="_showAddDialog"
+                  OnCancel="() => _showAddDialog = false"
+                  OnAdd="AddProductAsync" />
+
+@code {
+    [Parameter] public List<Product> Products { get; set; } = new();
+    [Parameter] public EventCallback<Product> OnUpdate { get; set; }
+    [Parameter] public EventCallback<string> OnDelete { get; set; }
+    [Parameter] public Product Product { get; set; } = default!;
+    [Parameter] public EventCallback<Product> OnAddProduct { get; set; }
+
+    private HashSet<string> ExpandedRows = new();
+
+    private int _pageSize = 15;
+    private int _currentPage = 1;
+
+    private IEnumerable<Product> PaginatedProducts =>
+        Products.Skip((_currentPage - 1) * _pageSize).Take(_pageSize);
+
+    private int TotalPages => Math.Max(1, (int)Math.Ceiling((double)Products.Count / _pageSize));
+    private bool IsFirstPage => _currentPage == 1;
+    private bool IsLastPage => _currentPage == TotalPages;
+
+    private bool _showAddDialog = false;
+
+    private async Task AddProductAsync(Product newProduct)
+    {
+        await ProductService.AddProduct(newProduct);
+        await OnAddProduct.InvokeAsync(newProduct);
+        _showAddDialog = false;
+
+        await LoadProductsAsync();
+        StateHasChanged();
+    }
+
+    private async Task LoadProductsAsync()
+    {
+        Products = await ProductService.GetAllProductsAsync();
+    }
+
+    private void PreviousPage()
+    {
+        if (_currentPage > 1)
+            _currentPage--;
+    }
+
+    private void NextPage()
+    {
+        if (_currentPage < TotalPages)
+            _currentPage++;
+    }
+
+    private void ToggleImage(string id)
+    {
+        if (!ExpandedRows.Add(id))
+        {
+            ExpandedRows.Remove(id);
+        }
+    }
+
+    private async Task UpdateProductAsync(Product product)
+    {
+        var response = await ProductService.UpdateProduct(product.Id, product);
+    }
+
+    private async Task DeleteProduct(Product product)
+    {
+        var response = await ProductService.DeleteProduct(product.Id);
+        await LoadProductsAsync();
+        StateHasChanged();
+    }
+}
