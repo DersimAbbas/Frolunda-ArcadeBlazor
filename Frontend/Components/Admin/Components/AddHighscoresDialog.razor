@@ -1,0 +1,35 @@
+﻿@using Frontend.Models
+
+@if (Visible)
+{
+    <div class="modal-overlay">
+        <div class="modal-content bg-dark text-light rounded p-4 shadow">
+            <h4>Add New Highscores Object</h4>
+            <div class="form-group mb-3">
+                <label>Name</label>
+                <input class="form-control" @bind="NewName" />
+            </div>
+            <div class="d-flex justify-content-end gap-2 mt-4">
+                <button class="btn btn-secondary" @onclick="OnCancel">Cancel</button>
+                <button class="btn btn-primary" @onclick="HandleAdd">Add</button>
+            </div>
+        </div>
+    </div>
+}
+
+@code {
+    [Parameter] public bool Visible { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
+    [Parameter] public EventCallback<string> OnAdd { get; set; }
+
+    private string NewName { get; set; } = string.Empty;
+
+    private async Task HandleAdd()
+    {
+        if (!string.IsNullOrWhiteSpace(NewName))
+        {
+            await OnAdd.InvokeAsync(NewName.Trim());
+            NewName = string.Empty;
+        }
+    }
+}

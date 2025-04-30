@@ -1,4 +1,5 @@
 using Frontend.Models;
+using Frontend.Services.Interfaces;
 
 namespace Frontend.Services;
 
@@ -9,7 +10,7 @@ public class OrderService(HttpClient httpClient) : IOrderService
         return await httpClient.GetFromJsonAsync<Order>($"api/orders/{id}");
     }
 
-    public async Task<List<Order>?> GetAllOrderAsync()
+    public async Task<List<Order>?> GetAllOrdersAsync()
     {
         return await httpClient.GetFromJsonAsync<List<Order>>("api/orders");
     }
@@ -36,4 +37,8 @@ public class OrderService(HttpClient httpClient) : IOrderService
         var result = await httpClient.DeleteAsync($"api/orders/{id}");
         return result.IsSuccessStatusCode;
     }
+
+    
+
+    
 }

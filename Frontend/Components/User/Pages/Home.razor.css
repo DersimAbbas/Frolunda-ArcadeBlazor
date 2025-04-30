@@ -1,0 +1,19 @@
+﻿.arcade-text {
+    font-family: 'Arcade', 'Press Start 2P', Tahoma, sans-serif;
+    color: var(--primary-color);
+    margin-top: 1rem;
+    text-shadow: var(--neon-glow);
+    animation: blink 2s infinite;
+    font-size: 0.9rem;
+    letter-spacing: 1px;
+}
+
+@keyframes blink {
+    0%, 100% {
+        opacity: 1;
+    }
+
+    50% {
+        opacity: 0.3;
+    }
+}

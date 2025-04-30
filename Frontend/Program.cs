@@ -1,4 +1,3 @@
-using Blazored.LocalStorage;
 using Firebase.Auth;
 using Firebase.Auth.Providers;
 using Frontend.Components;
@@ -7,35 +6,17 @@ using Frontend.Services;
 using Frontend.Services.Firebase;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Components.Authorization;
-
 using Microsoft.AspNetCore.Components.Server.ProtectedBrowserStorage;
-
-
 using MudBlazor.Services;
-
-using System.Text.Json.Serialization;
-using System.Text.Json;
-
-using Firebase.Auth;
-using Frontend.Models;
-using Frontend.Provider;
+using Frontend.Services.Interfaces;
 using FirebaseAuthProvider = Frontend.Provider.FirebaseAuthProvider;
+using static Frontend.Components.User.Pages.Contact;
 
 
 var builder = WebApplication.CreateBuilder(args);
 
 builder.Services.AddRazorComponents()
     .AddInteractiveServerComponents();
-
-//var allowed = "localstorage";
-//builder.Services.AddCors(options =>
-//{
-//    options.AddPolicy(name: allowed,
-//        policy =>
-//        {
-//            policy.WithOrigins("https://localhost:7110/");
-//        });
-//});
 
 var apiBaseUrl = builder.Configuration["ApiBaseUrl"];
 
@@ -101,10 +82,7 @@ builder.Services.AddScoped<FirebaseAuthClient>(provider =>
     });
 });
 
-
-
 builder.Services.AddScoped<AuthenticationStateProvider, FirebaseAuthProvider>();
-
 
 builder.Services.AddScoped<IReviewService, ReviewService>();
 builder.Services.AddScoped<IUserService, UserService>();
@@ -112,7 +90,7 @@ builder.Services.AddScoped<ICartService, CartService>();
 builder.Services.AddScoped<IOrderService, OrderService>();
 builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
-
+builder.Services.AddScoped<IHighscoresService, HighscoresService>();
 builder.Services.AddScoped<ILocalCartStorageService, LocalCartStorageService>();
 builder.Services.AddScoped<ProtectedLocalStorage>();
 
@@ -131,7 +109,6 @@ app.UseHttpsRedirection();
 app.UseStaticFiles();
 app.UseAntiforgery();
 app.UseRouting();
-//app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseAntiforgery();

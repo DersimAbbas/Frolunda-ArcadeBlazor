@@ -1,0 +1,177 @@
+﻿@using Frontend.Services
+@using Frontend.Models
+@using Frontend.Services.Interfaces
+@inject ILocalCartStorageService LocalCartStorageService
+@inject IProductService ProductService
+@inject IFirebaseAuthService FirebaseAuthService
+@inject IJSRuntime JsRuntime
+@inject NavigationManager NavigationManager
+
+    @if (Visible)
+    {
+    <div id="cartPopup" class="shopping-cart-popup" @onclick="() => {}" @onclick:stopPropagation="true">
+            <h3 class="text-dark">Your Cart</h3>
+            <hr />
+
+        @if (_cartItems.Count == 0)
+        {
+            <p>Your cart is empty.</p>
+        }
+        else
+        {
+            <ul class="list-unstyled">
+                @foreach (var item in _cartItems)
+                {
+                    var itemTotal = item.Quantity * item.Product.Price;
+
+                    <li class="mb-3 d-flex justify-content-between align-items-start">
+                        <div class="flex-grow-1">
+                            <strong>@item.Product.Name</strong>
+                            <div class="text-muted small">@item.Product.Price.ToString("C") each</div>
+                        </div>
+
+                        <div class="d-flex flex-column align-items-center">
+                            <div class="d-flex align-items-center mb-1">
+                                <button class="btn btn-sm btn-outline-secondary me-1" @onclick="() => DecreaseQuantity(item.Product.Id)">−</button>
+                                <span class="mx-2">@item.Quantity</span>
+                                <button class="btn btn-sm btn-outline-secondary ms-1" @onclick="() => IncreaseQuantity(item.Product.Id)">+</button>
+                            </div>
+
+                            <div class="text-end small mb-1">
+                                <strong>@itemTotal.ToString("C")</strong>
+                            </div>
+
+                            <button class="btn btn-sm btn-danger" @onclick="() => RemoveFromCart(item.Product.Id)">Remove</button>
+                        </div>
+                    </li>
+                }
+            </ul>
+
+            <hr />
+
+            <div class="text-end mb-3">
+                <strong>Total:</strong> @_cartItems.Sum(i => i.Quantity * i.Product.Price).ToString("C")
+            </div>
+
+            <div class="d-flex justify-content-between">
+                <button class="btn btn-secondary" @onclick="ClearCart">Clear Cart</button>
+                <button class="btn btn-primary" @onclick="Checkout">Checkout</button>
+            </div>
+        }
+        </div>
+    }
+
+@code {
+    [Parameter] public bool Visible { get; set; }
+    [Parameter] public EventCallback OnClose { get; set; }
+
+    private DotNetObjectReference<ShoppingCart>? _dotNetRef;
+
+    private bool _isFirstRender = true;
+
+    private List<(Product Product, int Quantity)> _cartItems = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (firstRender)
+        {
+            _dotNetRef = DotNetObjectReference.Create(this);
+            LocalCartStorageService.OnChange += RefreshCart;
+            await JsRuntime.InvokeVoidAsync("cartInterop.registerOutsideClick", "cartPopup", _dotNetRef, "cartToggleButton");
+            await LoadCart();
+        }
+    }
+
+    private async Task LoadCart()
+    {
+        var token = await JsRuntime.InvokeAsync<string>("getCookie", "token");
+        var user = FirebaseAuthService.VerifyTokenAsync(token);
+
+        if (user is null)
+        {
+            _cartItems = new List<(Product, int)>();
+            return;
+        }
+
+        await LocalCartStorageService.LoadCartAsync();
+
+        var allProducts = new List<Product>();
+
+        try
+        {
+            allProducts = await ProductService.GetAllProductsAsync();
+        }
+        catch
+        {
+            DummyData.CreateAdminPageDummyData.GetDummyProducts();
+        }
+
+        _cartItems = LocalCartStorageService.Cart.Select(kvp =>
+        {
+            var product = allProducts.FirstOrDefault(p => p.Id == kvp.Key) ?? new Product { Id = kvp.Key, Name = "Unknown", Price = 0 };
+            return (product, kvp.Value);
+        }).ToList();
+    }
+
+    private void RefreshCart() => InvokeAsync(LoadCart);
+
+    private async Task RemoveFromCart(string productId)
+    {
+        LocalCartStorageService.Cart.Remove(productId);
+        await LocalCartStorageService.SaveCartAsync();
+        StateHasChanged();
+    }
+
+    private async Task IncreaseQuantity(string productId)
+    {
+        if (LocalCartStorageService.Cart.ContainsKey(productId))
+        {
+            LocalCartStorageService.Cart[productId]++;
+            await LocalCartStorageService.SaveCartAsync();
+            await LoadCart();
+            StateHasChanged();
+        }
+    }
+
+    private async Task DecreaseQuantity(string productId)
+    {
+        if (LocalCartStorageService.Cart.ContainsKey(productId))
+        {
+            if (LocalCartStorageService.Cart[productId] > 1)
+            {
+                LocalCartStorageService.Cart[productId]--;
+            }
+            else
+            {
+                LocalCartStorageService.Cart.Remove(productId);
+            }
+
+            await LocalCartStorageService.SaveCartAsync();
+            await LoadCart();
+            StateHasChanged();
+        }
+    }
+
+    private async Task ClearCart()
+    {
+        LocalCartStorageService.Cart.Clear();
+        await LocalCartStorageService.SaveCartAsync();
+        StateHasChanged();
+    }
+    private void Checkout()
+    {
+        NavigationManager.NavigateTo("/checkout");
+    }
+
+    [JSInvokable]
+    public Task CloseCart() => OnClose.InvokeAsync();
+
+
+
+    //redudant code cant pre render with JS interop crashes server (caching and cart works fine without it.)
+    public async ValueTask DisposeAsync()
+    {
+        _dotNetRef?.Dispose();
+        await JsRuntime.InvokeVoidAsync("cartInterop.unregisterOutsideClick");
+    }
+}

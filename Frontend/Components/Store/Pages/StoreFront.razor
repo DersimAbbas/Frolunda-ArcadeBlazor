@@ -1,0 +1,47 @@
+﻿@page "/store-front"
+@using Firebase.Auth
+@using Frontend.Models
+@using Frontend.Services
+@using Frontend.Components.Store.Components
+@inject HttpClient http
+@inject IJSRuntime JsRuntime
+
+<FilterBar Filter="@currentFilter" OnApplyFilters="HandleFilterApplied" />
+<ProductCard Name="testone" Genre="Action" Price="12.99" Description="Thrilling action game" />
+
+@if(@filterTest == false){
+@foreach (var product in allProducts)
+{
+    <ProductCard Name="@product.Name" Genre="@product.Genre" Price="@product.Price" Description="@product.Description" ImageLink="@product.ImageLink" />
+}}else
+@foreach (var product in filteredProducts)
+{
+    <ProductCard Name="@product.Name" Genre="@product.Genre" Price="@product.Price" Description="@product.Description" ImageLink="@product.ImageLink" />
+}
+
+@code {
+    private ProductFilter currentFilter = new();
+    private List<Product> allProducts = new(); 
+    private List<Product> filteredProducts = new();
+    private bool filterTest = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ProductService productService = new ProductService(http, JsRuntime);
+
+        allProducts = await productService.GetAllProductsAsync();
+
+    }
+
+    private void HandleFilterApplied(ProductFilter filter)
+    {
+        filterTest = true;
+        filteredProducts = allProducts
+         .Where(p =>
+             (string.IsNullOrEmpty(filter.SearchTerm) || p.Name.Contains(filter.SearchTerm, StringComparison.OrdinalIgnoreCase)) &&
+             (string.IsNullOrEmpty(filter.SelectedGenre) || p.Genre == filter.SelectedGenre) &&
+             (!filter.MinPrice.HasValue || p.Price >= filter.MinPrice.Value) &&
+             (!filter.MaxPrice.HasValue || p.Price <= filter.MaxPrice.Value)
+         ).ToList();
+    }
+}

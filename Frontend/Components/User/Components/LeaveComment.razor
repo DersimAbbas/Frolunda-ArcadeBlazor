@@ -1,0 +1,32 @@
+﻿@page "/leave-comment-test"
+@using System.ComponentModel.DataAnnotations
+@using Frontend.Models
+
+<div class="card p-3 mb-3 generic-card">
+    <h5>Leave a Comment</h5>
+    <EditForm Model="@_newComment" OnValidSubmit="HandleSubmit">
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <div class="mb-3">
+            <label for="commentText" class="form-label">Your Comment</label>
+            <textarea id="commentText" class="form-control" @bind="_newComment.Comment" rows="5" placeholder="Write your comment here..." required></textarea>
+        </div>
+
+        <button type="submit" class="btn btn-primary">Submit</button>
+    </EditForm>
+</div>
+
+@code {
+    [Parameter] public ForumPost ForumPost { get; set; } = new();
+    private ForumComment _newComment = new();
+
+    private async Task HandleSubmit()
+    {
+        //Call forumservice here
+        Console.WriteLine($"Comment submitted: {_newComment.Comment}");
+
+        _newComment = new ForumComment();
+        StateHasChanged();
+    }
+}
