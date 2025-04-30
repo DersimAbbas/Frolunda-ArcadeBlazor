@@ -20,13 +20,18 @@
     </button>
 
     <button id="user-button" class="btn me-2 @(IsViewingUsers ? "btn-outline-primary" : "btn-primary")"
-        @onclick="() => IsViewingUsers = true">
+    @onclick="() => IsViewingUsers = true">
         View Users
     </button>
 
     <button id="highscores-button" class="btn @(IsViewingHighscores ? "btn-outline-primary" : "btn-primary")"
     @onclick="() => IsViewingHighscores = true">
         View Highscores
+    </button>
+
+    <button id="events-button" class="btn @(IsViewingEvents ? "btn-outline-primary" : "btn-primary")"
+    @onclick="() => IsViewingEvents = true">
+        Edit Events
     </button>
 </div>
 
@@ -45,6 +50,10 @@ else if(IsViewingHighscores)
 {
     <HighscoresEditor HighscoresList="_highscores" OnChange="RefreshHighscores" />
 }
+else if (IsViewingEvents)
+{
+    <EventEditor/>
+}
 
 @code {
     private List<Product>? _products = new();
@@ -61,6 +70,7 @@ else if(IsViewingHighscores)
             _isViewingProducts = value;
             if(_isViewingProducts)
             {
+                IsViewingEvents = false;
                 IsViewingUsers = false;
                 IsViewingHighscores = false;
             }
@@ -78,6 +88,7 @@ else if(IsViewingHighscores)
             _isViewingUsers = value;
             if (_isViewingUsers)
             {
+                IsViewingEvents = false;
                 IsViewingProducts = false;
                 IsViewingHighscores = false;
             }
@@ -95,8 +106,27 @@ else if(IsViewingHighscores)
             _isViewingHighscores = value;
             if (_isViewingHighscores)
             {
+                IsViewingEvents = false;
                 IsViewingUsers = false;
                 IsViewingProducts = false;
+            }
+            StateHasChanged();
+        }
+    }
+
+    private bool _isViewingEvents = false;
+
+    private bool IsViewingEvents
+    {
+        get => _isViewingEvents;
+        set
+        {
+            _isViewingEvents = value;
+            if (_isViewingEvents)
+            {
+                IsViewingUsers = false;
+                IsViewingProducts = false;
+                IsViewingHighscores = false;
             }
             StateHasChanged();
         }
