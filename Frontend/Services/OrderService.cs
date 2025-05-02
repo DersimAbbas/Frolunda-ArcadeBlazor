@@ -12,7 +12,7 @@ public class OrderService : IOrderService
 
     private const string _ordersKey = "orders";
     private const string _timestampKey = "ordersTimestamp";
-
+    private const string _FuncTrigger = "https://frolunda-arcadefunc.azurewebsites.net/api/get-orders";
     public OrderService(HttpClient httpClient, IJSRuntime jsRuntime)
     {
         this._httpClient = httpClient;
@@ -24,7 +24,7 @@ public class OrderService : IOrderService
         return await _httpClient.GetFromJsonAsync<Order>($"api/orders/{id}");
     }
 
-    public async Task<List<Order>?> GetAllOrdersAsync()
+    public async Task<List<RegisterOrder>?> GetAllOrdersAsync()
     {
         var json = await _jsRuntime.InvokeAsync<string>("myLocalStorage.getItem", _ordersKey);
         var timestampString = await _jsRuntime.InvokeAsync<string>("myLocalStorage.getItem", _timestampKey);
@@ -36,7 +36,7 @@ public class OrderService : IOrderService
             {
                 try
                 {
-                    var cachedOrders = JsonSerializer.Deserialize<List<Order>>(json);
+                    var cachedOrders = JsonSerializer.Deserialize<List<RegisterOrder>>(json);
                     if (cachedOrders != null)
                         return cachedOrders;
                 }
@@ -47,7 +47,7 @@ public class OrderService : IOrderService
             }
         }
 
-        var orders = await _httpClient.GetFromJsonAsync<List<Order>>("api/orders") ?? new List<Order>();
+        var orders = await _httpClient.GetFromJsonAsync<List<RegisterOrder>>(_FuncTrigger) ?? new List<RegisterOrder>();
 
         var orderJson = JsonSerializer.Serialize(orders);
         await _jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", _ordersKey, orderJson);
@@ -58,8 +58,18 @@ public class OrderService : IOrderService
 
     public async Task<List<RegisterOrder>?> GetOrdersByUserIdAsync(string id)
     {
-        return await _httpClient.GetFromJsonAsync<List<RegisterOrder>>($"https://frolunda-arcadefunc.azurewebsites.net/api/get-order?userid={id}");
+        try
+        {
+            var response = await _httpClient.GetFromJsonAsync<List<RegisterOrder>>($"https://frolunda-arcadefunc.azurewebsites.net/api/get-order?userid={id}");
+            return response;
+        }
+        catch (Exception ex)
+        {
+            Console.WriteLine($"Error fetching orders: {ex.Message}");
+            return new List<RegisterOrder>();
+        }
 
+        
     }
 
     public async Task<bool> AddOrder(Order order)

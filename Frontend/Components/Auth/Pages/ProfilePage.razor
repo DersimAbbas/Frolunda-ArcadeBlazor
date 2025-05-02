@@ -96,7 +96,7 @@
 @code {
     [Parameter] public RegisterOrder? order { get; set; }
     private User? UserProfile { get; set; } = new();
-    private List<RegisterOrder>? UserOrderHistory { get; set; }
+    private List<RegisterOrder>? UserOrderHistory { get; set; } = new();
     private List<Product>? _cachedProducts { get; set; } = new();
     private string UserId { get; set; } = string.Empty;
 
@@ -104,10 +104,11 @@
     protected override async Task OnInitializedAsync()
     {
         _cachedProducts = await productService.GetAllProductsAsync();
-    }
- 
 
-        
+    }
+
+
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
 
@@ -125,17 +126,27 @@
                 var firebaseAuthUserId = FirebaseAuthClient.User.Uid;
                 UserProfile = await UserService.GetUserByIdAsync(firebaseAuthUserId);
                 UserId = firebaseAuthUserId;
-                UserOrderHistory = await OrderService.GetOrdersByUserIdAsync(UserId);
+
 
                 StateHasChanged();
             }
         }
-
+        UserOrderHistory = await OrderService.GetOrdersByUserIdAsync(UserId);
         if (_cachedProducts == null || _cachedProducts.Count == 0)
         {
             _cachedProducts = await productService.GetAllProductsAsync();
         }
-        UserOrderHistory = await OrderService.GetOrdersByUserIdAsync(UserId);
+
+        if(UserOrderHistory == null)
+        {
+            return;
+        }
+        if (UserOrderHistory.Count == 0)
+        {
+            return;
+        }
+
+        StateHasChanged();
 
     }
 

@@ -106,10 +106,10 @@
     private async Task HandleCheckout()
     {
         _statusMessage = "Processing payment...";
-      
+
 
         var PaymentMethodId = await JsRuntime.InvokeAsync<string>("stripeInterop.createPaymentMethod", _customerName, _customerEmail);
-        
+
         var result = await PaymentService.ProcessPayment(PaymentMethodId, Amount, userId, CartItems);
 
         if (!result.IsSuccess)
@@ -127,11 +127,7 @@
             _paymentComplete = confirmed;
             return;
         }
-        
-<<<<<<< Updated upstream
-=======
-        //await PaymentService.RegisterOrderAfterPayment(_customerEmail, CartStorageService.Cart);
->>>>>>> Stashed changes
+
         _paymentComplete = true;
         await PaymentService.RegisterOrderAfterPayment(userId,CartItems);
         
