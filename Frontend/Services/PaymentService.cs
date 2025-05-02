@@ -49,6 +49,7 @@ public class PaymentService(HttpClient httpClient) : IPaymentService
 
     public async Task<bool> RegisterOrderAfterPayment(string userId, Dictionary<string, int> products)
     {
+<<<<<<< Updated upstream
         var createOrder = new RegisterOrder
         {
              
@@ -66,6 +67,15 @@ public class PaymentService(HttpClient httpClient) : IPaymentService
         var content = new StringContent(json, Encoding.UTF8, "application/json");
         var response = await client.PostAsync(LogicAppUrl, content);
 
+=======
+       
+        var createOrder = new RegisterOrder
+        {
+            UserId = userId,
+            Products = products
+        };
+        var response = await httpClient.PostAsJsonAsync("https://prod-02.swedencentral.logic.azure.com:443/workflows/577863aa15bd438cae6d1124944302c2/triggers/When_a_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=E1Ak5YYJnnMjAL2zt7pvUfB-PtSbfFDiNHMwds-iIGs", createOrder);
+>>>>>>> Stashed changes
         return response.IsSuccessStatusCode;
 
     }

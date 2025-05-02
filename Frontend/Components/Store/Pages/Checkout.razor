@@ -128,6 +128,10 @@
             return;
         }
         
+<<<<<<< Updated upstream
+=======
+        //await PaymentService.RegisterOrderAfterPayment(_customerEmail, CartStorageService.Cart);
+>>>>>>> Stashed changes
         _paymentComplete = true;
         await PaymentService.RegisterOrderAfterPayment(userId,CartItems);
         
