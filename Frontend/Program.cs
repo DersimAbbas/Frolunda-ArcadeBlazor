@@ -93,6 +93,7 @@ builder.Services.AddScoped<IHighscoresService, HighscoresService>();
 builder.Services.AddScoped<IForumService, ForumService>();
 builder.Services.AddScoped<ILocalCartStorageService, LocalCartStorageService>();
 builder.Services.AddScoped<ProtectedLocalStorage>();
+builder.Services.AddScoped<ConfirmDialogService>();
 
 builder.Services.AddMudServices();
 

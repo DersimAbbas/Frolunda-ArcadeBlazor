@@ -17,25 +17,28 @@
     {
         if(!firstRender) { return; }
 
-        var orders = await OrderService.GetAllOrdersAsync();
+        var token = await JsRuntime.InvokeAsync<string>("getCookie", "token");
 
-        var firebaseAuthUserId = FirebaseAuthClient.User.Uid;
+        if (!string.IsNullOrEmpty(token)) { return; }
+        var tokenVerified = await FirebaseAuthService.VerifyTokenAsync(token);
 
-        if (firebaseAuthUserId is null) { return; }
+        if (!tokenVerified || FirebaseAuthClient.User is null) { return; }
+                var firebaseAuthUserId = FirebaseAuthClient.User.Uid;
 
-        var user = await UserService.GetUserByIdAsync(firebaseAuthUserId);
+         _userOrders = await OrderService.GetOrdersByUserIdAsync(firebaseAuthUserId);
 
-        var userOrders = orders.Where(o => o.User.Id == user.Id).ToList();
+        if (_userOrders is null || _userOrders.Count < 1) { return; }
 
-        var lastOrder = userOrders
-            .OrderByDescending(o => o.OrderDate)
-            .FirstOrDefault();
+         var lastOrder = _userOrders
+             .OrderByDescending(o => o.OrderDate)
+             .FirstOrDefault();
 
-        if (lastOrder != null)
-        {
-            var genre = lastOrder.Products.FirstOrDefault().Genre;
-            _recommendedProducts = Products.Where(p => p.Genre == genre).ToList();
-            StateHasChanged();
-        }
+         if (lastOrder != null)
+         {
+             var genre = lastOrder.Products.FirstOrDefault().Genre;
+             _recommendedProducts = Products.Where(p => p.Genre == genre).ToList();
+         }
+
+         StateHasChanged();
     }
 }

@@ -36,10 +36,8 @@
 }
 
 .carousel-arrow {
-    position: absolute;
     top: 50%;
     transform: translateY(-50%);
-    z-index: 10;
     width: 2.5rem;
     height: 2.5rem;
     font-size: 1.5rem;
