@@ -29,6 +29,42 @@
                 </div>
 
                 <div class="form-group mb-3">
+                    <label for="firstname" class="form-label generic-text generic-text-size">First name</label>
+                    <InputText type="text" id="firstname" name="firstname"
+                               class="form-control bg-dark text-light border-secondary"
+                               @bind-Value="@RegisterUser.FirstName"
+                               required />
+                    <ValidationMessage For="@(() => RegisterUser.FirstName)" />
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="lastname" class="form-label generic-text generic-text-size">Last name</label>
+                    <InputText type="text" id="lastname" name="lastname"
+                               class="form-control bg-dark text-light border-secondary"
+                               @bind-Value="@RegisterUser.LastName"
+                               required />
+                    <ValidationMessage For="@(() => RegisterUser.LastName)" />
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="username" class="form-label generic-text generic-text-size">Username</label>
+                    <InputText type="text" id="username" name="username"
+                               class="form-control bg-dark text-light border-secondary"
+                               @bind-Value="@RegisterUser.Username"
+                               required />
+                    <ValidationMessage For="@(() => RegisterUser.Username)" />
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="address" class="form-label generic-text generic-text-size">Address</label>
+                    <InputText type="text" id="address" name="address"
+                               class="form-control bg-dark text-light border-secondary"
+                               @bind-Value="@RegisterUser.Address"
+                               required />
+                    <ValidationMessage For="@(() => RegisterUser.Address)" />
+                </div>
+
+                <div class="form-group mb-3">
                     <label for="password" class="form-label generic-text generic-text-size">Password</label>
                     <InputText type="password" id="password" name="Password"
                            class="form-control bg-dark text-light border-secondary"
@@ -65,9 +101,14 @@
 
     private RegisterUserDto RegisterUser { get; set; } = new()
     {
-        Email = null,
-        Password = null,
-        Role = "user"
+        Email = string.Empty,
+        Password = string.Empty,
+        Role = "user",
+        FirstName = string.Empty,
+        LastName = string.Empty,
+        Username = string.Empty,
+        Address = string.Empty
+        
     };
     private string? ErrorMessage { get; set; }
 
@@ -75,7 +116,7 @@
     {
        try
        {
-           var token = await FirebaseAuthService.RegisterUser(RegisterUser.Email, RegisterUser.Password);
+           var token = await FirebaseAuthService.RegisterUser(RegisterUser);
 
            if (!string.IsNullOrEmpty(token))
            {

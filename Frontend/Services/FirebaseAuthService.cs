@@ -15,20 +15,19 @@ public class FirebaseAuthService(
     NavigationManager navigationManager)
     : IFirebaseAuthService
 {
-    public async Task<string?> RegisterUser(string email, string password)
+    public async Task<string?> RegisterUser(RegisterUserDto user)
     {
-        var userCred = await firebaseAuthClient.CreateUserWithEmailAndPasswordAsync(email, password);
+        var userCred = await firebaseAuthClient.CreateUserWithEmailAndPasswordAsync(user.Email, user.Password);
         await userService.AddUser(new User()
         {
             Id = userCred.User.Uid,
-            Email = email,
+            Email = user.Email,
             Role = "user",
-            //Kanske flytta detta till models? Eller bara göra detta mer "clean:t"
-            FirstName = string.Empty,
-            LastName = string.Empty,
-            // Password = string.Empty,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
             PhoneNumber = string.Empty,
-            Address = string.Empty,
+            Address = user.Address,
+            Username = user.Username,
         });
         
         var userRole = new RoleDto()
