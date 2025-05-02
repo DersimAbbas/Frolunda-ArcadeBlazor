@@ -75,35 +75,50 @@ main {
         color: white;
     }
 }
-    article.content {
-        flex: 1;
-        padding: 2rem;
-        overflow-y: auto;
-    }
+article.content {
+    flex: 1;
+    padding: 2rem;
+    overflow-y: auto;
+}
 
-    .header-title {
-        font-family: 'Press Start 2P';
-        text-transform: uppercase;
-        letter-spacing: 2px;
-        line-height: 1.4;
-        font-size: 3rem;
-        color: #bf1f1f;
-    }
+.header-title {
+    font-family: 'Press Start 2P';
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    line-height: 1.4;
+    font-size: 3rem;
+    color: #bf1f1f;
+}
 
-    .header-logo img {
-        max-height: 100px;
-        padding-left: 1rem;
-        padding-right: 1rem;
-        padding-top: 0.5rem;
-        padding-bottom: 0.5rem;
-    }
+.header-logo img {
+    max-height: 100px;
+    padding-left: 1rem;
+    padding-right: 1rem;
+    padding-top: 0.5rem;
+    padding-bottom: 0.5rem;
+}
 
+.header {
+    display: flex;
+    justify-content: flex-start;
+    align-items: center;
+    gap: 1rem;
+    padding: 0.5rem 1rem;
+    position: relative;
+}
+
+@media (max-width: 641px) {
+    .header-logo {
+        display: none;
+    }
     .header {
-        display: flex;
-        justify-content: flex-start;
-        align-items: center;
-        gap: 1rem;
+        justify-content: space-between;
     }
+    .header-title {
+        font-size: 2rem;
+        margin-left: 1rem;
+    }
+}
 
     .welcome-text {
         font-family: 'Press Start 2P', cursive;
