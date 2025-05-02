@@ -31,7 +31,7 @@ else
 
                     <div class="mb-3">
                         <span class="badge bg-danger me-2">@ForumPost.Category</span>
-                        <small >by @ForumPost.Author.Email</small>
+                        <small >by @ForumPost.Author.Username</small>
                     </div>
 
                     <p class="text-light mt-3">@ForumPost.Content</p>
@@ -68,7 +68,7 @@ else
                                 <small >@comment.Created.ToString("yyyy-MM-dd HH:mm")</small>
                             </div>
                             <div class="mb-2 text-light">@comment.Comment</div>
-                            <small>By @comment.User.Email</small>
+                            <small>By @comment.User.Username</small>
                         </div>
                         @if (IsCurrentUserAdmin)
                         {
@@ -102,15 +102,7 @@ else
     
     protected override async Task OnInitializedAsync()
     {
-        try
-        {
-            ForumPost = await ForumService.GetForumPostByIdAsync(PostId);
-        }
-        catch
-        {
-            // You could navigate to an error page or show a "Post not found" message < cute
-            ForumPost = null;
-        }
+        ForumPost = await ForumService.GetForumPostByIdAsync(PostId);
     }
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
