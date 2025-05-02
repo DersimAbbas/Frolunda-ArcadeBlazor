@@ -87,6 +87,7 @@
             !string.IsNullOrWhiteSpace(NewPost.Content))
         {
             NewPost.Author = CurrentUser;
+            
 
             await ForumService.AddForumPostAsync(NewPost);
             await OnCommentSubmitted.InvokeAsync();
