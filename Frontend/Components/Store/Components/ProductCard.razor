@@ -1,21 +1,22 @@
-﻿@using MudBlazor
+﻿@using Frontend.Models
+@using MudBlazor
 @inject NavigationManager NavigationManager
 
-<div class="card rounded-0 p-3" id="ProductCard1" >
+<div class="card rounded-0 p-3" id="@SelectedProduct.Id" >
     <div class="d-flex justify-content-between align-items-center gap-3">
         <div class="flex-grow-1">
-            <h5 class="card-title fw-bold mb-1">@Name</h5>
-            <p class="card-text mb-2">@Description</p>
-            <button id="ProductCardButtonBuy" type="button" class="arcade-btn">Buy</button>
-            <button id="ProductCardButtonShowPage" type="button" class="btn btn-primary btn-sm" @onclick="NavigateToProductPage">Show Productpage</button>
+            <h5 class="card-title fw-bold mb-1">@SelectedProduct.Name</h5>
+            <p class="card-text mb-2">@SelectedProduct.Description</p>
+            <button id="@(SelectedProduct.Id + "-buy")" type="button" class="arcade-btn">Buy</button>
+            <button id="@(SelectedProduct.Id + "-ShowPage")" type="button" class="btn btn-primary btn-sm" @onclick="NavigateToProductPage">Show Productpage</button>
         </div>
-            <MudRating SelectedValue="3" Class="justify-content-sm-center" />
+            <MudRating SelectedValue="@GetAvgRating()" ReadOnly="true" Class="justify-content-sm-center" />
         <div class="text-nowrap text-end">
-            <p class="ProductCardPrice fw-semibold  mb-0" style="font-size: 1.1rem; margin-right:70px;">@Price</p>
+            <p class="ProductCardPrice fw-semibold  mb-0" style="font-size: 1.1rem; margin-right:70px;">@SelectedProduct.Price</p>
         </div>
         <div class="flex-shrink-0">
-            <img id="ProductImage"
-                 src="@ImageLink"
+            <img id="@(SelectedProduct.Id + "-product-img")"
+                 src="@SelectedProduct.ImageLink"
                  style="width: 80px; height: 80px; object-fit: cover; border-radius: 0;" 
                  alt="product-img"/>
         </div>
@@ -23,22 +24,24 @@
 </div>
 
 @code {
-    [Parameter] public string? Id { get; set; }
-
-    [Parameter] public string? Name { get; set; }
-
-    [Parameter] public string? Description { get; set; }
-
-    [Parameter] public double? Price { get; set; }
-
-    [Parameter] public string? Genre { get; set; }
-
-    [Parameter] public string? ImageLink { get; set; }
+    [Parameter] public Product SelectedProduct { get; set; }
 
 
     private void NavigateToProductPage()
     {
-        Console.WriteLine($"Navigating to product page for {Name}");
-        NavigationManager.NavigateTo($"/product-page/{Name}");
+        Console.WriteLine($"Navigating to product page for {SelectedProduct.Name}");
+        NavigationManager.NavigateTo($"/product-page/{SelectedProduct.Name}");
+    }
+
+    private int GetAvgRating()
+    {
+        var avgRating = 0.0;
+        var reviewCount = SelectedProduct.Reviews.Count != 0 ? SelectedProduct.Reviews.Count : 1; 
+        foreach (var review in SelectedProduct.Reviews)
+        {
+            avgRating += review.Ratings;
+        }
+
+        return (int)Math.Round(avgRating / reviewCount);
     }
 }

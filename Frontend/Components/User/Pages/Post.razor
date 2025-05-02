@@ -102,15 +102,7 @@ else
     
     protected override async Task OnInitializedAsync()
     {
-        try
-        {
-            ForumPost = await ForumService.GetForumPostByIdAsync(PostId);
-        }
-        catch
-        {
-            // You could navigate to an error page or show a "Post not found" message
-            ForumPost = null;
-        }
+        ForumPost = await ForumService.GetForumPostByIdAsync(PostId);
     }
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
