@@ -1,32 +1,79 @@
-﻿@page "/leave-comment-test"
-@using System.ComponentModel.DataAnnotations
+﻿@using Firebase.Auth
 @using Frontend.Models
+@using Frontend.Services.Interfaces
+@using User = Frontend.Models.User
+@inject IForumService ForumService
+@inject IJSRuntime JsRuntime
+@inject IFirebaseAuthService FirebaseAuthService
+@inject FirebaseAuthClient FirebaseAuthClient
+@inject IUserService UserService
 
-<div class="card p-3 mb-3 generic-card">
-    <h5>Leave a Comment</h5>
+<div class="card p-4 mb-4 generic-card text-light bg-dark border-secondary shadow-sm">
+    <h4 class="mb-3 text-center">Leave a Comment</h4>
+
     <EditForm Model="@_newComment" OnValidSubmit="HandleSubmit">
-        <DataAnnotationsValidator />
-        <ValidationSummary />
+        <DataAnnotationsValidator/>
+        <ValidationSummary/>
+
+        <div class="mb-3">
+            <label for="titleInput" class="form-label">Title</label>
+            <input type="text" id="titleInput" class="form-control bg-dark text-light border-secondary"
+                   @bind="_newComment.Title" placeholder="Enter a title..." required/>
+        </div>
 
         <div class="mb-3">
             <label for="commentText" class="form-label">Your Comment</label>
-            <textarea id="commentText" class="form-control" @bind="_newComment.Comment" rows="5" placeholder="Write your comment here..." required></textarea>
+            <textarea id="commentText" class="form-control bg-dark text-light border-secondary"
+                      @bind="_newComment.Comment" rows="5" placeholder="Write your comment here..." required></textarea>
         </div>
 
-        <button type="submit" class="btn btn-primary">Submit</button>
+        <div class="d-flex justify-content-end">
+            <button type="submit" class="btn btn-primary px-4 py-2">Submit</button>
+        </div>
     </EditForm>
+    
 </div>
 
 @code {
-    [Parameter] public ForumPost ForumPost { get; set; } = new();
+    [Parameter] public string PostId { get; set; }
+    [Parameter] public EventCallback OnCommentSubmitted { get; set; }
+
+    private User CurrentUser { get; set; }
+
     private ForumComment _newComment = new();
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        
+        var token = await JsRuntime.InvokeAsync<string>("getCookie", "token");
+
+        if (!string.IsNullOrEmpty(token))
+        {
+            var tokenVerified = await FirebaseAuthService.VerifyTokenAsync(token);
+
+            if (tokenVerified && FirebaseAuthClient.User is not null)
+            {
+                var firebaseAuthUserId = FirebaseAuthClient.User.Uid;
+                CurrentUser = await UserService.GetUserByIdAsync(firebaseAuthUserId);
+
+                StateHasChanged();
+            } 
+        }
+
+    }
 
     private async Task HandleSubmit()
     {
-        //Call forumservice here
-        Console.WriteLine($"Comment submitted: {_newComment.Comment}");
+        _newComment.User = CurrentUser;
+        
+        await ForumService.AddForumPostComment(PostId, _newComment);
 
         _newComment = new ForumComment();
+        
+        await OnCommentSubmitted.InvokeAsync();
+
         StateHasChanged();
     }
+
 }
