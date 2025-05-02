@@ -51,12 +51,14 @@
 }
 
 .carousel-arrow.left {
+    position: absolute;
     left: 0.5rem;
 }
 
-.carousel-arrow.right {
-    right: 1.5rem;
-}
+    .carousel-arrow.right {
+        position: absolute;
+        right: 1.5rem;
+    }
 
 .text-overlay {
     position: absolute;

@@ -2,9 +2,11 @@
 @using Frontend.Components
 @inherits LayoutComponentBase
 @using Frontend.Components.User.Components
+@using Frontend.Services
 <Header />
 <div class="page">
     <main>
+        <ConfirmDialog @ref="_confirmDialogRef" />
         <div class="sidebar">
             <NavMenu />
         </div>
@@ -37,3 +39,17 @@
 
 <script src="js/cart.js"></script>
 
+@code
+{
+    [Inject] private ConfirmDialogService ConfirmDialogService { get; set; } = default!;
+    private ConfirmDialog _confirmDialogRef = default!;
+
+    public ConfirmDialog ConfirmDialogInstance => _confirmDialogRef;
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            ConfirmDialogService.ConfirmDialogInstance = _confirmDialogRef;
+        }
+    }
+}
