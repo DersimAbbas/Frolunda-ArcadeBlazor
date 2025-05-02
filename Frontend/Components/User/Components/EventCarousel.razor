@@ -48,8 +48,7 @@
     private async Task AutoScroll()
     {
         if (Events.Count == 0) return;
-        //await JSRuntime.InvokeVoidAsync("autoScrollCarousel", carouselRef);
-        //TODO Fix crash :)
+        await JsRuntime.InvokeVoidAsync("autoScrollCarousel", _carouselRef);
     }
 
     public void Dispose()
