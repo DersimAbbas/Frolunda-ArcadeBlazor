@@ -56,9 +56,10 @@ public class OrderService : IOrderService
         return orders;
     }
 
-    public async Task<List<Order>?> GetOrdersByUserIdAsync(string id)
+    public async Task<List<RegisterOrder>?> GetOrdersByUserIdAsync(string id)
     {
-        return await _httpClient.GetFromJsonAsync<List<Order>>("api/orders/user/" + id);
+        return await _httpClient.GetFromJsonAsync<List<RegisterOrder>>($"https://frolunda-arcadefunc.azurewebsites.net/api/get-order?userid={id}");
+
     }
 
     public async Task<bool> AddOrder(Order order)

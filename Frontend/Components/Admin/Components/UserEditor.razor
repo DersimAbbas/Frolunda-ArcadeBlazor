@@ -5,6 +5,7 @@
 @inject IUserService UserService
 @inject IOrderService OrderService
 @inject ICartService CartService
+@inject IJSRuntime js
 
 <!-- Search Bars -->
 <div class="mb-3 d-flex flex-column flex-md-row gap-3">
@@ -113,7 +114,7 @@ else
                                         <tr>
                                             <th>Product</th>
                                             <th>Quantity</th>
-                                            <th>Total Price</th>
+
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -154,7 +155,7 @@ else
     private List<User>? _users { get; set; }
     private List<Cart>? _carts { get; set; }
     private List<Order>? _orders { get; set; }
-
+    private bool ShowOrder;
     private ConfirmDialog? _confirmDialogRef;
     private MessageDialog? _messageDialog;
 
@@ -193,33 +194,34 @@ else
             _users = await UserService.GetAllUsersAsync();
             _orders = await OrderService.GetAllOrdersAsync();
             _carts = await CartService.GetAllCartsAsync();
-            StateHasChanged();
         }
+        StateHasChanged();
     }
 
     private void ToggleCart(string userId)
     {
-        if (_expandedCartUserId == userId)
+        _expandedCartUserId = userId;
+        ShowOrder = !ShowOrder;
+        if (_expandedCartUserId == userId && ShowOrder)
         {
-            _expandedCartUserId = null;
-            _userCartItems.Clear();
-        }
-        else
-        {
-            _expandedCartUserId = userId;
-            _expandedUserId = null;
-            _userOrders.Clear();
-
-
-            
-
             var cart = _carts.FirstOrDefault(c => c.UserId == userId);
 
             if (cart != null)
             {
                 _userCartItems = cart.cartItems;
             }
+            // _expandedCartUserId = null;
+            // _userCartItems.Clear();
         }
+        else
+        {
+            _expandedCartUserId = null;
+        }
+
+
+
+
+        InvokeAsync(StateHasChanged);
     }
 
     private void GoToNextPage()
