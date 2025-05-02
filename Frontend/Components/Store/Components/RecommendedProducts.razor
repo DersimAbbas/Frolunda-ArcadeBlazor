@@ -9,36 +9,44 @@
 
 <ProductCarousel Products="_recommendedProducts" />
 @code {
-    [Parameter] public List<Product> Products { get; set; }
+    [Parameter] public List<Product> _cachedProducts { get; set; }
     private List<Product> _recommendedProducts = new();
-    private List<Order> _userOrders = new();
-
+    private List<RegisterOrder> _userOrders = new();
+    private List<RegisterOrder> order { get; set; }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        if(!firstRender) { return; }
+        if (!firstRender) return;
 
         var token = await JsRuntime.InvokeAsync<string>("getCookie", "token");
 
-        if (!string.IsNullOrEmpty(token)) { return; }
+        if (string.IsNullOrEmpty(token)) return;
+
         var tokenVerified = await FirebaseAuthService.VerifyTokenAsync(token);
+        if (!tokenVerified || FirebaseAuthClient.User is null) return;
 
-        if (!tokenVerified || FirebaseAuthClient.User is null) { return; }
-                var firebaseAuthUserId = FirebaseAuthClient.User.Uid;
+        var firebaseAuthUserId = FirebaseAuthClient.User.Uid;
+        _userOrders = await OrderService.GetOrdersByUserIdAsync(firebaseAuthUserId);
+        if (_userOrders is null || _userOrders.Count < 1) return;
 
-         _userOrders = await OrderService.GetOrdersByUserIdAsync(firebaseAuthUserId);
+        var lastOrder = _userOrders
+            .OrderByDescending(o => o.CreatedAt)
+            .FirstOrDefault();
 
-        if (_userOrders is null || _userOrders.Count < 1) { return; }
+        if (lastOrder == null || lastOrder.Products.Count < 1) return;
 
-         var lastOrder = _userOrders
-             .OrderByDescending(o => o.OrderDate)
-             .FirstOrDefault();
+        var firstProductId = lastOrder.Products.FirstOrDefault().Key;
 
-         if (lastOrder != null)
-         {
-             var genre = lastOrder.Products.FirstOrDefault().Genre;
-             _recommendedProducts = Products.Where(p => p.Genre == genre).ToList();
-         }
+        if (firstProductId == null) return;
 
-         StateHasChanged();
+        var productWithGenre = _cachedProducts.FirstOrDefault(p => p.Id == firstProductId);
+        if (productWithGenre == null) return;
+
+        var genre = productWithGenre.Genre;
+
+        _recommendedProducts = _cachedProducts
+            .Where(p => p.Genre == genre && !lastOrder.Products.Any(op => op.Key == p.Id))
+            .ToList();
+
+        StateHasChanged();
     }
 }

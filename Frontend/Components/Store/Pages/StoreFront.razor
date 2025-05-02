@@ -4,20 +4,22 @@
 @using Frontend.Models
 @using Frontend.Services
 @using Frontend.Components.Store.Components
+@using Frontend.Services.Interfaces
 @inject HttpClient http
 @inject IJSRuntime JsRuntime
+@inject IProductService ProductService
 
 <FilterBar Filter="@currentFilter" OnApplyFilters="HandleFilterApplied" />
 
 @if(@filterTest == false){
-@foreach (var product in allProducts)
-{
-    <ProductCard SelectedProduct="@product" />
-}}else
-@foreach (var product in filteredProducts)
-{
+    @foreach (var product in allProducts)
+    {
         <ProductCard SelectedProduct="@product" />
-}
+    }}else
+    @foreach (var product in filteredProducts)
+    {
+        <ProductCard SelectedProduct="@product" />
+    }
 
 @code {
     private ProductFilter currentFilter = new();
@@ -29,13 +31,17 @@
 
     protected override async Task OnInitializedAsync()
     {
-        ProductService productService = new ProductService(http, JsRuntime);
-
-        allProducts = await productService.GetAllProductsAsync();
-
-        await AssignImageMaps();
-
+        allProducts = await ProductService.GetAllProductsAsync();
+        await Task.Delay(1);
+        
     }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        await AssignImageMaps();
+        
+    }
+
 
     private void HandleFilterApplied(ProductFilter filter)
     {
@@ -58,7 +64,7 @@
             imageMap = JsonSerializer.Deserialize<Dictionary<string, string>>(rawJson);
 
         if (imageMap == null)
-        {
+         {
             imageMap = await http.GetFromJsonAsync<Dictionary<string, string>>(_funcTrigger);
             await JsRuntime.InvokeVoidAsync("localStorage.setItem", _imageMapKey,
                 JsonSerializer.Serialize(imageMap));

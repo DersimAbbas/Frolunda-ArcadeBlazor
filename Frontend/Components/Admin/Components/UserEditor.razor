@@ -5,6 +5,7 @@
 @inject IUserService UserService
 @inject IOrderService OrderService
 @inject ICartService CartService
+@inject IJSRuntime js
 
 <!-- Search Bars -->
 <div class="mb-3 d-flex flex-column flex-md-row gap-3">
@@ -81,12 +82,12 @@ else
                                         @foreach (var order in _userOrders)
                                         {
                                             <tr>
-                                                <td>@order.Id</td>
+                                                <td>@order.OrderId</td>
                                                 <td>
                                                     <ul class="mb-0">
                                                         @foreach (var product in order.Products)
                                                         {
-                                                            <li>@product.Name (@product.Price.ToString("C"))</li>
+                                                            <li>@product.Key (@product.Value</li>
                                                         }
                                                     </ul>
                                                 </td>
@@ -113,7 +114,7 @@ else
                                         <tr>
                                             <th>Product</th>
                                             <th>Quantity</th>
-                                            <th>Total Price</th>
+
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -153,8 +154,9 @@ else
 @code {
     private List<User>? _users { get; set; }
     private List<Cart>? _carts { get; set; }
-    private List<Order>? _orders { get; set; }
-
+    private List<RegisterOrder>? _orders { get; set; }
+    private bool ShowOrder;
+    private bool ShowCart;
     private ConfirmDialog? _confirmDialogRef;
     private MessageDialog? _messageDialog;
 
@@ -165,7 +167,7 @@ else
     private int _currentPage = 1;
 
     private string? _expandedUserId = null;
-    private List<Order> _userOrders = new();
+    private List<RegisterOrder> _userOrders = new();
 
     private string? _expandedCartUserId = null;
     private Dictionary<string, int> _userCartItems = new();
@@ -193,33 +195,34 @@ else
             _users = await UserService.GetAllUsersAsync();
             _orders = await OrderService.GetAllOrdersAsync();
             _carts = await CartService.GetAllCartsAsync();
-            StateHasChanged();
         }
+        StateHasChanged();
     }
 
     private void ToggleCart(string userId)
     {
-        if (_expandedCartUserId == userId)
+        _expandedCartUserId = userId;
+        ShowCart = !ShowCart;
+        if (_expandedCartUserId == userId && ShowCart)
         {
-            _expandedCartUserId = null;
-            _userCartItems.Clear();
-        }
-        else
-        {
-            _expandedCartUserId = userId;
-            _expandedUserId = null;
-            _userOrders.Clear();
-
-
-            
-
             var cart = _carts.FirstOrDefault(c => c.UserId == userId);
 
             if (cart != null)
             {
                 _userCartItems = cart.cartItems;
             }
+            // _expandedCartUserId = null;
+            // _userCartItems.Clear();
         }
+        else
+        {
+            _expandedCartUserId = null;
+        }
+
+
+
+
+        InvokeAsync(StateHasChanged);
     }
 
     private void GoToNextPage()
@@ -249,7 +252,7 @@ else
             $"User with id: {user.Id} updated"
             );
         }
-        
+
     }
 
     private async Task DeleteUser(User user)
@@ -274,27 +277,57 @@ else
 
     private void ToggleExpanded(string userId)
     {
-        if (_expandedUserId == userId)
+        _expandedUserId = userId;
+        ShowOrder = !ShowOrder;
+        if (_expandedUserId == userId && ShowOrder)
         {
-            _expandedUserId = null;
-            _userOrders.Clear();
-        }
-        else
-        {
-            _expandedUserId = userId;
-            _expandedCartUserId = null;
-            _userOrders.Clear();
-
             var user = _users.FirstOrDefault(u => u.Id == userId);
             if (user != null)
             {
-                _userOrders = GetUserOrders(user);
+                _userOrders = GetUserOrders(user.Id);
             }
         }
+        else
+        {
+            _expandedUserId = null;
+        }
     }
+    // private void ToggleCart(string userId)
+    // {
+    //     _expandedCartUserId = userId;
+    //     ShowCart = !ShowCart;
+    //     if (_expandedCartUserId == userId && ShowCart)
+    //     {
+    //         var cart = _carts.FirstOrDefault(c => c.UserId == userId);
 
-    private List<Order> GetUserOrders(User user)
+    //         if (cart != null)
+    //         {
+    //             _userCartItems = cart.cartItems;
+    //         }
+    //         // _expandedCartUserId = null;
+    //         // _userCartItems.Clear();
+    //     }
+    //     else
+    //     {
+    //         _expandedCartUserId = null;
+    //     }
+
+
+
+
+    //     InvokeAsync(StateHasChanged);
+    // }
+
+    private List<RegisterOrder> GetUserOrders(string userId)
     {
-        return _orders.Where(o => o.User.Id == user.Id).ToList();
+        if (userId == null)
+        {
+            return new List<RegisterOrder>();
+        };
+        if (_orders.Count == 0)
+        {
+            return new List<RegisterOrder>();
+        }
+        return _orders.Where(o => o.UserId == userId).ToList();
     }
 }
