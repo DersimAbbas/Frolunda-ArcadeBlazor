@@ -123,10 +123,5 @@ public class OrderService : IOrderService
         return true;
     }
 
-<<<<<<< Updated upstream
-=======
-    
 
-    
->>>>>>> Stashed changes
 }
