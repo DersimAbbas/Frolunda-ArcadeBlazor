@@ -9,31 +9,31 @@
 @inject IJSRuntime JsRuntime
 @inject IProductService ProductService
 
-<FilterBar Filter="@currentFilter" OnApplyFilters="HandleFilterApplied" />
+<FilterBar Filter="@_currentFilter" OnApplyFilters="HandleFilterApplied" Genres="_genres" />
 
 @if(@filterTest == false){
-    @foreach (var product in allProducts)
+    @foreach (var product in _allProducts)
     {
         <ProductCard SelectedProduct="@product" />
     }}else
-    @foreach (var product in filteredProducts)
+    @foreach (var product in _filteredProducts)
     {
         <ProductCard SelectedProduct="@product" />
     }
 
 @code {
-    private ProductFilter currentFilter = new();
-    private List<Product> allProducts = new(); 
-    private List<Product> filteredProducts = new();
+    private ProductFilter _currentFilter = new();
+    private List<Product> _allProducts = new(); 
+    private List<Product> _filteredProducts = new();
+    private List<string> _genres = new();
     private const string _imageMapKey = "productImageMap";
     private const string _funcTrigger = "https://frolunda-arcadefunc.azurewebsites.net/api/GetImageFunction";
     private bool filterTest = false;
 
     protected override async Task OnInitializedAsync()
     {
-        allProducts = await ProductService.GetAllProductsAsync();
-        await Task.Delay(1);
-        
+        _allProducts = await ProductService.GetAllProductsAsync();
+        _genres = GetGenres(_allProducts);
     }
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -46,7 +46,7 @@
     private void HandleFilterApplied(ProductFilter filter)
     {
         filterTest = true;
-        filteredProducts = allProducts
+        _filteredProducts = _allProducts
          .Where(p =>
              (string.IsNullOrEmpty(filter.SearchTerm) || p.Name.Contains(filter.SearchTerm, StringComparison.OrdinalIgnoreCase)) &&
              (string.IsNullOrEmpty(filter.SelectedGenre) || p.Genre == filter.SelectedGenre) &&
@@ -72,7 +72,7 @@
 
         if (imageMap != null)
         {
-            foreach (var product in allProducts!)
+            foreach (var product in _allProducts!)
             {
                 var matchKey = imageMap.Keys
                     .FirstOrDefault(k =>
@@ -87,6 +87,14 @@
             }
             await InvokeAsync(StateHasChanged);
         }
+    }
+
+    private List<string> GetGenres(List<Product> products)
+    {
+        return products
+            .Select(p => p.Genre)
+            .Distinct()
+            .ToList();
     }
 
 }
