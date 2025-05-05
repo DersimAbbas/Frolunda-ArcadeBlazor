@@ -8,7 +8,7 @@
 @inject FirebaseAuthClient FirebaseAuthClient
 @inject IUserService UserService
 
-<div class="card p-4 mb-4 generic-card text-light bg-dark border-secondary shadow-sm">
+<div class="card p-4 mb-4 generic-card text-light border-secondary shadow-sm" style="background-color: #333; margin-top: 75px ">
     <h4 class="mb-3 text-center">Leave a Comment</h4>
 
     <EditForm Model="@_newComment" OnValidSubmit="HandleSubmit">
@@ -17,13 +17,15 @@
 
         <div class="mb-3">
             <label for="titleInput" class="form-label">Title</label>
-            <input type="text" id="titleInput" class="form-control bg-dark text-light border-secondary"
+            <input type="text" id="titleInput" class="form-control text-white border-secondary"
+                   style="background-color: #4b4b4b"
                    @bind="_newComment.Title" placeholder="Enter a title..." required/>
         </div>
 
         <div class="mb-3">
             <label for="commentText" class="form-label">Your Comment</label>
-            <textarea id="commentText" class="form-control bg-dark text-light border-secondary"
+            <textarea id="commentText" class="form-control text-white border-secondary"
+                      style="background-color: #4b4b4b"
                       @bind="_newComment.Comment" rows="5" placeholder="Write your comment here..." required></textarea>
         </div>
 
