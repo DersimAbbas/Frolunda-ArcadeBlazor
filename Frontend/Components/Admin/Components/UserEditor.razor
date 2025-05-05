@@ -15,10 +15,7 @@
 
 @if (filteredUsers.Count == 0)
 {
-    <div class="text-center text-light">
-        <img src="images/no-users.png" alt="No users found" style="max-height: 250px;" />
-        <p class="text-muted">No users match the current filters.</p>
-    </div>
+    <LoadingAnimation LoadingText="No users found..." />
 }
 else
 {

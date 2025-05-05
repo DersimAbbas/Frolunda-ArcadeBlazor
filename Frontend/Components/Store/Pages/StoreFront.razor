@@ -11,15 +11,17 @@
 
 <FilterBar Filter="@_currentFilter" OnApplyFilters="HandleFilterApplied" Genres="_genres" />
 
-@if(@filterTest == false){
-    @foreach (var product in _allProducts)
-    {
-        <ProductCard SelectedProduct="@product" />
-    }}else
+@if(_filteredProducts.Count > 0)
+{
     @foreach (var product in _filteredProducts)
     {
         <ProductCard SelectedProduct="@product" />
     }
+}
+else
+{
+    <LoadingAnimation LoadingText="No products found..." />
+}
 
 @code {
     private ProductFilter _currentFilter = new();
@@ -33,19 +35,19 @@
     protected override async Task OnInitializedAsync()
     {
         _allProducts = await ProductService.GetAllProductsAsync();
+        _filteredProducts = _allProducts;
         _genres = GetGenres(_allProducts);
     }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
         await AssignImageMaps();
-        
     }
 
 
     private void HandleFilterApplied(ProductFilter filter)
     {
-        filterTest = true;
         _filteredProducts = _allProducts
          .Where(p =>
              (string.IsNullOrEmpty(filter.SearchTerm) || p.Name.Contains(filter.SearchTerm, StringComparison.OrdinalIgnoreCase)) &&
@@ -83,7 +85,6 @@
                 {
                     product.ImageLink = url;
                 }
-
             }
             await InvokeAsync(StateHasChanged);
         }

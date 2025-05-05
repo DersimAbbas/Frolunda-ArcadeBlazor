@@ -1,10 +1,7 @@
 ﻿@if (IsLoading)
 {
     <div class="modal-overlay">
-        <div class="loading-animation"/>
-        <div class="loading-text">
-            @LoadingText
-        </div>
+        <LoadingAnimation LoadingText="@LoadingText"/>
     </div>
 }
 

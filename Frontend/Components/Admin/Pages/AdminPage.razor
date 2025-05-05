@@ -14,22 +14,22 @@
 <h3 class="welcome-text" id="admin-page">Admin Page</h3>
 
 <div id="products-button" class="d-flex justify-content-center mb-5">
-    <button class="btn me-2 @(IsViewingProducts ? "btn-primary" : "btn-outline-primary")"
+    <button class="btn ms-1 @(IsViewingProducts ? "btn-primary" : "btn-outline-primary")"
     @onclick="() => IsViewingProducts = true">
         View Products
     </button>
 
-    <button id="user-button" class="btn me-2 @(IsViewingUsers ? "btn-outline-primary" : "btn-primary")"
+    <button id="user-button" class="btn ms-1 @(IsViewingUsers ? "btn-outline-primary" : "btn-primary")"
     @onclick="() => IsViewingUsers = true">
         View Users
     </button>
 
-    <button id="highscores-button" class="btn @(IsViewingHighscores ? "btn-outline-primary" : "btn-primary")"
+    <button id="highscores-button" class="btn ms-1 @(IsViewingHighscores ? "btn-outline-primary" : "btn-primary")"
     @onclick="() => IsViewingHighscores = true">
         View Highscores
     </button>
 
-    <button id="events-button" class="btn @(IsViewingEvents ? "btn-outline-primary" : "btn-primary")"
+    <button id="events-button" class="btn ms-1 @(IsViewingEvents ? "btn-outline-primary" : "btn-primary")"
     @onclick="() => IsViewingEvents = true">
         Edit Events
     </button>

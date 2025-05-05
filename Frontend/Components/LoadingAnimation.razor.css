@@ -1,25 +1,46 @@
-﻿.pacman {
+﻿.pacman-loader {
+    margin-top: 3rem;
+}
+
+.pacman-animation-wrapper {
     position: relative;
     width: 100px;
     height: 100px;
-    margin-top: 2rem;
+    margin-bottom: 1rem;
 }
 
 .pacman-top, .pacman-bottom {
-    background-color: #4635B1;
-    height: 50px;
-    width: 100px;
-    border-radius: 100px 100px 0 0;
     position: absolute;
-    top: 0;
+    width: 100px;
+    height: 50px;
+    background-color: #4635B1;
+    border-radius: 100px 100px 0 0;
     left: 0;
     z-index: 2;
 }
 
-.pacman-bottom {
-    transform: rotate(180deg);
-    top: 50px;
+.pacman-top {
+    top: 0;
+    animation: chomp 0.5s linear infinite;
 }
+
+.pacman-bottom {
+    top: 50px;
+    transform: rotate(180deg);
+    animation: chompreverse 0.5s linear infinite;
+}
+
+.feed {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #c53a3a;
+    border-radius: 50%;
+    top: 45px;
+    left: 125px;
+    animation: feed 1s linear infinite;
+}
+
 
 @keyframes chomp {
     0%, 100% {
@@ -39,26 +60,6 @@
     50% {
         transform: rotate(225deg);
     }
-}
-
-.pacman-top {
-    animation: chomp 0.5s linear infinite;
-}
-
-.pacman-bottom {
-    animation: chompreverse 0.5s linear infinite;
-}
-
-.feed {
-    position: absolute;
-    width: 10px;
-    height: 10px;
-    border-radius: 50%;
-    background-color: #c53a3a;
-    top: 45px;
-    left: 125px;
-    animation: feed 1s linear infinite;
-    z-index: 1;
 }
 
 @keyframes feed {

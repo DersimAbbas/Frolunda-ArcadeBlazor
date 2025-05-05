@@ -1,6 +1,14 @@
-﻿@page "/pacman-test"
-<div class="pacman">
-    <div class="pacman-top"></div>
-    <div class="pacman-bottom"></div>
-    <div class="feed"></div>
+﻿<div class="pacman-loader d-flex flex-column align-items-center">
+    <div class="pacman-animation-wrapper">
+        <div class="pacman-top"></div>
+        <div class="pacman-bottom"></div>
+        <div class="feed"></div>
+    </div>
+    <div class="generic-text">
+        @LoadingText
+    </div>
 </div>
+
+@code {
+    [Parameter] public string LoadingText { get; set; } = "Loading...";
+}
