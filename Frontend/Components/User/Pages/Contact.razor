@@ -1,8 +1,12 @@
 ﻿@page "/contact"
 
 @using Frontend.Components.User.Components
+@using Frontend.Services.Interfaces
+@using static Frontend.Components.User.Components.ContactSupportModal
 <PageTitle>Contact</PageTitle>
-<ContactSupportModal @ref="modalTicket"></ContactSupportModal>
+<ContactSupportModal @ref="modalTicket"
+    OnSubmit="CreateNewDisputeAsync"></ContactSupportModal>
+@inject IOrderService OrderService
 <div class="container mt-5">
     <div class="row">
         <div class="col-12 text-center mb-5">
@@ -69,12 +73,18 @@
         </div>
     </div>
 </div>
+
 @code {
 
     private ContactSupportModal modalTicket = default!;
+    private SupportRequestModel supportRequest { get; set; }
     private void OpenContactModal()
     {
         modalTicket.Show();
     }
-    
+    public async Task CreateNewDisputeAsync()
+    {
+        await OrderService.DisputeOrder(supportRequest.Email, supportRequest.Name, supportRequest.OrderId);
+    }
+
 }

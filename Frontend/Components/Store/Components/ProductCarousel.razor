@@ -9,9 +9,9 @@
         @foreach (var product in Products)
         {
             <div class="carousel-item-card">
-                <div class="card h-100">
-                    <img src="@product.ImageLink" class="card-img-top" alt="@product.Name" />
-                    <div class="text-overlay p-2">
+                <div class="card h-100 bg-transparent">
+                    <img src="@product.ImageLink"  class="card-img-top h-100 bg-transparent" alt="@product.Name" />
+                    <div class="text-overlay">
                         <h5 class="card-title">@product.Name</h5>
                     </div>
                 </div>

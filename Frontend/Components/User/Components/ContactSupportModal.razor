@@ -1,5 +1,7 @@
-﻿@using Microsoft.AspNetCore.Components.Forms
+﻿@using Frontend.Services.Interfaces
+@using Microsoft.AspNetCore.Components.Forms
 @using System.ComponentModel.DataAnnotations
+@inject IOrderService OrderService
 
 <div class="modal fade @(IsVisible ? "show" : "")" style="display: @(IsVisible ? "block" : "none")">
     <div class="modal-dialog">
@@ -53,10 +55,9 @@
         StateHasChanged();
     }
 
-    private void HandleValidSubmit()
+    private async Task HandleValidSubmit()
     {
-        //TODO Create support request.
-        // waiting for orders to show for users so we can use select menu instead of raw input it.
+        await OrderService.DisputeOrder(SupportRequest.Email, SupportRequest.Name, SupportRequest.OrderId);
         Hide();
     }
 
