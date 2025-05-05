@@ -20,31 +20,30 @@
 }
 else
 {
-    <div class="container-fluid px-3 text-light">
+        <div class="container-fluid px-3 text-light">
         <div class="row">
             <div class="col-12">
-                <div class="p-4 mb-4" style="background-color: #333; border-radius: 8px; border: 1px solid #555;">
+                <div class="p-4 mb-4 bg-transparent" style="background-color: #333; border-radius: 8px; border: 1px solid #555;">
                     <div class="d-flex justify-content-between align-items-center mb-3">
                         <h3 class="text-light m-0">@ForumPost.Title</h3>
                         <small>@ForumPost.Created.ToString("yyyy-MM-dd HH:mm")</small>
                     </div>
 
                     <div class="mb-3">
-                        <span class="badge bg-danger me-2">@ForumPost.Category</span>
+                        <span class="badge me-2" style="background-color: #4b3fb4">@ForumPost.Category</span>
                         <small >by @ForumPost.Author.Username</small>
                     </div>
 
                     <p class="text-light mt-3">@ForumPost.Content</p>
 
-                    <div class="mt-4">
-                        <button class="btn btn-outline-light" @onclick="GoBack">
-                            Back to Forum
-                        </button>
-                    </div>
 
-                    <div class="mt-5">
+
+                    <div>
                         <LeaveComment PostId="@PostId" OnCommentSubmitted="RefreshPost"/>
                     </div>
+                    <button class="simple-arcade-btn mt-5" @onclick="GoBack">
+                        Back to Forum
+                    </button>
                 </div>
                 @if (CurrentUserEmail == ForumPost.Author.Email || IsCurrentUserAdmin)
                 {
@@ -62,18 +61,20 @@ else
 
                     @foreach (var comment in ForumPost.Comments.OrderByDescending(c => c.Created))
                     {
-                        <div class="p-3 mb-3 border rounded bg-dark border-secondary shadow-sm">
+                        <div class="p-3 mb-3 border rounded border-secondary shadow-sm bg-transparent" style="background-color: #333">
                             <div class="d-flex justify-content-between align-items-center mb-2">
                                 <strong class="text-light">@comment.Title</strong>
                                 <small >@comment.Created.ToString("yyyy-MM-dd HH:mm")</small>
                             </div>
                             <div class="mb-2 text-light">@comment.Comment</div>
                             <small>By @comment.User.Username</small>
+                            @if (IsCurrentUserAdmin)
+                            {
+                            <div class="d-flex justify-content-end">
+                                <button class="btn btn-outline-danger mb-2" @onclick="() => DeleteComment(comment)">Delete Comment</button>
+                            </div>
+                            }
                         </div>
-                        @if (IsCurrentUserAdmin)
-                        {
-                            <button class="btn btn-outline-danger mb-4" @onclick="() => DeleteComment(comment)" >Delete Comment</button>
-                        }
                     }
                 </div>
             }
@@ -83,14 +84,7 @@ else
             }
         </div>
     </div>
-    
-    <style>
-        article.content {
-            flex: 1;
-            padding: 2rem;
-            overflow-y: hidden;
-        }
-    </style>
+
 }
 
 @code {
@@ -99,16 +93,16 @@ else
     private ForumPost? ForumPost { get; set; }
     private string CurrentUserEmail { get; set; }
     private bool IsCurrentUserAdmin { get; set; }
-    
+
     protected override async Task OnInitializedAsync()
     {
         ForumPost = await ForumService.GetForumPostByIdAsync(PostId);
     }
-    
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
-        
+
         var token = await JsRuntime.InvokeAsync<string>("getCookie", "token");
 
         if (!string.IsNullOrEmpty(token))
@@ -122,9 +116,8 @@ else
                 CurrentUserEmail = user.Email;
                 IsCurrentUserAdmin = user.Role == "admin";
                 StateHasChanged();
-            } 
+            }
         }
-
     }
 
     private void GoBack()
@@ -137,7 +130,7 @@ else
         await ForumService.DeleteForumPostAsync(PostId);
         Navigation.NavigateTo("/forum");
     }
-    
+
     private async Task RefreshPost()
     {
         ForumPost = await ForumService.GetForumPostByIdAsync(PostId);
@@ -150,5 +143,7 @@ else
 
         await RefreshPost();
     }
+
+}
 
 }

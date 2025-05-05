@@ -20,17 +20,20 @@
         <div class="generic-text mb-3">
             Discover a world of classic and modern gaming at Frölunda Arcade
         </div>
-        <button type="button" class="arcade-btn w-auto" @onclick='() => Navigation.NavigateTo("/store-front")'><span class="arcade-text">View Products</span></button>
+        <button type="button" class="arcade-btn arcade-text" @onclick='() => Navigation.NavigateTo("/store-front")'>
+            View Products
+        </button>
     </div>
 </div>
 
 <div class="mt-5">
     <h3 class="text-center generic-text mb-4">Upcoming Events</h3>
-    <EventCarousel Events="@DemoEvents" AutoScrollInterval="5000" />
- 
+    <EventCarousel Events="@DemoEvents" AutoScrollInterval="5000"/>
+
 </div>
 
 @code {
+
     private List<EventCarousel.Event> DemoEvents = new()
     {
         new EventCarousel.Event { Name = "Retro Game Night", Description = "Play classics all evening!", Date = DateTime.Today.AddDays(1), Participants = new() },
