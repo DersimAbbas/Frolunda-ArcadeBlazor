@@ -23,13 +23,13 @@
     scroll-snap-align: start;
 }
 
-@media (max-width: 1401px) {
+@media (max-width: 1400px) {
     .carousel-item-card {
-        width: calc(100% / 2.2);
+        width: calc(100% / 2 - 1rem);
     }
 }
 
-@media (max-width: 1400px) {
+@media (max-width: 640px) {
     .carousel-item-card {
         width: 100%;
     }
