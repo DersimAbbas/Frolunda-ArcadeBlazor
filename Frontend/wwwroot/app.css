@@ -216,6 +216,16 @@ h3 {
     --button-shadow: 0 4px 0 #c53a3a;
 }
 
+::placeholder {
+    color: #ffffff;
+    opacity: 1;
+}
+
+input, textarea, select {
+    background-color: #505050 !important;
+    color: #ffffff !important;
+}
+
 .arcade-btn {
     display: inline-block;
     background-color: var(--primary-color);
@@ -224,7 +234,6 @@ h3 {
     border-radius: 4px;
     text-decoration: none;
     font-weight: bold;
-    margin-top: 1rem;
     transition: all 0.3s;
     box-shadow: var(--button-shadow);
     position: relative;
@@ -235,6 +244,39 @@ h3 {
             1px 1px 0 #2e2e2e,          
             -1px -1px 0 #5a4dbd,        
             var(--neon-glow);           
+}
+
+.simple-arcade-select {
+    background-color: #4b3fb4;
+    color: #ffffff;
+    border: none;
+    border-radius: 3px;
+    padding: 0.4rem 1.8rem 0.4rem 0.8rem; /* right padding for icon */
+    font-size: 0.65rem;
+    font-family: 'Press Start 2P', monospace;
+    text-align: left;
+    box-shadow: 0 2px 0 #2e2e2e;
+    appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg fill='white' viewBox='0 0 16 16' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M4.646 6.646a.5.5 0 0 1 .708 0L8 9.293l2.646-2.647a.5.5 0 0 1 .708.708l-3 3a.5.5 0 0 1-.708 0l-3-3a.5.5 0 0 1 0-.708z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 0.6rem center;
+    background-size: 0.8rem;
+    cursor: pointer;
+}
+
+.simple-arcade-select:hover {
+    top: 1px;
+    box-shadow: 0 1px 0 #2e2e2e;
+}
+
+.simple-arcade-select:active {
+    top: 2px;
+    box-shadow: none;
+}
+
+.simple-arcade-select option {
+    background-color: #4b3fb4;
+    color: #ffffff;
 }
 
 /*@keyframes blink {*/
@@ -257,6 +299,33 @@ h3 {
 .arcade-btn:active {
     box-shadow: 0 0 0 #c53a3a;
     top: 4px;
+}
+
+.simple-arcade-btn {
+    display: inline-block;
+    background-color: #4b3fb4;
+    color: #ffffff;
+    padding: 0.40rem 0.8rem; 
+    border-radius: 3px;
+    font-size: 0.65rem; 
+    font-family: 'Press Start 2P', monospace;
+    font-weight: normal;
+    text-decoration: none;
+    transition: top 0.2s, box-shadow 0.2s;
+    box-shadow: 0 2px 0 #2e2e2e;
+    position: relative;
+    top: 0;
+    cursor: pointer;
+}
+
+.simple-arcade-btn:hover {
+    top: 1px;
+    box-shadow: 0 1px 0 #2e2e2e;
+}
+
+.simple-arcade-btn:active {
+    top: 2px;
+    box-shadow: none;
 }
 
 /*.arcade-text {*/
