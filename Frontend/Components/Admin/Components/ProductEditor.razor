@@ -5,12 +5,9 @@
 
 <ProductSorter Products="_products" OnFilteredChanged="OnFilteredChanged" />
 
-@if (_products == null || _products.Count == 0)
+@if (_paginatedProducts == null || _paginatedProducts.ToList().Count == 0)
 {
-    <div class="text-center">
-        <img src="images/no-results.png" alt="No products found" style="max-height: 300px;" />
-        <p class="text-muted">No products match the current filters.</p>
-    </div>
+    <LoadingAnimation LoadingText="No products found..." />
 }
 else
 {

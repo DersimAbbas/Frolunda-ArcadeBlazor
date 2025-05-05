@@ -8,6 +8,7 @@
 @inject IProductService ProductService
 @inject ILocalCartStorageService CartStorageService
 @inject IFirebaseAuthService FirebaseAuthService
+@inject ILocalCartStorageService LocalCartService
 @inject FirebaseAuthClient FirebaseAuthClient
 <h3>Checkout</h3>
 
@@ -46,6 +47,7 @@
         OnClose="@(() => _paymentComplete = false)" />
     </div>
 }
+<LoadingOverlay IsLoading="_isLoading" LoadingText="Processing payment..." />
 
 @code {
     private string PaymentMethodId { get; set; } = string.Empty;
@@ -62,6 +64,8 @@
     private bool _paymentComplete = false;
     private DotNetObjectReference<Checkout>? _dotNetRef;
     private string userId = string.Empty;
+
+    private bool _isLoading = false;
 
     protected override async Task OnInitializedAsync()
     {
@@ -106,7 +110,7 @@
     private async Task HandleCheckout()
     {
         _statusMessage = "Processing payment...";
-
+        _isLoading = true;
 
         var PaymentMethodId = await JsRuntime.InvokeAsync<string>("stripeInterop.createPaymentMethod", _customerName, _customerEmail);
 
@@ -115,6 +119,7 @@
         if (!result.IsSuccess)
         {
             _statusMessage = $"Error: {result.ErrorMessage}";
+            _isLoading = false;
             return;
         }
 
@@ -125,6 +130,12 @@
 
             _statusMessage = confirmed ? "Payment confirmed!" : "Payment confirmation failed.";
             _paymentComplete = confirmed;
+            _isLoading = false;
+
+            if (confirmed)
+            {
+                await LocalCartService.ClearCartAsync();
+            }
             return;
         }
 
@@ -132,6 +143,8 @@
         await PaymentService.RegisterOrderAfterPayment(userId,CartItems);
         
         _statusMessage = "Payment successful!";
+        _isLoading = false;
+        await LocalCartService.ClearCartAsync();
     }
 
     [JSInvokable]

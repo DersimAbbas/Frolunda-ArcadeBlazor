@@ -1,4 +1,11 @@
-﻿
-@code {
+﻿@if (IsLoading)
+{
+    <div class="modal-overlay">
+        <LoadingAnimation LoadingText="@LoadingText"/>
+    </div>
+}
 
+@code {
+    [Parameter] public bool IsLoading { get; set; }
+    [Parameter] public string LoadingText { get; set; }
 }
