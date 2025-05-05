@@ -1,6 +1,38 @@
-﻿namespace Frontend.Components.Controls
-{
-    public class ProductCard
-    {
-    }
+﻿#ProductCard1 {
+    background-color: #444444;
+    color: #EDEDED;
+    border-style: solid;
+    border-width: 1px;
+    border-color: #5e5e5e;
+}
+
+.btn btn-primary btn-sm {
+    background-color: #DA0037;
+}
+
+#ProductImage {
+    width: 100px;
+    height: 100px;
+    margin-right: 40px;
+}
+/*
+.ProductCardPrice {
+    margin-left: 50%
+}*/
+
+#ProductCardButton {
+    background-color: #DA0037;
+    border: none;
+    border-radius: 2%;
+}
+
+.card-title {
+    font-weight: 600; /* medium for emphasis */
+    font-size: 1.125rem; /* ~18px */
+    letter-spacing: 0.5px;
+}
+
+.ProductCardPrice {
+    font-weight: 700; /* bold for call-out */
+    font-size: 1.25rem; /* ~20px */
 }

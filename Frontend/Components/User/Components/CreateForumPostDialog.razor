@@ -1,0 +1,100 @@
+@using Firebase.Auth
+@using Frontend.Models
+@using Frontend.Services.Interfaces
+@using User = Frontend.Models.User
+@inject IForumService ForumService
+@inject IJSRuntime JsRuntime
+@inject IFirebaseAuthService FirebaseAuthService
+@inject FirebaseAuthClient FirebaseAuthClient
+@inject IUserService UserService
+
+
+@if (IsForumModalOpen)
+{
+    <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.6);">
+        <div class="modal-dialog modal-dialog-centered modal-lg">
+            <div class="modal-content bg-dark text-light border-secondary">
+                <div class="modal-header">
+                    <h5 class="modal-title">Create New Post</h5>
+                    <button type="button" class="btn-close btn-close-white" @onclick="CloseForumModal"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label class="form-label">Title</label>
+                        <input class="form-control bg-dark text-light border-secondary" @bind="NewPost.Title"/>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Content</label>
+                        <textarea class="form-control bg-dark text-light border-secondary" rows="4" @bind="NewPost.Content"></textarea>
+                    </div>
+                    <div class="mb-3">
+                        <label class="form-label">Category</label>
+                        <select class="form-select bg-dark text-light border-secondary" @bind="NewPost.Category">
+                            @foreach (var category in Categories)
+                            {
+                                <option value="@category">@category.GetDisplayName()</option>
+                            }
+                        </select>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button class="btn btn-secondary" @onclick="CloseForumModal">Cancel</button>
+                    <button class="btn btn-success" @onclick="CreatePost">Post</button>
+                </div>
+            </div>
+        </div>
+    </div>
+}
+
+
+@code {
+
+    [Parameter] public bool IsForumModalOpen { get; set; } = false;
+    [Parameter] public EventCallback OnCommentSubmitted { get; set; }
+    private ForumPost NewPost { get; set; } = new();
+    private List<ForumCategory> Categories { get; set; } = Enum.GetValues<ForumCategory>().ToList();
+    private User? CurrentUser { get; set; } = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        var token = await JsRuntime.InvokeAsync<string>("getCookie", "token");
+
+        if (!string.IsNullOrEmpty(token))
+        {
+            var tokenVerified = await FirebaseAuthService.VerifyTokenAsync(token);
+
+            if (tokenVerified && FirebaseAuthClient.User is not null)
+            {
+                var firebaseAuthUserId = FirebaseAuthClient.User.Uid;
+                CurrentUser = await UserService.GetUserByIdAsync(firebaseAuthUserId);
+
+                StateHasChanged();
+            }
+        }
+    }
+
+    private void CloseForumModal()
+    {
+        IsForumModalOpen = false;
+        NewPost = new();
+    }
+
+    private async Task CreatePost()
+    {
+        if (!string.IsNullOrWhiteSpace(NewPost.Title) &&
+            !string.IsNullOrWhiteSpace(NewPost.Content))
+        {
+            NewPost.Author = CurrentUser;
+            
+
+            await ForumService.AddForumPostAsync(NewPost);
+            await OnCommentSubmitted.InvokeAsync();
+
+            CloseForumModal();
+            StateHasChanged();
+        }
+    }
+
+}

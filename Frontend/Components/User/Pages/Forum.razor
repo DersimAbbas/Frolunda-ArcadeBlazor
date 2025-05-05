@@ -1,6 +1,161 @@
 ﻿@page "/forum"
-<h3>Forum</h3>
+@using Frontend.Models
+@using Frontend.Components.User.Components
+@using Frontend.Services.Interfaces
+@inject IForumService ForumService
+
+
+<h2 class="text-center welcome-text mb-5">Forum Home</h2>
+
+<div class="container-fluid px-3 text-light">
+    <div class="row gx-4">
+        <div class="col-12 mb-4">
+
+            <div class="d-flex flex-column flex-md-row justify-content-between align-items-center mb-4 gap-3">
+                <h3 class="generic-text">Recent Posts</h3>
+
+                <div class="d-flex align-items-center gap-2 flex-wrap">
+                    <div class="text-end d-flex gap-2">
+                        <button id="btn-open-all" class="btn btn-outline-success d-flex align-items-center gap-1 px-3 py-2 generic-text generic-text-size " @onclick="OpenAllCategories">
+                            Open All
+                        </button>
+                        <button id="btn-close-all" class="btn btn-outline-danger d-flex align-items-center gap-1 px-3 py-2 generic-text generic-text-size " @onclick="CloseAllCategories">
+                            Close All
+                        </button>
+                    </div>
+
+                    <select class="form-select bg-dark text-light border-secondary generic-text generic-text-size"
+                            style="width: 200px; height: auto"
+                            @bind="SelectedCategory">
+                        <option value="">All Categories</option>
+                        @foreach (var category in Categories)
+                        {
+                            <option value="@category">@category.GetDisplayName()</option>
+                        }
+                    </select>
+
+                    <button class="btn btn-secondary generic-text generic-text-size"
+                            style="background-color: #bf1f1f; border-color: #DA0037;"
+                            @onclick="() => _isForumModalOpen = true">
+                        Create New Post
+                    </button>
+
+                    <CreateForumPostDialog IsForumModalOpen="@_isForumModalOpen" OnCommentSubmitted="RefreshPosts"/>
+
+                </div>
+            </div>
+
+            @if (FilteredPosts?.Any() == true)
+            {
+                @foreach (var categoryGroup in FilteredPosts.GroupBy(p => p.Category))
+                {
+                    <div class="mb-4">
+                        <div
+                            class="d-flex justify-content-between align-items-center p-3 mb-2"
+                            style="background-color: @(categoryGroup.Key.ToString() == "Announcements" ? "#bf1f1f" : "#444444"); border-radius: 8px; cursor: pointer;"
+                            @onclick="() => ToggleCategory(categoryGroup.Key)">
+                            <h4 class="m-0 text-light">@categoryGroup.Key.GetDisplayName()</h4>
+                            <span class="text-light">
+                                @(ExpandedCategories.Contains(categoryGroup.Key) ? "▲" : "▼")
+                            </span>
+                        </div>
+
+                        @if (ExpandedCategories.Contains(categoryGroup.Key))
+                        {
+                            <div class="d-flex flex-column">
+                                @foreach (var post in FullyExpandedCategories.Contains(categoryGroup.Key) ? categoryGroup : categoryGroup.Take(CategoryPreviewLimit))
+                                {
+                                    <div class="p-3 mb-2" style="background-color: #333; border: 1px solid #555; border-radius: 6px; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                                        <div class="d-flex justify-content-between align-items-center mb-1">
+                                            <div class="fw-semibold fs-5 text-light generic-text generic-text-size">@post.Title</div>
+                                            <small >@post.Created.ToString("yyyy-MM-dd")</small>
+                                        </div>
+                                        <div class="mb-1 text-light small">@post.Content</div>
+                                        <div class="d-flex justify-content-between align-items-center mt-2">
+                                            <div class="d-flex align-items-center gap-2">
+                                                <span class="badge bg-danger small">@post.Category</span>
+                                                <small >by @post.Author.Username</small>
+                                            </div>
+                                            <a href="/post/@post.Id" id="view-post" class="btn btn-sm btn-outline-light">View</a>
+                                        </div>
+                                    </div>
+                                }
+
+                                @if (!FullyExpandedCategories.Contains(categoryGroup.Key) && categoryGroup.Count() > CategoryPreviewLimit)
+                                {
+                                    <div class="text-end mt-2">
+                                        <button class="btn btn-sm btn-outline-light fw-bold px-3 py-1" style="border-color: #bf1f1f; color: #bf1f1f;" @onclick="() => ViewAllPostsInCategory(categoryGroup.Key)">
+                                            View all
+                                        </button>
+                                    </div>
+                                }
+                            </div>
+                        }
+                    </div>
+                }
+            }
+            else
+            {
+                <div class="text-center" style="color: #EDEDED;">No posts in this category yet.</div>
+            }
+        </div>
+    </div>
+</div>
+
 
 @code {
+
+    private List<ForumCategory> Categories { get; set; } = Enum.GetValues<ForumCategory>().ToList();
+    private ForumCategory? SelectedCategory { get; set; } = null;
+    private int CategoryPreviewLimit { get; set; } = 3;
+    private List<ForumPost> ForumPosts { get; set; } = new();
+    private HashSet<ForumCategory> ExpandedCategories { get; set; } = new();
+    private HashSet<ForumCategory> FullyExpandedCategories { get; set; } = new();
+
+    private bool _isForumModalOpen = false;
+
+    protected override async Task OnInitializedAsync()
+    {
+        ExpandedCategories = Categories.ToHashSet();
+        var posts = await ForumService.GetAllForumPostsAsync();
+        ForumPosts = posts.OrderBy(p => (int)p.Category).ToList();
+    }
+
+    private void ToggleCategory(ForumCategory category)
+    {
+        if (!ExpandedCategories.Add(category))
+        {
+            ExpandedCategories.Remove(category);
+            FullyExpandedCategories.Remove(category);
+        }
+    }
+
+    private void ViewAllPostsInCategory(ForumCategory category)
+    {
+        FullyExpandedCategories.Add(category);
+    }
+
+    private IEnumerable<ForumPost> FilteredPosts =>
+        SelectedCategory == null
+            ? ForumPosts
+            : ForumPosts.Where(p => p.Category == SelectedCategory);
+
+    private void OpenAllCategories()
+    {
+        ExpandedCategories = Categories.ToHashSet();
+    }
+
+    private void CloseAllCategories()
+    {
+        ExpandedCategories.Clear();
+        FullyExpandedCategories.Clear();
+    }
+
+    private async Task RefreshPosts()
+    {
+        var posts = await ForumService.GetAllForumPostsAsync();
+        ForumPosts = posts.OrderBy(p => (int)p.Category).ToList();
+        StateHasChanged();
+    }
 
 }
