@@ -1,6 +1,7 @@
 ﻿@page "/admin-page"
 @using Frontend.Models
 @using Frontend.Services
+@using Microsoft.AspNetCore.Authorization
 @using User = Frontend.Models.User
 @using Frontend.Components.Store.Components
 @using Frontend.Components.Admin.Components
@@ -10,6 +11,7 @@
 @inject IOrderService OrderService
 @inject ICartService CartService
 @inject IHighscoresService HighscoresService
+@attribute [Authorize(Roles = "admin")]
 
 <h3 class="welcome-text" id="admin-page">Admin Page</h3>
 
