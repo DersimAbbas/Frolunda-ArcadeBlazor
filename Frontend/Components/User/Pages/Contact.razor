@@ -5,7 +5,9 @@
 @using static Frontend.Components.User.Components.ContactSupportModal
 <PageTitle>Contact</PageTitle>
 <ContactSupportModal @ref="modalTicket"
-    OnSubmit="CreateNewDisputeAsync"></ContactSupportModal>
+OnSubmit="CreateNewDisputeAsync">
+
+</ContactSupportModal>
 @inject IOrderService OrderService
 <div class="container mt-5">
     <div class="row">
@@ -82,9 +84,9 @@
     {
         modalTicket.Show();
     }
-    public async Task CreateNewDisputeAsync()
+    public async Task CreateNewDisputeAsync(SupportRequestModel support)
     {
-        await OrderService.DisputeOrder(supportRequest.Email, supportRequest.Name, supportRequest.OrderId);
+        await OrderService.DisputeOrder(support.Email, support.Name, support.OrderId);
     }
 
 }

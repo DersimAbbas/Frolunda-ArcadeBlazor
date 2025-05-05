@@ -15,52 +15,58 @@
 @if (_selectedProduct is not null)
 {
     <div class="container-fluid px-3">
-        <div class="row gx-4">
-            <!-- Main Product Content -->
-            <div class="col-12 col-lg-9 mb-4">
-                <!-- Product Card -->
-                <div class="product-card p-4 text-light mb-3">
-                    <h2 class="product-title">@_selectedProduct.Name</h2>
-                    <hr />
-                    <div class="row gx-4">
-                        <div class="col-12 col-lg-4 d-flex flex-column justify-content-between p-3">
+        <div class="row justify-content-center">
+            <div class="col-12 col-lg-10">
+                <div class="card bg-transparent text-light mb-4">
+                    <!-- Card Header: Product Name -->
+                    <div class="card-header bg-dark">
+                        <h2 class="mb-0">@_selectedProduct.Name</h2>
+                    </div>
+
+                    <!-- Card Body: Description, Meta, Reviews + Image -->
+                    <div class="card-body bg-transparent">
+                        <!-- Description & Meta -->
+                        <div class="mb-4">
                             <p>@_selectedProduct.Description</p>
-                            <div class="product-meta mt-4">
-                                <span><strong>Genre:</strong> @_selectedProduct.Genre</span><br />
-                                <span><strong>Age Rating:</strong> @_selectedProduct.AgeRating</span><br />
-                                <span><strong>Status:</strong> @_selectedProduct.Status</span>
+                            <div class="small">
+                                <strong>Genre:</strong> @_selectedProduct.Genre<br />
+                                <strong>Age Rating:</strong> @_selectedProduct.AgeRating<br />
+                                <strong>Status:</strong> @_selectedProduct.Status
                             </div>
-                             <div class="col-12 col-lg-3 mb-4">
-                                <ProductSidebar Product="_selectedProduct
-                                   " />
-                             </div>
-                        </div>  
-                        <div class="col-12 col-lg-8 d-flex align-items-stretch p-3">
-                            <img src="@_selectedProduct.ImageLink" alt="@_selectedProduct.Name" class="img-fluid rounded product-img w-100" />
                         </div>
+
+                        <!-- Reviews next to Image -->
+                        <div class="row">
+                            <!-- Reviews Column -->
+                            <div class="col-12 col-lg-4 mb-3 mb-lg-0">
+                                <h5 class="text-light">Reviews</h5>
+                                <ReviewViewer Reviews="_selectedProduct.Reviews"
+                                              SelectedProduct="_selectedProduct" />
+                            </div>
+                            <!-- Image Column -->
+                            <div class="col-12 col-lg-8 d-flex justify-content-center align-items-center">
+                                <img src="@_selectedProduct.ImageLink"
+                                     alt="@_selectedProduct.Name"
+                                     class="img-fluid rounded w-100" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Card Footer: Add to Cart -->
+                    <div class="card-footer bg-transparent">
+                        <ProductSidebar Product="_selectedProduct" />
                     </div>
                 </div>
 
-                <!-- Reviews + Related Products -->
-                <div class="product-info-card p-4 text-light ">
-                    <h5 class="mb-3">Reviews</h5>
-                    <div class="row gx-4">
-                        <div class="col-12 col-lg-4 p-3">
-                            <ReviewViewer Reviews="_selectedProduct.Reviews" SelectedProduct="_selectedProduct" />
-                        </div>
-
-                        <div class="col-12 col-lg-8 p-3">
-                            <h5 class="mb-3">Related Products</h5>
-                           @*  <ProductCarousel Products="_products" AutoScrollInterval="4000" *@ 
-                              <RecommendedProducts _cachedProducts="_products" />
-                        </div>
-                    </div>
+                <!-- Related Products Section -->
+                <div class="mb-4">
+                    <h5>Related Products</h5>
+                    <RecommendedProducts _cachedProducts="_products" />
                 </div>
             </div>
-
-           
         </div>
     </div>
+
 }
 
 @code
