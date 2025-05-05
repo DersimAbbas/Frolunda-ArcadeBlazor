@@ -12,7 +12,7 @@
     <div class="mb-3">
         <input @bind="Filter.SearchTerm" placeholder="Search..." class="form-control mb-2" />
         <select @bind="Filter.SelectedGenre" class="form-control mb-2">
-            <option value="">Genres</option>
+            <option value="">All Genres</option>
             @foreach (var g in Genres)
             {
                 <option value="@g">@g</option>
@@ -38,12 +38,6 @@
     [Parameter] public EventCallback<ProductFilter> OnApplyFilters { get; set; }
 
     [Parameter] public List<string> Genres { get; set; } = new();
-
-    protected override Task OnInitializedAsync()
-    {
-        Genres.AddRange(new[] { "Action", "RPG", "Survival Horror", "Roguelike" });
-        return Task.CompletedTask;
-    }
 
     private async Task ApplyClicked()
     {
