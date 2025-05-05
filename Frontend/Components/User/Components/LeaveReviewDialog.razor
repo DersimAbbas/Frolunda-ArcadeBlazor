@@ -52,8 +52,11 @@
     [Parameter] public Product SelectedProduct { get; set; }
     private Review NewReview { get; set; }
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if(!firstRender)
+            return;
+        
         var reviewProduct = new CartProductDto()
         {
             Id = SelectedProduct.Id,

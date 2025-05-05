@@ -65,7 +65,6 @@ public class PaymentService(HttpClient httpClient) : IPaymentService
         using var client = new HttpClient();
         var content = new StringContent(json, Encoding.UTF8, "application/json");
         var response = await client.PostAsync(LogicAppUrl, content);
-
         return response.IsSuccessStatusCode;
 
     }
