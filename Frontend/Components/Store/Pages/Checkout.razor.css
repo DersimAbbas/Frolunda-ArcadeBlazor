@@ -1,0 +1,30 @@
+﻿.receipt-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1040;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+input, .form-control {
+    background-color: #d6d6d6 !important;
+}
+
+input
+{
+    color: black !important;
+}
+
+.arcade-error {
+    font-family: monospace;
+    color: #f55;
+}
+
+label {
+    color: #fff !important;
+}
