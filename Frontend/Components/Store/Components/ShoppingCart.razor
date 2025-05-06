@@ -9,8 +9,9 @@
 
 @if (Visible)
 {
-    <div id="cartPopup" class="shopping-cart-popup" @onclick="() => {}" @onclick:stopPropagation="true">
-        <h3 class="text-dark">Your Cart</h3>
+    <div id="cartPopup" class="shopping-cart-popup arcade-post-card text-light" @onclick="() => {}" @onclick:stopPropagation="true">
+
+        <h3>Your Cart</h3>
         <hr />
 
         @if (_cartItems.Count == 0)
@@ -27,21 +28,21 @@
                     <li class="mb-3 d-flex justify-content-between align-items-start">
                         <div class="flex-grow-1">
                             <strong>@item.Product.Name</strong>
-                            <div class="text-muted small">@item.Product.Price.ToString("C") each</div>
+                            <div class="small">@item.Product.Price.ToString("C") each</div>
                         </div>
 
                         <div class="d-flex flex-column align-items-center">
                             <div class="d-flex align-items-center mb-1">
-                                <button class="btn btn-sm btn-outline-secondary me-1" @onclick="() => DecreaseQuantity(item.Product.Id)">−</button>
+                                <button class="simple-arcade-btn me-1" @onclick="() => DecreaseQuantity(item.Product.Id)">−</button>
                                 <span class="mx-2">@item.Quantity</span>
-                                <button class="btn btn-sm btn-outline-secondary ms-1" @onclick="() => IncreaseQuantity(item.Product.Id)">+</button>
+                                <button class="simple-arcade-btn  ms-1" @onclick="() => IncreaseQuantity(item.Product.Id)">+</button>
                             </div>
 
                             <div class="text-end small mb-1">
                                 <strong>@itemTotal.ToString("C")</strong>
                             </div>
 
-                            <button class="btn btn-sm btn-danger" @onclick="() => RemoveFromCart(item.Product.Id)">Remove</button>
+                            <button class="simple-arcade-btn" style="background-color: darkred;" @onclick="() => RemoveFromCart(item.Product.Id)">Remove</button>
                         </div>
                     </li>
                 }
@@ -54,8 +55,8 @@
             </div>
 
             <div class="d-flex justify-content-between">
-                <button class="btn btn-secondary" @onclick="ClearCart">Clear Cart</button>
-                <button class="btn btn-primary" @onclick="Checkout">Checkout</button>
+                <button id="clear-cart-btn" class="simple-arcade-btn" @onclick="ClearCart">Clear Cart</button>
+                <button id="clear-cart-btn" class="simple-arcade-btn" style="background-color:limegreen" @onclick="Checkout">Checkout</button>
             </div>
         }
     </div>
@@ -70,6 +71,7 @@
     private bool _isFirstRender = true;
 
     private List<(Product Product, int Quantity)> _cartItems = new();
+    private int CartItemCount { get; set; } = 0;
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -119,7 +121,7 @@
     {
         LocalCartStorageService.Cart.Remove(productId);
         await LocalCartStorageService.SaveCartAsync();
-        StateHasChanged();
+        await LoadCart();
     }
 
     private async Task IncreaseQuantity(string productId)
@@ -129,7 +131,6 @@
             LocalCartStorageService.Cart[productId]++;
             await LocalCartStorageService.SaveCartAsync();
             await LoadCart();
-            StateHasChanged();
         }
     }
 
@@ -148,7 +149,6 @@
 
             await LocalCartStorageService.SaveCartAsync();
             await LoadCart();
-            StateHasChanged();
         }
     }
 
@@ -156,7 +156,7 @@
     {
         LocalCartStorageService.Cart.Clear();
         await LocalCartStorageService.SaveCartAsync();
-        StateHasChanged();
+        await LoadCart();
     }
     private void Checkout()
     {
@@ -165,8 +165,6 @@
 
     [JSInvokable]
     public Task CloseCart() => OnClose.InvokeAsync();
-
-
 
     //redudant code cant pre render with JS interop crashes server (caching and cart works fine without it.)
     public async ValueTask DisposeAsync()

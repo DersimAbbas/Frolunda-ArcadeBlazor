@@ -19,7 +19,7 @@
                 </span>
             }
         </button>
-        <ShoppingCart Visible="_isCartOpen" OnClose="ToggleCart" />
+        <ShoppingCart Visible="_isCartOpen" OnClose="ToggleCart"/>
     </div>
 </div>
 
@@ -31,13 +31,19 @@
 
     protected override void OnInitialized()
     {
-        LocalCartStorageService.OnChange += StateHasChanged;
+        LocalCartStorageService.OnChange += UpdateCartCount;
+        UpdateCartCount();
+    }
+
+    private void UpdateCartCount()
+    {
         _cartItemCount = LocalCartStorageService.GetCartItemCount();
+        StateHasChanged();
     }
 
     public void Dispose()
     {
-        LocalCartStorageService.OnChange -= StateHasChanged;
+        LocalCartStorageService.OnChange -= UpdateCartCount;
     }
 
     private void ToggleCart()
