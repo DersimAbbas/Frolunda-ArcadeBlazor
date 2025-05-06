@@ -13,30 +13,30 @@
 <h3 class="welcome-text text-center mb-3">Checkout</h3>
 
 <div class="d-flex justify-content-center align-items-center">
-<div class="arcade-post-card form-group d-flex flex-column gap-3 p-5 w-75 align-self-center">
-    <label>Name</label>
-    <input class="form-control arcade-input" @bind="_customerName" />
+    <div class="arcade-post-card form-group d-flex flex-column gap-3 p-5 w-75 align-self-center">
+        <label>Name</label>
+        <input class="form-control arcade-input" @bind="_customerName" />
 
-    <label>Email</label>
-    <input class="form-control arcade-input" @bind="_customerEmail" />
+        <label>Email</label>
+        <input class="form-control arcade-input" @bind="_customerEmail" />
 
-    <label>Card Number</label>
-    <div id="card-number-element" class="form-control arcade-input p-3"></div>
+        <label>Card Number</label>
+        <div id="card-number-element" class="form-control arcade-input p-3"></div>
 
-    <label>Expiry Date</label>
-    <div id="card-expiry-element" class="form-control arcade-input p-3"></div>
+        <label>Expiry Date</label>
+        <div id="card-expiry-element" class="form-control arcade-input p-3"></div>
 
-    <label>CVC</label>
-    <div id="card-cvc-element" class="form-control arcade-input p-3"></div>
+        <label>CVC</label>
+        <div id="card-cvc-element" class="form-control arcade-input p-3"></div>
 
-    <label>Postal Code</label>
-    <div id="card-postal-element" class="form-control arcade-input p-3"></div>
+        <label>Postal Code</label>
+        <div id="card-postal-element" class="form-control arcade-input p-3"></div>
 
-    <button class="arcade-btn mt-5 w-50 align-self-center" @onclick="HandleCheckout">Pay</button>
+        <button class="arcade-btn mt-5 w-50 align-self-center" @onclick="HandleCheckout">Pay</button>
 
-    <div id="card-errors" class="text-danger my-2"></div>
-    <div class="text-danger my-2">@_statusMessage</div>
-</div>
+        <div id="card-errors" class="text-danger my-2"></div>
+        <div class="text-danger my-2">@_statusMessage</div>
+    </div>
 </div>
 
 @if (_paymentComplete)
@@ -86,7 +86,10 @@
             }
         }
 
-        CartItems = CartStorageService.Cart;
+        foreach (var item in CartStorageService.Cart)
+        {
+            CartItems.Add(item.Key, item.Value);
+        }
         AllProducts = await ProductService.GetAllProductsAsync();
         _amount = CartStorageService.GetCartCost(AllProducts);
 
@@ -140,6 +143,7 @@
             {
                 await LocalCartService.ClearCartAsync();
             }
+            StateHasChanged();
             return;
         }
 
@@ -149,6 +153,7 @@
         _statusMessage = "";
         _isLoading = false;
         await LocalCartService.ClearCartAsync();
+        StateHasChanged();
     }
 
     [JSInvokable]
