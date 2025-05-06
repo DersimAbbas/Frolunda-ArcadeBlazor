@@ -94,26 +94,17 @@
 </div>
 
 @code {
-    [Parameter] public RegisterOrder? order { get; set; }
+    [Parameter] public RegisterOrder? Order { get; set; }
     private User? UserProfile { get; set; } = new();
     private List<RegisterOrder>? UserOrderHistory { get; set; } = new();
     private List<Product>? _cachedProducts { get; set; } = new();
     private string UserId { get; set; } = string.Empty;
 
-
-    protected override async Task OnInitializedAsync()
-    {
-        _cachedProducts = await productService.GetAllProductsAsync();
-
-    }
-
-
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-
-
         if (!firstRender) return;
+
+        _cachedProducts = await productService.GetAllProductsAsync();
 
         var token = await JsRuntime.InvokeAsync<string>("getCookie", "token");
 
