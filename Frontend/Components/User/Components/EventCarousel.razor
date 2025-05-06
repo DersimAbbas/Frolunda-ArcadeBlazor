@@ -2,26 +2,26 @@
 @inject IJSRuntime JsRuntime
 @implements IDisposable
 
-<div class="scroll-carousel-container text-light position-relative py-3">
-    <button class="carousel-arrow left btn btn-outline-light shadow" @onclick="() => Scroll(-1)">‹</button>
+<div class="scroll-carousel-container position-relative py-3">
+    <button class="carousel-arrow left btn shadow" @onclick="() => Scroll(-1)">‹</button>
 
     <div class="scroll-carousel" @ref="_carouselRef">
         @foreach (var _event in Events)
         {
-        <div class="carousel-item-card">
-            <div class="card bg-dark border-secondary shadow-sm">
-                <div class="card-body">
-                    <h5 class="card-title text-danger">@_event.Name</h5>
-                    <p class="card-text text-light small">@_event.Description</p>
-                    <p class="card-text text-light small">@_event.Date.ToShortDateString()</p>
-                    <span class="badge bg-secondary">@(_event.Participants?.Count ?? 0) participants</span>
+            <div class="carousel-item-card text-light ms-0">
+                <div class="card bg-dark border-secondary shadow-sm ms-0">
+                    <div class="card-body">
+                        <h5 class="card-title text-danger">@_event.Name</h5>
+                        <p class="card-text text-light small">@_event.Description</p>
+                        <p class="card-text text-light small">@_event.Date.ToShortDateString()</p>
+                        <span class="badge bg-secondary">@(_event.Participants?.Count ?? 0) participants</span>
+                    </div>
                 </div>
             </div>
-        </div>
         }
     </div>
 
-    <button class="carousel-arrow right btn btn-outline-light shadow" @onclick="() => Scroll(1)">›</button>
+    <button class="carousel-arrow right btn shadow" @onclick="() => Scroll(1)">›</button>
 </div>
 @code {
     [Parameter] public List<Event> Events { get; set; } = new();

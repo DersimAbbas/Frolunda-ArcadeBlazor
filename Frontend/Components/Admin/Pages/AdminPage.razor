@@ -2,6 +2,7 @@
 @using Frontend.Models
 @using Frontend.Services
 @using Microsoft.AspNetCore.Authorization
+@using Microsoft.AspNetCore.Components.Authorization
 @using User = Frontend.Models.User
 @using Frontend.Components.Store.Components
 @using Frontend.Components.Admin.Components
@@ -11,48 +12,55 @@
 @inject IOrderService OrderService
 @inject ICartService CartService
 @inject IHighscoresService HighscoresService
-@attribute [Authorize(Roles = "admin")]
+@inject AuthenticationStateProvider AuthenticationStateProvider
 
-<h3 class="welcome-text" id="admin-page">Admin Page</h3>
-
-<div id="products-button" class="d-flex justify-content-center mb-5">
-    <button class="btn ms-1 @(IsViewingProducts ? "btn-primary" : "btn-outline-primary")"
-    @onclick="() => IsViewingProducts = true">
-        View Products
-    </button>
-
-    <button id="user-button" class="btn ms-1 @(IsViewingUsers ? "btn-outline-primary" : "btn-primary")"
-    @onclick="() => IsViewingUsers = true">
-        View Users
-    </button>
-
-    <button id="highscores-button" class="btn ms-1 @(IsViewingHighscores ? "btn-outline-primary" : "btn-primary")"
-    @onclick="() => IsViewingHighscores = true">
-        View Highscores
-    </button>
-
-    <button id="events-button" class="btn ms-1 @(IsViewingEvents ? "btn-outline-primary" : "btn-primary")"
-    @onclick="() => IsViewingEvents = true">
-        Edit Events
-    </button>
-</div>
-
-@if(IsViewingProducts)
-{
-    <ProductEditor/>
-}
-else if(IsViewingUsers)
-{
-    <UserEditor/>
-}
-else if(IsViewingHighscores)
-{
-    <HighscoresEditor HighscoresList="_highscores" OnChange="RefreshHighscores" />
-}
-else if (IsViewingEvents)
-{
-    <EventEditor/>
-}
+<AuthorizeView Roles="admin">
+    <Authorized>
+    <h3 class="welcome-text" id="admin-page">Admin Page</h3>
+    
+    <div id="products-button" class="d-flex justify-content-center mb-5">
+        <button class="arcade-btn ms-1 @(IsViewingProducts ? "btn-primary" : "btn-outline-primary")"
+        @onclick="() => IsViewingProducts = true">
+            View Products
+        </button>
+    
+        <button id="user-button" class="arcade-btn ms-1 @(IsViewingUsers ? "btn-outline-primary" : "btn-primary")"
+        @onclick="() => IsViewingUsers = true">
+            View Users
+        </button>
+    
+        <button id="highscores-button" class="arcade-btn ms-1 @(IsViewingHighscores ? "btn-outline-primary" : "btn-primary")"
+        @onclick="() => IsViewingHighscores = true">
+            View Highscores
+        </button>
+    
+        <button id="events-button" class="arcade-btn ms-1 @(IsViewingEvents ? "btn-outline-primary" : "btn-primary")"
+        @onclick="() => IsViewingEvents = true">
+            Edit Events
+        </button>
+    </div>
+    
+    @if(IsViewingProducts)
+    {
+        <ProductEditor/>
+    }
+    else if(IsViewingUsers)
+    {
+        <UserEditor/>
+    }
+    else if(IsViewingHighscores)
+    {
+        <HighscoresEditor HighscoresList="_highscores" OnChange="RefreshHighscores" />
+    }
+    else if (IsViewingEvents)
+    {
+        <EventEditor/>
+    }
+</Authorized>
+        <NotAuthorized>
+            <p class="generic-text">Access denied.</p>
+        </NotAuthorized>
+</AuthorizeView>
 
 @code {
     private List<Product> _filteredProducts = new();
