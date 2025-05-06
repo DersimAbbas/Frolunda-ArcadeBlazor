@@ -2,7 +2,6 @@
 @using System.Globalization
 @using Firebase.Auth
 @using Frontend.Models
-@using Frontend.Services
 @using Frontend.Services.Interfaces
 @using User = Frontend.Models.User
 @inject IFirebaseAuthService FirebaseAuthService
@@ -103,6 +102,8 @@
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
+        
+        _cachedProducts = await productService.GetAllProductsAsync();
 
         _cachedProducts = await productService.GetAllProductsAsync();
 
