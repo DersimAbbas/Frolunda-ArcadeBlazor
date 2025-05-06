@@ -11,7 +11,7 @@ public class FirebaseAuthService(
     FirebaseAuthClient firebaseAuthClient,
     HttpClient httpClient,
     IUserService userService,
-    IJSRuntime JSRuntime,
+    IJSRuntime JsRuntime,
     NavigationManager navigationManager)
     : IFirebaseAuthService
 {
@@ -48,7 +48,7 @@ public class FirebaseAuthService(
         var userCred = await firebaseAuthClient.SignInWithEmailAndPasswordAsync(email, password);
         var token = await userCred.User.GetIdTokenAsync(forceRefresh: true);
 
-        await JSRuntime.InvokeVoidAsync("setCookie", "token", token);
+        await JsRuntime.InvokeVoidAsync("setCookie", "token", token);
 
         return token;
     }
@@ -79,9 +79,32 @@ public class FirebaseAuthService(
             firebaseAuthClient.SignOut();
         }
 
-        await JSRuntime.InvokeVoidAsync("clearAuthCookies");
+        await JsRuntime.InvokeVoidAsync("clearAuthCookies");
 
         navigationManager.NavigateTo("/", forceLoad: true);
     }
 
+    public async Task<string> GetUserId()
+    {
+        var token = await JsRuntime.InvokeAsync<string>("getCookie", "token");
+
+        if (!string.IsNullOrEmpty(token))
+        {
+            var tokenVerified = await VerifyTokenAsync(token);
+
+            if (tokenVerified)
+            {
+                try
+                {
+                    var firebaseAuthUserId = firebaseAuthClient.User.Uid;
+                    return firebaseAuthUserId;
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+        }
+        return null;
+    }
 }
