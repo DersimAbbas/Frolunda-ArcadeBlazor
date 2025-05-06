@@ -10,3 +10,58 @@
     justify-content: center;
     align-items: center;
 }
+body {
+    background-color: #111;
+    font-family: 'Press Start 2P', cursive; /* Retro font */
+}
+
+.arcade-title {
+    font-size: 1.5rem;
+    color: #0ff;
+    text-shadow: 0 0 5px #0ff, 0 0 10px #0ff;
+    margin-bottom: 1rem;
+}
+
+.arcade-form label {
+    font-size: 0.85rem;
+    color: #ff0;
+    text-shadow: 0 0 2px #ff0;
+}
+
+.arcade-input {
+    background-color: #222;
+    color: #0ff;
+    border: 2px solid #0ff;
+    box-shadow: 0 0 5px #0ff;
+    font-family: 'Courier New', monospace;
+}
+
+    .arcade-input:focus {
+        background-color: #000;
+        color: #fff;
+        outline: none;
+        border-color: #f0f;
+        box-shadow: 0 0 10px #f0f;
+    }
+
+.arcade-error {
+    font-family: monospace;
+    color: #f55;
+}
+
+.arcade-btn {
+    background-color: #f0f;
+    color: #000;
+    border: 2px solid #0ff;
+    box-shadow: 0 0 8px #f0f, 0 0 12px #0ff;
+    font-family: 'Press Start 2P', cursive;
+    text-transform: uppercase;
+    padding: 0.75rem 1.5rem;
+    transition: all 0.3s ease-in-out;
+}
+
+    .arcade-btn:hover {
+        background-color: #0ff;
+        color: #000;
+        box-shadow: 0 0 10px #0ff, 0 0 14px #f0f;
+    }
