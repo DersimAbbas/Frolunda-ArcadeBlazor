@@ -217,7 +217,7 @@ h3 {
 }
 
 ::placeholder {
-    color: #ffffff;
+    color: #ffffff !important;
     opacity: 1;
 }
 
@@ -351,4 +351,13 @@ input, textarea, select {
 .pixel-subtitle {
     font-family: 'Press Start 2P', cursive;
     font-size: 0.8rem;
+}
+
+.form-range {
+    -webkit-appearance: none;
+    width: 100%;
+    height: 0.5rem;
+    background: #ddd;
+    border-radius: 0.5rem;
+    outline: none;
 }
