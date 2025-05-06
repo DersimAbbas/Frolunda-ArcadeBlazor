@@ -1,16 +1,23 @@
 ﻿@using Frontend.Components.User.Components
+@using Frontend.Components.Layout
+@using Frontend.Components
 @inherits LayoutComponentBase
+@using Frontend.Services
+
 <Header />
 <div class="page">
     <main>
+        <ConfirmDialog @ref="_confirmDialogRef" />
         <div class="sidebar">
             <NavMenu />
         </div>
-        <div class="storefront-main">
+
+       <article class="productpage-main content">
             @Body
-        </div>
+       </article>
+
     </main>
-   @*  <footer>
+    @*  <footer>
          <div class="position-absolute bottom-0 start-50 translate-middle-x w-100 h-25">
         <Footer />
     </div> 
@@ -35,3 +42,18 @@
 <script src="/js/ScrollCarousel.js"></script>
 
 <script src="js/cart.js"></script>
+
+@code
+{
+    [Inject] private ConfirmDialogService ConfirmDialogService { get; set; } = default!;
+    private ConfirmDialog _confirmDialogRef = default!;
+
+    public ConfirmDialog ConfirmDialogInstance => _confirmDialogRef;
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            ConfirmDialogService.ConfirmDialogInstance = _confirmDialogRef;
+        }
+    }
+}
