@@ -3,13 +3,15 @@
 @using Frontend.Services
 @using Frontend.Services.Interfaces
 @inject NavigationManager NavigationManager
+@inject ICartService CartService
+@inject ILocalCartStorageService LocalCartStorageService
 @inject IFirebaseAuthService FirebaseAuthService
 
 <h3 class="text-center mb-4 medium-title">Login</h3>
 
 <div class="container text-light my-5">
     <div class="row justify-content-center gap-5">
-        <div class="col-md-5 bg-transparent" style="background-color: #444444; padding: 2rem; border: 1px solid #5e5e5e; border-radius: 2%;">
+        <div class="col-md-5 arcade-post-card" style="padding: 2rem;">
 
             <EditForm Model="@LoginUser" OnValidSubmit="HandleLogin">
                 <DataAnnotationsValidator/>
@@ -24,18 +26,18 @@
                 <div class="form-group mb-3">
                     <label for="email" class="form-label generic-text" style="font-size: 1rem">Email</label>
                     <InputText type="email" id="email" name="Email"
-                               class="form-control text-light border-secondary"
-                               @bind-Value="@LoginUser.Email"
-                               required/>
+                    class="form-control text-light border-secondary"
+                    @bind-Value="@LoginUser.Email"
+                    required/>
                     <ValidationMessage For="@(() => LoginUser.Email)" />
                 </div>
 
                 <div class="form-group mb-4">
                     <label for="password" class="form-label generic-text" style="font-size: 1rem">Password</label>
                     <InputText type="password" id="password" name="Password"
-                               class="form-control text-light border-secondary"
-                               @bind-Value="@LoginUser.Password"
-                               required/>
+                    class="form-control text-light border-secondary"
+                    @bind-Value="@LoginUser.Password"
+                    required/>
                     <ValidationMessage For="@(() => LoginUser.Password)" />
                 </div>
 
@@ -65,14 +67,22 @@
 
     private async Task HandleLogin()
     {
-        
+
         try
         {
             var token = await FirebaseAuthService.LoginUser(LoginUser.Email, LoginUser.Password);
 
             if (!string.IsNullOrEmpty(token))
             {
-               NavigationManager.NavigateTo("/", forceLoad: true);
+                try
+                {
+                    await AssignUserCart();
+                }
+                catch
+                {
+                    //no cart found
+                }
+                NavigationManager.NavigateTo("/", forceLoad: true);
             }
             else
             {
@@ -85,5 +95,33 @@
         }
     }
 
+    private async Task AssignUserCart()
+    {
+        var userId = await FirebaseAuthService.GetUserId();
+        if (userId == null) { return; }
 
+        try
+        {
+            var cart = await CartService.GetCartByUserIdAsync(userId);
+
+            if (cart == null)
+            {
+                return;
+            }
+            else
+            {
+                foreach (var product in cart.cartItems)
+                {
+                    for (int i = 0; i < product.Value; i++)
+                    {
+                        await LocalCartStorageService.AddToCartByProductId(product.Key);
+                    }
+                }
+            }
+        }
+        catch(Exception ex)
+        {
+            Console.WriteLine(ex);
+        }
+    }
 }

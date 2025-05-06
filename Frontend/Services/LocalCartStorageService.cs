@@ -32,6 +32,19 @@ public class LocalCartStorageService(ProtectedLocalStorage storage) : ILocalCart
         await SaveCartAsync();
     }
 
+    public async Task AddToCartByProductId(string productId)
+    {
+        if (Cart.ContainsKey(productId))
+        {
+            Cart[productId]++;
+        }
+        else
+        {
+            Cart[productId] = 1;
+        }
+        await SaveCartAsync();
+    }
+
     public async Task SaveCartAsync()
     {
         await storage.SetAsync(CartKey, Cart);

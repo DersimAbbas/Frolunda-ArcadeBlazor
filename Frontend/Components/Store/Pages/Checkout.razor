@@ -10,31 +10,31 @@
 @inject IFirebaseAuthService FirebaseAuthService
 @inject ILocalCartStorageService LocalCartService
 @inject FirebaseAuthClient FirebaseAuthClient
-<h3>Checkout</h3>
+<h3 class="arcade-title">Checkout</h3>
 
-<div class="form-group d-flex flex-column gap-2 text-light">
+<div class="arcade-form form-group d-flex flex-column gap-3 text-light">
     <label>Name</label>
-    <input id="Name-text" class="form-control p-2" @bind="_customerName" />
+    <input id="Name-text" class="form-control arcade-input" @bind="_customerName" />
 
     <label>Email</label>
-    <input id="email-text" class="form-control p-2" @bind="_customerEmail" />
+    <input id="email-text" class="form-control arcade-input" @bind="_customerEmail" />
 
     <label>Card Number</label>
-    <div id="card-number-element" class="form-control p-3"></div>
+    <div id="card-number-element" class="form-control arcade-input p-3"></div>
 
     <label>Expiry Date</label>
-    <div id="card-expiry-element" class="form-control p-3"></div>
+    <div id="card-expiry-element" class="form-control arcade-input p-3"></div>
 
     <label>CVC</label>
-    <div id="card-cvc-element" class="form-control p-3"></div>
+    <div id="card-cvc-element" class="form-control arcade-input p-3"></div>
 
     <label>Postal Code</label>
-    <div id="card-postal-element" class="form-control p-3"></div>
+    <div id="card-postal-element" class="form-control arcade-input p-3"></div>
 </div>
 
-<div id="card-errors" class="text-danger mb-2"></div>
+<div id="card-errors" class="text-danger mb-2 arcade-error"></div>
 
-<button class="btn btn-primary" @onclick="HandleCheckout">Pay</button>
+<button class="btn arcade-btn mt-3" @onclick="HandleCheckout">Pay</button>
 
 @if (_paymentComplete)
 {
@@ -43,15 +43,15 @@
         DateTime="@DateTime.Now.ToString("yyyy-MM-dd, HH:mm:ss")"
         Cart="@CartStorageService.Cart"
         Products="@AllProducts"
-        Amount="@Amount"
+        Amount="@_amount"
         OnClose="@(() => _paymentComplete = false)" />
     </div>
 }
 <LoadingOverlay IsLoading="_isLoading" LoadingText="Processing payment..." />
 
 @code {
-    private string PaymentMethodId { get; set; } = string.Empty;
-    private decimal Amount { get; set; }
+    private string _paymentMethodId { get; set; } = string.Empty;
+    private decimal _amount { get; set; }
 
     private List<Models.Product> AllProducts { get; set; } = new();
     private Dictionary<string, int> CartItems { get; set; } = new();
@@ -63,12 +63,13 @@
 
     private bool _paymentComplete = false;
     private DotNetObjectReference<Checkout>? _dotNetRef;
-    private string userId = string.Empty;
+    private string _userId = string.Empty;
 
     private bool _isLoading = false;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (!firstRender) { return; }
         var token = await JsRuntime.InvokeAsync<string>("getCookie", "token");
 
         if (!string.IsNullOrEmpty(token))
@@ -78,22 +79,16 @@
             if (tokenVerified && FirebaseAuthClient.User.Uid is not null)
             {
                 var firebaseAuthUserId = FirebaseAuthClient.User.Uid;
-                userId = firebaseAuthUserId;
+                _userId = firebaseAuthUserId;
 
             }
         }
-    }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
-        {
-            CartItems = CartStorageService.Cart;
-            AllProducts = await ProductService.GetAllProductsAsync();
-            Amount = CartStorageService.GetCartCost(AllProducts);
-            await JsRuntime.InvokeVoidAsync("stripeInterop.initStripe", "pk_test_51RH08UGb53lseiZnINEQMqyRvewkBu0ilq4bUUB2FVlwHUxD4sPcBK7dir8yUtrh2Hxw5iZYZxXnUL4cNX4l7d6Y00jd0I1nhf");
-        }
+        CartItems = CartStorageService.Cart;
+        AllProducts = await ProductService.GetAllProductsAsync();
+        _amount = CartStorageService.GetCartCost(AllProducts);
 
+        await JsRuntime.InvokeVoidAsync("stripeInterop.initStripe", "pk_test_51RH08UGb53lseiZnINEQMqyRvewkBu0ilq4bUUB2FVlwHUxD4sPcBK7dir8yUtrh2Hxw5iZYZxXnUL4cNX4l7d6Y00jd0I1nhf");
         if (_paymentComplete && _dotNetRef == null)
         {
             _dotNetRef = DotNetObjectReference.Create(this);
@@ -114,7 +109,7 @@
 
         var PaymentMethodId = await JsRuntime.InvokeAsync<string>("stripeInterop.createPaymentMethod", _customerName, _customerEmail);
 
-        var result = await PaymentService.ProcessPayment(PaymentMethodId, Amount, userId, CartItems);
+        var result = await PaymentService.ProcessPayment(PaymentMethodId, _amount, _userId, CartItems);
 
         if (!result.IsSuccess)
         {
@@ -140,7 +135,7 @@
         }
 
         _paymentComplete = true;
-        await PaymentService.RegisterOrderAfterPayment(userId,CartItems);
+        await PaymentService.RegisterOrderAfterPayment(_userId,CartItems);
         
         _statusMessage = "Payment successful!";
         _isLoading = false;

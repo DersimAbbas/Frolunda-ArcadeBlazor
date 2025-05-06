@@ -2,6 +2,8 @@
 @using Frontend.Services.Interfaces
 @inject IHighscoresService HighscoresService
 
+<button id="add-highscores-btn" class="simple-arcade-btn mt-3 mb-2" @onclick="() => _showAddDialog = true" style="background-color:limegreen">Add Highscores Object</button>
+
 @if (HighscoresList == null || HighscoresList.Count == 0)
 {
     <div class="text-center">
@@ -31,7 +33,7 @@ else
                         @if (_expandedRows.Contains(hs.Id))
                         {
                             <div class="mt-2 text-start">
-                                <table class="table table-sm table-striped text-light border">
+                                <table class="table table-dark table-sm table-striped text-light border">
                                     <thead>
                                         <tr>
                                             <th>User</th>
@@ -44,12 +46,12 @@ else
                                             var entry = hs.UserScores.ElementAt(i);
                                             <tr>
                                                 <td>
-                                                    <div id="user-@hs.Id-@i" class="form-control form-control-sm bg-white" style="pointer-events: none;">
+                                                    <div id="user-@hs.Id-@i" class="form-control" style="pointer-events: none; background-color: rgb(80, 80, 80); color: #fff;">
                                                         @entry.Key
                                                     </div>
                                                 </td>
                                                 <td>
-                                                    <input id="score-@hs.Id-@i" type="number" class="form-control form-control-sm"
+                                                    <input id="score-@hs.Id-@i" type="number" class="form-control"
                                                     @bind="hs.UserScores[entry.Key]" />
                                                 </td>
                                             </tr>
@@ -67,8 +69,8 @@ else
                         }
                     </td>
                     <td class="text-center align-middle">
-                        <button id="update-btn-@hs.Id" class="btn btn-success btn-sm w-100" @onclick="() => UpdateHighscoreAsync(hs)">Update</button>
-                        <button id="delete-btn-@hs.Id" class="btn btn-danger btn-sm w-100" @onclick="() => DeleteHighscoresAsync(hs.Id)">Delete</button>
+                        <button id="update-btn-@hs.Id" class="simple-arcade-btn btn-sm w-100" @onclick="() => UpdateHighscoreAsync(hs)" style="background-color: limegreen">Update</button>
+                        <button id="delete-btn-@hs.Id" class="simple-arcade-btn btn-sm w-100" @onclick="() => DeleteHighscoresAsync(hs.Id)" style="background-color: darkred">Delete</button>
                     </td>
                 </tr>
             }
@@ -77,13 +79,11 @@ else
 
 
     <div class="d-flex justify-content-between align-items-center mt-3">
-        <button class="arcade-btn btn-secondary" @onclick="PreviousPage" disabled="@_isFirstPage">Previous</button>
+        <button class="simple-arcade-btn" @onclick="PreviousPage" disabled="@_isFirstPage">Previous</button>
         <span class="generic-text">Page @_currentPage of @_totalPages</span>
-        <button class="arcade-btn btn-secondary" @onclick="NextPage" disabled="@_isLastPage">Next</button>
+        <button class="simple-arcade-btn" @onclick="NextPage" disabled="@_isLastPage">Next</button>
     </div>
 }
-
-<button id="add-highscores-btn" class="btn btn-primary mt-3" @onclick="() => _showAddDialog = true">Add Highscores Object</button>
 
 <AddHighscoresDialog Visible="_showAddDialog"
 OnCancel="() => _showAddDialog = false"

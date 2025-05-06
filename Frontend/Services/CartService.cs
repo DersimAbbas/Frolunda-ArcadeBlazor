@@ -24,6 +24,11 @@ public class CartService : ICartService
        return await _httpClient.GetFromJsonAsync<Cart>("api/carts/" + id);
     }
 
+    public async Task<Cart?> GetCartByUserIdAsync(string userId)
+    {
+        return await _httpClient.GetFromJsonAsync<Cart>("api/carts/user/" + userId);
+    }
+
     public async Task<List<Cart>?> GetAllCartsAsync()
     {
         var json = await _jsRuntime.InvokeAsync<string>("myLocalStorage.getItem", _cartsKey);
@@ -77,7 +82,7 @@ public class CartService : ICartService
         }
         return result.IsSuccessStatusCode;
     }
-    
+
     public async Task<bool> DeleteCart(string id)
     {
         var cart = await GetCartByIdAsync(id);
@@ -86,6 +91,15 @@ public class CartService : ICartService
         {
             var cartJson = JsonSerializer.Serialize(cart);
             await _jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", _cartsKey, cartJson);
+        }
+        return result.IsSuccessStatusCode;
+    }
+    public async Task<bool> DeleteCartByUserId(string userId)
+    {
+        var result = await _httpClient.DeleteAsync($"api/carts/user/{userId}");
+        if (result.IsSuccessStatusCode)
+        {
+            await _jsRuntime.InvokeVoidAsync("myLocalStorage.removeItem", _cartsKey);
         }
         return result.IsSuccessStatusCode;
     }

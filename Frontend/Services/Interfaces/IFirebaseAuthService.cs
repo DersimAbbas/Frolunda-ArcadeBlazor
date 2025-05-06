@@ -9,5 +9,5 @@ public interface IFirebaseAuthService
     public Task<bool> VerifyTokenAsync(string token);
     public Task<bool> AssignRole(string uid, string role);
     public Task Logout();
-
+    public Task<string> GetUserId();
 }
