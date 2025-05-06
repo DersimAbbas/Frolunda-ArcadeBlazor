@@ -1,6 +1,6 @@
-﻿.body-text {
-    font-family: 'Futura', sans-serif;
-    line-height: 1.6;
-    font-size: 1rem;
-    color: #d1d1d1;
+﻿.productpage-main {
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+    font-size: 16px;
+    line-height: 2.5;
+    font-weight: 350;
 }

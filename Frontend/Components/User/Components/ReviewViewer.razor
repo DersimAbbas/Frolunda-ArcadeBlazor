@@ -78,14 +78,14 @@
         @if (Reviews.Count > 3)
         {
             <div class="text-center mb-3">
-                <button class="btn px-4 generic-text-size generic-text" style="background-color: #6c757d; border-color: #6c757d;" @onclick="ToggleReviews">
+                <button class="simple-arcade-btn px-4" style="background-color: #6c757d; border-color: #6c757d;" @onclick="ToggleReviews">
                     @(_showAllReviews ? "Show Less" : "Show All Reviews")
                 </button>
             </div>
         }
 
         <div class="text-center">
-            <button class="btn px-4 generic-text-size generic-text" style="background-color: #bf1f1f; border-color: #DA0037;" @onclick="() => _isDialogOpen = true">
+            <button class="simple-arcade-btn px-4" style="background-color: #bf1f1f; border-color: #DA0037;" @onclick="() => _isDialogOpen = true">
                 Leave a Review
             </button>
         </div>

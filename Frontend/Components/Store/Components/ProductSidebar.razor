@@ -5,12 +5,12 @@
 @using Frontend.Components.User.Components
 @inject ILocalCartStorageService LocalCartStorageService
 
-<div class="card-footer bg-transparent text-light">
+<div class="bg-transparent text-light">
     @if (Product is not null)
     {
-        <h5 class="mb-2">@Product.Name</h5>
+        
         <p class="mb-3"><strong>Price:</strong> @Product.Price.ToString("C", CultureInfo.CurrentCulture)</p>
-        <button class="btn arcade-btn"
+        <button class="simple-arcade-btn" style="background-color:limegreen"
                 @onclick="() => LocalCartStorageService.AddToCart(Product)">
             Add to Cart
         </button>

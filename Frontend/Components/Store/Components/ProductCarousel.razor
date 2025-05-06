@@ -1,26 +1,26 @@
 ﻿@using Frontend.Models
 @inject IJSRuntime JsRuntime
 @implements IDisposable
-
+@inject NavigationManager Navigation
 <div class="scroll-carousel-container position-relative text-dark">
     <button class="carousel-arrow left btn btn-light" @onclick="() => Scroll(-1)">‹</button>
 
     <div class="scroll-carousel" @ref="_carouselRef">
         @foreach (var product in Products)
         {
-            <div class="carousel-item-card">
+            <div class="carousel-item-card" 
+                style="cursor: pointer;" 
+                @onclick="() => OnCardClicked(product.Name)">
                 <div class="card h-100 bg-transparent">
-                    <img src="@product.ImageLink"  class="card-img-top h-100 bg-transparent" alt="@product.Name" />
-                    <div class="text-overlay">
-                        <h5 class="card-title">@product.Name</h5>
-                    </div>
+                    <img src="@product.ImageLink"  
+                    class="card-img bg-transparent object-fit-fill" style="max-height:200px;" alt="@product.Name" />
                 </div>
             </div>
         }
     </div>
-
     <button class="carousel-arrow right btn btn-light" @onclick="() => Scroll(1)">›</button>
 </div>
+           
 @code {
     [Parameter] public List<Product> Products { get; set; } = new();
     [Parameter] public int AutoScrollInterval { get; set; } = 0;
@@ -53,6 +53,15 @@
     {
         _autoScrollTimer?.Dispose();
         _autoScrollTimer = null;
+    }
+    private void OnCardClicked(string productName)
+    {
+        productName = Uri.EscapeDataString(productName);
+        Dispose();
+
+
+        Navigation.NavigateTo($"/product-page/{productName}");
+        StateHasChanged();
     }
 }
 
