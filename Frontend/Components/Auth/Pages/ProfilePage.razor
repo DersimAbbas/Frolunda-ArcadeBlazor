@@ -2,7 +2,6 @@
 @using System.Globalization
 @using Firebase.Auth
 @using Frontend.Models
-@using Frontend.Services
 @using Frontend.Services.Interfaces
 @using User = Frontend.Models.User
 @inject IFirebaseAuthService FirebaseAuthService
@@ -100,20 +99,11 @@
     private List<Product>? _cachedProducts { get; set; } = new();
     private string UserId { get; set; } = string.Empty;
 
-
-    protected override async Task OnInitializedAsync()
-    {
-        _cachedProducts = await productService.GetAllProductsAsync();
-
-    }
-
-
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-
-
         if (!firstRender) return;
+        
+        _cachedProducts = await productService.GetAllProductsAsync();
 
         var token = await JsRuntime.InvokeAsync<string>("getCookie", "token");
 
