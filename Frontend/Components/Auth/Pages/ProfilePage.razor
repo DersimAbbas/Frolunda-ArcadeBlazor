@@ -20,7 +20,7 @@
         <div class="generic-text mb-3" style="font-size: 1.4rem">
             Your account information
         </div>
-        <div class="p-4" style="background-color: #444444; border: 1px solid #5e5e5e; border-radius: 2%;">
+        <div class="p-4 arcade-post-card">
 
             <EditForm Model="@UserProfile" OnValidSubmit="UpdateProfile">
                 <DataAnnotationsValidator />
@@ -63,7 +63,7 @@
                     p => p.Id,
                     (kvp, p) => new { Product = p, Quantity = kvp.Value });
 
-                    <div style="background-color: #444444; color: #EDEDED; border: 1px solid #5e5e5e; border-radius: 2%; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);" class="p-4">
+                    <div  class="p-4 arcade-post-card">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div class="fw-bold fs-5" style="color: #EDEDED;">
                                 Order <span style="color: #bf1f1f;">#@order.OrderId</span>
@@ -76,9 +76,9 @@
                                 <div style="background-color: rgba(68, 68, 68, 0.1); color: #EDEDED; border: 1px solid #5e5e5e; border-radius: 2%;" class="d-flex justify-content-between align-items-center p-3">
                                     <div>
                                         <div class="fw-semibold fs-6">@x.Product.Name</div>
-                                        <div class="text-muted small">@x.Product.Genre</div>
+                                        <div class="small">@x.Product.Genre</div>
                                     </div>
-                                    <div class="fw-bold" style="color: #bf1f1f;">@x.Product.Price.ToString("C", CultureInfo.CurrentCulture)</div>
+                                    <div class="fw-bold" >@x.Product.Price.ToString("C", CultureInfo.CurrentCulture)</div>
                                 </div>
                             }
                         </div>
