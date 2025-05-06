@@ -5,7 +5,7 @@
 @using Frontend.Services.Interfaces
 @using Microsoft.AspNetCore.Components.Authorization
 @inject IFirebaseAuthService FirebaseAuthService
-@inject ILocalCartStorageService cartStorage
+@inject ILocalCartStorageService CartStorage
 @inject ICartService CartService
 @inject IJSRuntime JsRuntime
 @inject FirebaseAuthClient FirebaseAuthClient
@@ -94,36 +94,44 @@
     private Cart Cart { get; set; } = new();
     private async Task OnSignOutClicked()
     {
-        await cartStorage.LoadCartAsync();
-        Cart.cartItems = cartStorage.Cart;
-        bool saveCart = await ConfirmDialogService.ConfirmDialogInstance!.ShowAsync(
-            "Leaving So Soon?",
-            "Do you want to save your shopping cart for your next session?"
-       );
-        if (saveCart && Cart.cartItems.Count > 0)
+        try
         {
-            var token = await JsRuntime.InvokeAsync<string>("getCookie", "token");
+            var userId = await FirebaseAuthService.GetUserId();
+            await CartStorage.LoadCartAsync();
+            Cart.cartItems = CartStorage.Cart;
 
-            if (!string.IsNullOrEmpty(token))
+            if (Cart.cartItems.Count == 0)
             {
-                var tokenVerified = await FirebaseAuthService.VerifyTokenAsync(token);
+                await CartStorage.ClearCartAsync();
 
-                if (tokenVerified && FirebaseAuthClient.User is not null)
-                {
-                    var firebaseAuthUserId = FirebaseAuthClient.User.Uid;
+                await CartService.DeleteCartByUserId(userId);
 
-                    Cart.UserId = firebaseAuthUserId;
-
-                }
+                await FirebaseAuthService.Logout();
+                return;
             }
-
-                   
-                   
-            await CartService.AddCart(Cart);
+            bool saveCart = await ConfirmDialogService.ConfirmDialogInstance!.ShowAsync(
+                "Leaving So Soon?",
+                "Do you want to save your shopping cart for your next session?"
+           );
+            if (saveCart && Cart.cartItems.Count > 0)
+            {
+                if (userId == null) { return; }
+                Cart.UserId = userId;
+                await CartService.AddCart(Cart);
+            }
+            else
+            {
+                await CartService.DeleteCartByUserId(userId);
+            }
+            await CartStorage.ClearCartAsync();
+            await FirebaseAuthService.Logout();
         }
-        await cartStorage.ClearCartAsync();
-        await FirebaseAuthService.Logout();
-        
+        catch(Exception ex)
+        {
+            await CartStorage.ClearCartAsync();
+            await FirebaseAuthService.Logout();
+            Console.WriteLine(ex.Message);
+        }
     }
 }
 

@@ -7,11 +7,11 @@
 @inject IJSRuntime JsRuntime
 @inject NavigationManager NavigationManager
 
-    @if (Visible)
-    {
+@if (Visible)
+{
     <div id="cartPopup" class="shopping-cart-popup" @onclick="() => {}" @onclick:stopPropagation="true">
-            <h3 class="text-dark">Your Cart</h3>
-            <hr />
+        <h3 class="text-dark">Your Cart</h3>
+        <hr />
 
         @if (_cartItems.Count == 0)
         {
@@ -58,8 +58,8 @@
                 <button class="btn btn-primary" @onclick="Checkout">Checkout</button>
             </div>
         }
-        </div>
-    }
+    </div>
+}
 
 @code {
     [Parameter] public bool Visible { get; set; }
@@ -103,7 +103,7 @@
         }
         catch
         {
-           
+
         }
 
         _cartItems = LocalCartStorageService.Cart.Select(kvp =>
