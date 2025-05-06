@@ -10,4 +10,5 @@ public interface IOrderService
     Task<bool> AddOrder(Order order);
     Task<bool> UpdateOrder(string id,Order order);
     Task<bool> DeleteOrder(string id);
+    Task<bool> DisputeOrder(string email, string name, string orderId);
 }

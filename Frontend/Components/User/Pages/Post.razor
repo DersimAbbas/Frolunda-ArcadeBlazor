@@ -35,9 +35,6 @@ else
                     </div>
 
                     <p class="text-light mt-3">@ForumPost.Content</p>
-
-
-
                     <div>
                         <LeaveComment PostId="@PostId" OnCommentSubmitted="RefreshPost"/>
                     </div>
@@ -58,7 +55,6 @@ else
             {
                 <div class="mt-4">
                     <h5 class="text-light mb-3">Comments</h5>
-
                     @foreach (var comment in ForumPost.Comments.OrderByDescending(c => c.Created))
                     {
                         <div class="p-3 mb-3 border rounded border-secondary shadow-sm bg-transparent" style="background-color: #333">
