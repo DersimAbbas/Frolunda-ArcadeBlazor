@@ -383,4 +383,11 @@ input, textarea, select {
             0 0 1px #da0037,
             1px 1px 0 #000; 
 }
-
+.category-header-card {
+    background: #2a2a3d;
+    border: 2px solid #757575;
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    box-shadow: 0 0 10px #3d3d3d;
+}
