@@ -9,45 +9,47 @@
 @inject HttpClient http
 @inject IJSRuntime JsRuntime
 @inject IProductService ProductService
-@layout StoreFrontLayout
-<FilterBar Filter="@currentFilter" OnApplyFilters="HandleFilterApplied" />
 
-@if(@filterTest == false){
-    @foreach (var product in allProducts)
-    {
-        <ProductCard SelectedProduct="@product" />
-    }}else
-    @foreach (var product in filteredProducts)
+<FilterBar Filter="@_currentFilter" OnApplyFilters="HandleFilterApplied" Genres="_genres" />
+
+@if(_filteredProducts.Count > 0)
+{
+    @foreach (var product in _filteredProducts)
     {
         <ProductCard SelectedProduct="@product" />
     }
+}
+else
+{
+    <LoadingAnimation LoadingText="No products found..." />
+}
 
 @code {
-    private ProductFilter currentFilter = new();
-    private List<Product> allProducts = new(); 
-    private List<Product> filteredProducts = new();
+    private ProductFilter _currentFilter = new();
+    private List<Product> _allProducts = new(); 
+    private List<Product> _filteredProducts = new();
+    private List<string> _genres = new();
     private const string _imageMapKey = "productImageMap";
     private const string _funcTrigger = "https://frolunda-arcadefunc.azurewebsites.net/api/GetImageFunction";
     private bool filterTest = false;
 
     protected override async Task OnInitializedAsync()
     {
-        allProducts = await ProductService.GetAllProductsAsync();
-        await Task.Delay(1);
-        
+        _allProducts = await ProductService.GetAllProductsAsync();
+        _filteredProducts = _allProducts;
+        _genres = GetGenres(_allProducts);
     }
+
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
         await AssignImageMaps();
-        
     }
 
 
     private void HandleFilterApplied(ProductFilter filter)
     {
-        filterTest = true;
-        filteredProducts = allProducts
+        _filteredProducts = _allProducts
          .Where(p =>
              (string.IsNullOrEmpty(filter.SearchTerm) || p.Name.Contains(filter.SearchTerm, StringComparison.OrdinalIgnoreCase)) &&
              (string.IsNullOrEmpty(filter.SelectedGenre) || p.Genre == filter.SelectedGenre) &&
@@ -73,7 +75,7 @@
 
         if (imageMap != null)
         {
-            foreach (var product in allProducts!)
+            foreach (var product in _allProducts!)
             {
                 var matchKey = imageMap.Keys
                     .FirstOrDefault(k =>
@@ -84,10 +86,17 @@
                 {
                     product.ImageLink = url;
                 }
-
             }
             await InvokeAsync(StateHasChanged);
         }
+    }
+
+    private List<string> GetGenres(List<Product> products)
+    {
+        return products
+            .Select(p => p.Genre)
+            .Distinct()
+            .ToList();
     }
 
 }

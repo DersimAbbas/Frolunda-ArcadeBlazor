@@ -1,0 +1,73 @@
+﻿.pacman-loader {
+    margin-top: 3rem;
+}
+
+.pacman-animation-wrapper {
+    position: relative;
+    width: 100px;
+    height: 100px;
+    margin-bottom: 1rem;
+}
+
+.pacman-top, .pacman-bottom {
+    position: absolute;
+    width: 100px;
+    height: 50px;
+    background-color: #4635B1;
+    border-radius: 100px 100px 0 0;
+    left: 0;
+    z-index: 2;
+}
+
+.pacman-top {
+    top: 0;
+    animation: chomp 0.5s linear infinite;
+}
+
+.pacman-bottom {
+    top: 50px;
+    transform: rotate(180deg);
+    animation: chompreverse 0.5s linear infinite;
+}
+
+.feed {
+    position: absolute;
+    width: 10px;
+    height: 10px;
+    background-color: #c53a3a;
+    border-radius: 50%;
+    top: 45px;
+    left: 125px;
+    animation: feed 1s linear infinite;
+}
+
+
+@keyframes chomp {
+    0%, 100% {
+        transform: rotate(0);
+    }
+
+    50% {
+        transform: rotate(-45deg);
+    }
+}
+
+@keyframes chompreverse {
+    0%, 100% {
+        transform: rotate(180deg);
+    }
+
+    50% {
+        transform: rotate(225deg);
+    }
+}
+
+@keyframes feed {
+    0% {
+        transform: translateX(0);
+    }
+
+    100% {
+        transform: translateX(-120px);
+    }
+}
