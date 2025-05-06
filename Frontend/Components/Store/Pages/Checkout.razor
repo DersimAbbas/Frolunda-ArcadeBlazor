@@ -10,9 +10,10 @@
 @inject IFirebaseAuthService FirebaseAuthService
 @inject ILocalCartStorageService LocalCartService
 @inject FirebaseAuthClient FirebaseAuthClient
-<h3 class="arcade-title">Checkout</h3>
+<h3 class="welcome-text text-center mb-3">Checkout</h3>
 
-<div class="arcade-form form-group d-flex flex-column gap-3 text-light">
+<div class="d-flex justify-content-center align-items-center">
+<div class="arcade-post-card form-group d-flex flex-column gap-3 p-5 w-75 align-self-center">
     <label>Name</label>
     <input class="form-control arcade-input" @bind="_customerName" />
 
@@ -30,21 +31,23 @@
 
     <label>Postal Code</label>
     <div id="card-postal-element" class="form-control arcade-input p-3"></div>
+
+    <button class="arcade-btn mt-5 w-50 align-self-center" @onclick="HandleCheckout">Pay</button>
+
+    <div id="card-errors" class="text-danger my-2"></div>
+    <div class="text-danger my-2">@_statusMessage</div>
 </div>
-
-<div id="card-errors" class="text-danger mb-2 arcade-error"></div>
-
-<button class="btn arcade-btn mt-3" @onclick="HandleCheckout">Pay</button>
+</div>
 
 @if (_paymentComplete)
 {
     <div id="receipt-overlay" class="receipt-overlay">
         <ReceiptPopup TicketNumber="R2-9R-S2"
         DateTime="@DateTime.Now.ToString("yyyy-MM-dd, HH:mm:ss")"
-        Cart="@CartStorageService.Cart"
+        Cart="@CartItems"
         Products="@AllProducts"
         Amount="@_amount"
-        OnClose="@(() => _paymentComplete = false)" />
+        OnClose="@(() => ResetCart())" />
     </div>
 }
 <LoadingOverlay IsLoading="_isLoading" LoadingText="Processing payment..." />
@@ -80,7 +83,6 @@
             {
                 var firebaseAuthUserId = FirebaseAuthClient.User.Uid;
                 _userId = firebaseAuthUserId;
-
             }
         }
 
@@ -92,7 +94,7 @@
         if (_paymentComplete && _dotNetRef == null)
         {
             _dotNetRef = DotNetObjectReference.Create(this);
-            await JsRuntime.InvokeVoidAsync("outsideClickInterop.register", "arcade-ticket", _dotNetRef, "CloseReceipt");
+            await JsRuntime.InvokeVoidAsync("outsideClickInterop.register", "arcade-ticket", _dotNetRef, "ResetCart");
         }
         else if (!_paymentComplete && _dotNetRef != null)
         {
@@ -107,13 +109,20 @@
         _statusMessage = "Processing payment...";
         _isLoading = true;
 
+        if(_amount == 0 || CartItems.Count == 0)
+        {
+            _statusMessage = "Your cart is empty";
+            _isLoading = false;
+            return;
+        }
+
         var PaymentMethodId = await JsRuntime.InvokeAsync<string>("stripeInterop.createPaymentMethod", _customerName, _customerEmail);
 
         var result = await PaymentService.ProcessPayment(PaymentMethodId, _amount, _userId, CartItems);
 
         if (!result.IsSuccess)
         {
-            _statusMessage = $"Error: {result.ErrorMessage}";
+            _statusMessage = "";
             _isLoading = false;
             return;
         }
@@ -123,7 +132,7 @@
             _statusMessage = "Additional authentication required...";
             var confirmed = await PaymentService.ConfirmPayment(result.ClientSecret);
 
-            _statusMessage = confirmed ? "Payment confirmed!" : "Payment confirmation failed.";
+            _statusMessage = confirmed ? "" : "Payment confirmation failed.";
             _paymentComplete = confirmed;
             _isLoading = false;
 
@@ -136,15 +145,17 @@
 
         _paymentComplete = true;
         await PaymentService.RegisterOrderAfterPayment(_userId,CartItems);
-        
-        _statusMessage = "Payment successful!";
+
+        _statusMessage = "";
         _isLoading = false;
         await LocalCartService.ClearCartAsync();
     }
 
     [JSInvokable]
-    public void CloseReceipt()
+    private void ResetCart()
     {
+        _amount = 0;
+        CartItems = new();
         _paymentComplete = false;
         StateHasChanged();
     }
@@ -154,5 +165,3 @@
         _dotNetRef?.Dispose();
     }
 }
-
-<link rel="stylesheet" href="css/CheckoutStyle.css"/>
