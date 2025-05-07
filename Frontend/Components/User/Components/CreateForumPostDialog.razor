@@ -51,6 +51,7 @@
 
     [Parameter] public bool IsForumModalOpen { get; set; } = false;
     [Parameter] public EventCallback OnCommentSubmitted { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
     private ForumPost NewPost { get; set; } = new();
     private List<ForumCategory> Categories { get; set; } = Enum.GetValues<ForumCategory>().ToList();
     private User? CurrentUser { get; set; } = new();
@@ -79,6 +80,7 @@
     {
         IsForumModalOpen = false;
         NewPost = new();
+        OnCancel.InvokeAsync();
     }
 
     private async Task CreatePost()
