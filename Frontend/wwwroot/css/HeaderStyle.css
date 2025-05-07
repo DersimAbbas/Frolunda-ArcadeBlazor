@@ -35,7 +35,7 @@
     text-transform: uppercase;
     text-shadow: 1px 1px #000;
     box-shadow:
-            0 0 3px #3c3399,
+            0 0 10px #c53a3a,
             0 0 6px rgba(75, 63, 180, 0.5);
     cursor: pointer;
     transition: all 0.2s ease-in-out;
@@ -44,13 +44,11 @@
     overflow: visible;
 }
 
-.arcade-cart-btn:hover {
-    background-color: #3d3291;
-    box-shadow:
-            0 0 6px #6b5dfc,
-            0 0 10px rgba(107, 93, 252, 0.5);
-    transform: translateY(-2px);
-}
+    .arcade-cart-btn:hover {
+        background-color: #3d3291;
+        box-shadow: 0 0 15px #c53a3a, 0 0 10px rgba(107, 93, 252, 0.5);
+        transform: translateY(-2px);
+    }
 
 .arcade-cart-btn:active {
     transform: translateY(1px);

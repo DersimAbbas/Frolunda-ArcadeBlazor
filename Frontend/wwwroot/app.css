@@ -110,6 +110,7 @@ article.content {
 }
 
 .header {
+    background-color: #322a78;
     display: flex;
     justify-content: space-between;
     align-items: center;
