@@ -3,20 +3,24 @@
 @using Frontend.Services.Interfaces
 @inject ILocalCartStorageService LocalCartStorageService
 
-<div class="header">
-    <a href="" class="header-logo">
+<div class="header d-flex align-items-center px-3">
+    <a href="" class="header-logo me-3">
         <img src="images/logo.png" alt="Logo" />
     </a>
-    <div class="header-title">Frölunda Arcade</div>
 
-    <div class="cart-button-wrapper">
-        <button id="cartToggleButton" class="cart-btn btn btn-outline-light position-relative" @onclick="ToggleCart">
-            🛒
+    <div class="header-title flex-grow-1">
+        Frölunda Arcade
+    </div>
+
+    <div class="cart-button-wrapper position-relative">
+        <button id="cartToggleButton" class="arcade-cart-btn" @onclick="ToggleCart" aria-label="Shopping Cart">
+            <i class="bi bi-cart-fill"></i>
+            CART
             @if (_cartItemCount > 0)
             {
-                <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-                    @_cartItemCount
-                </span>
+            <span class="arcade-cart-badge">
+                @_cartItemCount
+            </span>
             }
         </button>
         <ShoppingCart Visible="_isCartOpen" OnClose="ToggleCart" />
@@ -31,13 +35,19 @@
 
     protected override void OnInitialized()
     {
-        LocalCartStorageService.OnChange += StateHasChanged;
+        LocalCartStorageService.OnChange += UpdateCartCount;
+        UpdateCartCount();
+    }
+
+    private void UpdateCartCount()
+    {
         _cartItemCount = LocalCartStorageService.GetCartItemCount();
+        StateHasChanged();
     }
 
     public void Dispose()
     {
-        LocalCartStorageService.OnChange -= StateHasChanged;
+        LocalCartStorageService.OnChange -= UpdateCartCount;
     }
 
     private void ToggleCart()

@@ -9,67 +9,14 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="70105c11-1027-4448-8b39-8affe02ce11b" name="Changes" comment="">
+    <list default="true" id="70105c11-1027-4448-8b39-8affe02ce11b" name="Changes" comment="Fixed style stuff">
       <change beforePath="$PROJECT_DIR$/.idea/.idea.ArcadeBlazor/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/.idea.ArcadeBlazor/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/App.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/App.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/AddProductDialog.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Admin/Components/AddProductDialog.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/Component.razor" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/FilterBar.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Store/Components/FilterBar.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/Header.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/User/Components/Header.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/Header.razor.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/User/Components/Header.razor.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/LeaveReviewDialog.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/User/Components/LeaveReviewDialog.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/LeaveReviewDialog.razor.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/User/Components/LeaveReviewDialog.razor.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/ProductCard.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Store/Components/ProductCard.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/ProductCard.razor.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Store/Components/ProductCard.razor.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/ProductCarousel.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Store/Components/ProductCarousel.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/ProductEditor.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Admin/Components/ProductEditor.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/ProductSidebar.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Store/Components/ProductSidebar.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/ProductSorter.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Store/Components/ProductSorter.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/ReceiptPopup.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Store/Components/ReceiptPopup.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/ReviewViewer.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/User/Components/ReviewViewer.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/ReviewViewer.razor.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/User/Components/ReviewViewer.razor.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/ShoppingCart.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Store/Components/ShoppingCart.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Controls/UserEditor.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Admin/Components/UserEditor.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Layout/MainLayout.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Layout/MainLayout.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Layout/NavMenu.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Layout/NavMenu.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/AdminPage.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Admin/Pages/AdminPage.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/Checkout.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Store/Pages/Checkout.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/Counter.razor" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/Error.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/User/Pages/Error.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/Events.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/User/Pages/Events.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/Forum.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/User/Pages/Forum.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/Home.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/User/Pages/Home.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/Login.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Auth/Pages/Login.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/Login.razor.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Auth/Pages/Login.razor.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/ProductPage.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Store/Pages/ProductPage.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/ProductPageTemp.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Store/Pages/ProductPageTemp.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/ProfilePage.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Auth/Pages/ProfilePage.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/ProfilePage.razor.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Auth/Pages/ProfilePage.razor.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/Register.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Auth/Pages/Register.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/Register.razor.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Auth/Pages/Register.razor.css" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/StoreFront.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Store/Pages/StoreFront.razor" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Components/Pages/Weather.razor" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Frontend.csproj" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Frontend.csproj" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Models/TokenDto.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Models/TokenDto.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Program.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Program.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Properties/launchSettings.json" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Properties/launchSettings.json" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Provider/FirebaseAuthProvider.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Provider/FirebaseAuthProvider.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Services/CartService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/CartService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Services/FirebaseAuthService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/FirebaseAuthService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Services/ICartService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/Interfaces/ICartService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Services/IFirebaseAuthService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/Interfaces/IFirebaseAuthService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Services/ILocalCartStorageService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/Interfaces/ILocalCartStorageService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Services/IOrderService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/Interfaces/IOrderService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Services/IPaymentService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/Interfaces/IPaymentService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Services/IProductService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/Interfaces/IProductService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Services/IReviewService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/Interfaces/IReviewService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Services/IUserService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/Interfaces/IUserService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Services/LocalCartStorageService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/LocalCartStorageService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Services/OrderService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/OrderService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Services/PaymentService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/PaymentService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Services/ProductService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/ProductService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Services/ReviewService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/ReviewService.cs" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/Frontend/Services/UserService.cs" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Services/UserService.cs" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Admin/Components/HighscoresEditor.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Admin/Components/HighscoresEditor.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Auth/Pages/Login.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Auth/Pages/Login.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Auth/Pages/ProfilePage.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Auth/Pages/ProfilePage.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Layout/ProductPageLayout.razor" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Layout/ProductPageLayout.razor" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/Components/Layout/ProductPageLayout.razor.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/Components/Layout/ProductPageLayout.razor.css" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/Frontend/wwwroot/app.css" beforeDir="false" afterPath="$PROJECT_DIR$/Frontend/wwwroot/app.css" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -95,7 +42,7 @@
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="HighlightingSettingsPerFile">
-    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/Components/App.razor" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
+    <setting file="mock://C:/GruppProjektAgil/Frontend/Frontend/Components/User/Pages/Contact.razor" root0="SKIP_HIGHLIGHTING" root1="FORCE_HIGHLIGHTING" root2="FORCE_HIGHLIGHTING" />
   </component>
   <component name="MetaFilesCheckinStateConfiguration" checkMetaFiles="true" />
   <component name="ProjectColorInfo">{
@@ -107,20 +54,20 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent">{
-  &quot;keyToString&quot;: {
-    &quot;.NET Launch Settings Profile.Frontend: IIS Express.executor&quot;: &quot;Run&quot;,
-    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
-    &quot;git-widget-placeholder&quot;: &quot;calle-dev&quot;,
-    &quot;list.type.of.created.stylesheet&quot;: &quot;CSS&quot;,
-    &quot;node.js.detected.package.eslint&quot;: &quot;true&quot;,
-    &quot;node.js.detected.package.tslint&quot;: &quot;true&quot;,
-    &quot;node.js.selected.package.eslint&quot;: &quot;(autodetect)&quot;,
-    &quot;node.js.selected.package.tslint&quot;: &quot;(autodetect)&quot;,
-    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
-    &quot;vue.rearranger.settings.migration&quot;: &quot;true&quot;
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    ".NET Launch Settings Profile.Frontend: IIS Express.executor": "Run",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "git-widget-placeholder": "calle-dev2",
+    "list.type.of.created.stylesheet": "CSS",
+    "node.js.detected.package.eslint": "true",
+    "node.js.detected.package.tslint": "true",
+    "node.js.selected.package.eslint": "(autodetect)",
+    "node.js.selected.package.tslint": "(autodetect)",
+    "nodejs_package_manager_path": "npm",
+    "vue.rearranger.settings.migration": "true"
   }
-}</component>
+}]]></component>
   <component name="RunManager" selected=".NET Launch Settings Profile.Frontend: IIS Express">
     <configuration name="Frontend: IIS Express" type="LaunchSettings" factoryName=".NET Launch Settings Profile">
       <option name="LAUNCH_PROFILE_PROJECT_FILE_PATH" value="$PROJECT_DIR$/Frontend/Frontend.csproj" />
@@ -180,6 +127,10 @@
       <workItem from="1744873289830" duration="18410000" />
       <workItem from="1745481993973" duration="10323000" />
       <workItem from="1745581481561" duration="2879000" />
+      <workItem from="1746443186823" duration="11185000" />
+      <workItem from="1746455988452" duration="25000" />
+      <workItem from="1746515288546" duration="18050000" />
+      <workItem from="1746601395995" duration="6654000" />
     </task>
     <task id="LOCAL−00001" summary="Add frontend login/register auth - jwt token">
       <option name="closed" value="true" />
@@ -195,7 +146,56 @@
       <option name="presentableId" value="LOCAL−00002" />
       <updated>1745499941795</updated>
     </task>
-    <option name="localTasksCounter" value="3" />
+    <task id="LOCAL−00003" summary="Fixed arcade button">
+      <option name="closed" value="true" />
+      <created>1746449500645</created>
+      <option name="number" value="LOCAL−00003" />
+      <option name="presentableId" value="LOCAL−00003" />
+      <updated>1746449500645</updated>
+    </task>
+    <task id="LOCAL−00004" summary="added arcade buttons">
+      <option name="closed" value="true" />
+      <created>1746456008410</created>
+      <option name="number" value="LOCAL−00004" />
+      <option name="presentableId" value="LOCAL−00004" />
+      <updated>1746456008410</updated>
+    </task>
+    <task id="LOCAL−00005" summary="Add arcade themes">
+      <option name="closed" value="true" />
+      <created>1746521723949</created>
+      <option name="number" value="LOCAL−00005" />
+      <option name="presentableId" value="LOCAL−00005" />
+      <updated>1746521723949</updated>
+    </task>
+    <task id="LOCAL−00006" summary="Updated design on forum">
+      <option name="closed" value="true" />
+      <created>1746522508249</created>
+      <option name="number" value="LOCAL−00006" />
+      <option name="presentableId" value="LOCAL−00006" />
+      <updated>1746522508249</updated>
+    </task>
+    <task id="LOCAL−00007" summary="Styled login, profile and register">
+      <option name="closed" value="true" />
+      <created>1746529322067</created>
+      <option name="number" value="LOCAL−00007" />
+      <option name="presentableId" value="LOCAL−00007" />
+      <updated>1746529322067</updated>
+    </task>
+    <task id="LOCAL−00008" summary="Styled event carousel">
+      <option name="closed" value="true" />
+      <created>1746538795870</created>
+      <option name="number" value="LOCAL−00008" />
+      <option name="presentableId" value="LOCAL−00008" />
+      <updated>1746538795870</updated>
+    </task>
+    <task id="LOCAL−00009" summary="Fixed style stuff">
+      <option name="closed" value="true" />
+      <created>1746605035033</created>
+      <option name="number" value="LOCAL−00009" />
+      <option name="presentableId" value="LOCAL−00009" />
+      <updated>1746605035033</updated>
+    </task>
+    <option name="localTasksCounter" value="10" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -219,6 +219,13 @@
     <option name="CLEAR_INITIAL_COMMIT_MESSAGE" value="true" />
     <MESSAGE value="Add frontend login/register auth - jwt token" />
     <MESSAGE value="Add reviews for a product" />
-    <option name="LAST_COMMIT_MESSAGE" value="Add reviews for a product" />
+    <MESSAGE value="Fixed arcade button" />
+    <MESSAGE value="added arcade buttons" />
+    <MESSAGE value="Add arcade themes" />
+    <MESSAGE value="Updated design on forum" />
+    <MESSAGE value="Styled login, profile and register" />
+    <MESSAGE value="Styled event carousel" />
+    <MESSAGE value="Fixed style stuff" />
+    <option name="LAST_COMMIT_MESSAGE" value="Fixed style stuff" />
   </component>
 </project>

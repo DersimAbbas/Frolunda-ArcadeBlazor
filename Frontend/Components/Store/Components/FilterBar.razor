@@ -1,9 +1,6 @@
 ﻿@using Frontend.Models
 
-
-<h3>FilterBar</h3>
-
-<button class="btn btn-outline-secondary mb-2" @onclick="ToggleFilter">
+<button class="simple-arcade-btn mb-2" @onclick="ToggleFilter">
     @(_showFilters ? "Hide Filters" : "Show Filters")
 </button>
 
@@ -24,7 +21,7 @@
             <input type="number" @bind="Filter.MaxPrice" placeholder="Max Price" class="form-control" />
         </div>
 
-        <button class="btn btn-primary" @onclick="ApplyClicked">Apply Filters</button>
+        <button class="simple-arcade-btn" @onclick="ApplyClicked">Apply Filters</button>
     </div>
 }
 

@@ -1,7 +1,10 @@
+using Firebase.Auth;
 using Frontend.Models;
 using Frontend.Services.Interfaces;
 using Microsoft.JSInterop;
+using System.Text;
 using System.Text.Json;
+using static Frontend.Components.User.Components.ContactSupportModal;
 
 namespace Frontend.Services;
 
@@ -9,7 +12,7 @@ public class OrderService : IOrderService
 {
     private readonly HttpClient _httpClient;
     private readonly IJSRuntime _jsRuntime;
-
+    private const string _LogicAppUrl = "https://prod-09.swedencentral.logic.azure.com:443/workflows/5bc4a01e3d894d27a245f165c499a5be/triggers/When_a_HTTP_request_is_received/paths/invoke?api-version=2016-10-01&sp=%2Ftriggers%2FWhen_a_HTTP_request_is_received%2Frun&sv=1.0&sig=Vu1fG36sd0LpBqoGxzhQkTgIOF_NtlNyUxOf5khyRsE";
     private const string _ordersKey = "orders";
     private const string _timestampKey = "ordersTimestamp";
     private const string _FuncTrigger = "https://frolunda-arcadefunc.azurewebsites.net/api/get-orders";
@@ -131,6 +134,29 @@ public class OrderService : IOrderService
         await _jsRuntime.InvokeVoidAsync("myLocalStorage.setItem", _ordersKey, updatedJson);
 
         return true;
+    }
+
+    public async Task<bool> DisputeOrder(string email, string name, string orderId)
+    {
+
+        var dispute = new SupportRequestModel
+        {
+
+            Name = name,
+            Email = email,
+            OrderId = orderId
+
+        };
+        var opts = new JsonSerializerOptions
+        {
+            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
+        };
+        var json = JsonSerializer.Serialize(dispute, opts);
+
+        using var client = new HttpClient();
+        var content = new StringContent(json, Encoding.UTF8, "application/json");
+        var response = await client.PostAsync(_LogicAppUrl, content);
+        return response.IsSuccessStatusCode;
     }
 
 

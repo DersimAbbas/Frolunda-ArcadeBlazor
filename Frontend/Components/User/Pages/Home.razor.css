@@ -1,19 +1,29 @@
-﻿.arcade-text {
-    font-family: 'Arcade', 'Press Start 2P', Tahoma, sans-serif;
-    color: var(--primary-color);
-    margin-top: 1rem;
-    text-shadow: var(--neon-glow);
-    animation: blink 2s infinite;
-    font-size: 0.9rem;
-    letter-spacing: 1px;
-}
+﻿/*:root {*/
+/*    --primary-color: #39ff14; */
+/*    --neon-glow: 0 0 2px #39ff14, 0 0 5px #39ff14, 0 0 10px #39ff14, 0 0 20px #39ff14;*/
+/*}  !* Temp, eftersom det inte fanns någon --neon-glow innan *!*/
 
-@keyframes blink {
-    0%, 100% {
-        opacity: 1;
-    }
+/*.arcade-text {*/
+/*    font-family: 'Arcade', 'Press Start 2P', Tahoma, sans-serif;*/
+/*    color: var(--primary-color);*/
+/*    !*margin-top: 1rem;*!*/
+/*    text-shadow: var(--neon-glow);*/
+/*    animation: blink 2s infinite;*/
+/*    font-size: 0.9rem;*/
+/*    letter-spacing: 1px;*/
+/*}*/
 
-    50% {
-        opacity: 0.3;
-    }
+/*@keyframes blink {*/
+/*    0%, 100% {*/
+/*        opacity: 1;*/
+/*    }*/
+
+/*    50% {*/
+/*        opacity: 0.3;*/
+/*    }*/
+/*}*/
+img {
+    width: 100%;
+    height: 100% !important;
+    object-fit: cover;
 }

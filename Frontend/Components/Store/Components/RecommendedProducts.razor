@@ -7,9 +7,18 @@
 @inject IJSRuntime JsRuntime
 @inject FirebaseAuthClient FirebaseAuthClient
 
-<ProductCarousel Products="_recommendedProducts" />
+@if (_userOrders.Count > 0)
+{
+    <div class="mb-4 text-center">
+        <h5 class="sub-heading mb-1 mt-5">Recommended Products</h5>
+    <ProductCarousel Products="_recommendedProducts" AutoScrollInterval="AutoScrollInterval" />
+    </div>
+}
+
 @code {
     [Parameter] public List<Product> _cachedProducts { get; set; }
+    [Parameter] public int AutoScrollInterval { get; set; } = 0;
+
     private List<Product> _recommendedProducts = new();
     private List<RegisterOrder> _userOrders = new();
     private List<RegisterOrder> order { get; set; }

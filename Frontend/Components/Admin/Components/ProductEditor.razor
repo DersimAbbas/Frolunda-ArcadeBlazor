@@ -4,17 +4,15 @@
 @inject IProductService ProductService
 
 <ProductSorter Products="_products" OnFilteredChanged="OnFilteredChanged" />
+<button class="simple-arcade-btn mt-3 mb-1" @onclick="() => _showAddDialog = true" style="background-color: limegreen">Add Product</button>
 
-@if (_products == null || _products.Count == 0)
+@if (_paginatedProducts == null || _paginatedProducts.ToList().Count == 0)
 {
-    <div class="text-center">
-        <img src="images/no-results.png" alt="No products found" style="max-height: 300px;" />
-        <p class="text-muted">No products match the current filters.</p>
-    </div>
+    <LoadingAnimation LoadingText="No products found..." />
 }
 else
 {
-    <table class="table table-bordered align-middle text-light">
+    <table class="table table-dark table-bordered align-middle text-light">
         <thead class="table-dark">
             <tr>
                 <th>Img</th>
@@ -55,8 +53,8 @@ else
                     </td>
                     <td><input type="number" class="form-control" @bind="product.AgeRating" /></td>
                     <td class="text-center align-middle">
-                        <button class="btn btn-success btn-sm w-100" id="@product.Name+1" @onclick="() => UpdateProductAsync(product)">Update</button>
-                        <button class="btn btn-danger btn-sm w-100" @onclick="() => DeleteProduct(product)">Delete</button>
+                        <button class="simple-arcade-btn btn-sm w-100" id="@product.Name+1" @onclick="() => UpdateProductAsync(product)" style="background-color: limegreen">Update</button>
+                        <button class="simple-arcade-btn btn-sm w-100" @onclick="() => DeleteProduct(product)" style="background-color: darkred">Delete</button>
                     </td>
                 </tr>
             }
@@ -64,12 +62,11 @@ else
     </table>
 
     <div class="d-flex justify-content-between align-items-center mt-3">
-        <button class="btn btn-secondary" @onclick="PreviousPage" disabled="@IsFirstPage">Previous</button>
-        <span>Page @_currentPage of @TotalPages</span>
-        <button class="btn btn-secondary" @onclick="NextPage" disabled="@IsLastPage">Next</button>
+        <button class="simple-arcade-btn" @onclick="PreviousPage" disabled="@IsFirstPage">Previous</button>
+        <span class="generic-text">Page @_currentPage of @TotalPages</span>
+        <button class="simple-arcade-btn" @onclick="NextPage" disabled="@IsLastPage">Next</button>
     </div>
 }
-<button class="btn btn-primary mt-3" @onclick="() => _showAddDialog = true">Add Product</button>
 
 <AddProductDialog Visible="_showAddDialog"
 OnCancel="() => _showAddDialog = false"

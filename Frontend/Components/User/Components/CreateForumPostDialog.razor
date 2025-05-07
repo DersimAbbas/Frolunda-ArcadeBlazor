@@ -12,8 +12,8 @@
 @if (IsForumModalOpen)
 {
     <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.6);">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content bg-dark text-light border-secondary">
+        <div class="modal-dialog modal-dialog-centered ">
+            <div class="modal-content text-light  arcade-post-card">
                 <div class="modal-header">
                     <h5 class="modal-title">Create New Post</h5>
                     <button type="button" class="btn-close btn-close-white" @onclick="CloseForumModal"></button>
@@ -21,15 +21,15 @@
                 <div class="modal-body">
                     <div class="mb-3">
                         <label class="form-label">Title</label>
-                        <input class="form-control bg-dark text-light border-secondary" @bind="NewPost.Title"/>
+                        <input  id="title-input" class="form-control bg-dark text-light border-secondary" @bind="NewPost.Title"/>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Content</label>
-                        <textarea class="form-control bg-dark text-light border-secondary" rows="4" @bind="NewPost.Content"></textarea>
+                        <label  class="form-label">Content</label>
+                        <textarea id="content-input" class="form-control bg-dark text-light border-secondary" rows="4" @bind="NewPost.Content"></textarea>
                     </div>
                     <div class="mb-3">
-                        <label class="form-label">Category</label>
-                        <select class="form-select bg-dark text-light border-secondary" @bind="NewPost.Category">
+                        <label  class="form-label">Category</label>
+                        <select id="category-input" class="form-select bg-dark text-light border-secondary" @bind="NewPost.Category">
                             @foreach (var category in Categories)
                             {
                                 <option value="@category">@category.GetDisplayName()</option>
@@ -38,8 +38,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" @onclick="CloseForumModal">Cancel</button>
-                    <button class="btn btn-success" @onclick="CreatePost">Post</button>
+                    <button class="simple-arcade-btn" style="background-color: red" @onclick="CloseForumModal">Cancel</button>
+                    <button class="simple-arcade-btn" style="background-color: limegreen"  @onclick="CreatePost">Post</button>
                 </div>
             </div>
         </div>
@@ -51,6 +51,7 @@
 
     [Parameter] public bool IsForumModalOpen { get; set; } = false;
     [Parameter] public EventCallback OnCommentSubmitted { get; set; }
+    [Parameter] public EventCallback OnCancel { get; set; }
     private ForumPost NewPost { get; set; } = new();
     private List<ForumCategory> Categories { get; set; } = Enum.GetValues<ForumCategory>().ToList();
     private User? CurrentUser { get; set; } = new();
@@ -79,6 +80,7 @@
     {
         IsForumModalOpen = false;
         NewPost = new();
+        OnCancel.InvokeAsync();
     }
 
     private async Task CreatePost()

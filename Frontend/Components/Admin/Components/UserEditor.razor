@@ -15,14 +15,11 @@
 
 @if (filteredUsers.Count == 0)
 {
-    <div class="text-center text-light">
-        <img src="images/no-users.png" alt="No users found" style="max-height: 250px;" />
-        <p class="text-muted">No users match the current filters.</p>
-    </div>
+    <LoadingAnimation LoadingText="No users found..." />
 }
 else
 {
-    <table class="table table-bordered align-middle">
+    <table class="table table-dark table-bordered align-middle">
         <thead class="table-dark">
             <tr>
                 <th>Email</th>
@@ -53,12 +50,12 @@ else
                     </td>
                     <td class="text-center align-middle">
                         <div class="d-flex flex-column gap-1" style="min-width: 120px;">
-                            <button id="Update-button" class="btn btn-success btn-sm w-100" @onclick="() => UpdateUser(user)">Update</button>
-                            <button class="btn btn-danger btn-sm w-100" @onclick="() => DeleteUser(user)">Delete</button>
-                            <button class="btn btn-secondary btn-sm w-100" @onclick="() => ToggleExpanded(user.Id)">
+                            <button id="Update-button" class="simple-arcade-btn btn-sm w-100" @onclick="() => UpdateUser(user)" style="background-color: limegreen">Update</button>
+                            <button class="simple-arcade-btn w-100" @onclick="() => DeleteUser(user)" style="background-color: darkred">Delete</button>
+                            <button class="simple-arcade-btn btn-sm w-100" @onclick="() => ToggleExpanded(user.Id)">
                                 @(_expandedUserId == user.Id ? "▼ Hide Orders" : "▲ Show Orders")
                             </button>
-                            <button class="btn btn-secondary btn-sm w-100" @onclick="() => ToggleCart(user.Id)">
+                            <button class="simple-arcade-btn btn-sm w-100" @onclick="() => ToggleCart(user.Id)">
                                 @(_expandedCartUserId == user.Id ? "▼ Hide Cart" : "▲ Show Cart")
                             </button>
                         </div>
@@ -98,7 +95,7 @@ else
                             }
                             else
                             {
-                                <p class="text-muted">No orders found for this user.</p>
+                                <div class="generic-text">No orders found for this user.</div>
                             }
                         </td>
                     </tr>
@@ -121,7 +118,6 @@ else
                                         @foreach (var item in _userCartItems)
                                         {
                                             <tr>
-                                                <!--Bind other properties when endpoints are fixed-->
                                                 <td>@item.Key</td>
                                                 <td>@item.Value</td>
                                             </tr>
@@ -131,7 +127,7 @@ else
                             }
                             else
                             {
-                                <p class="text-muted">No items in this user's cart.</p>
+                                <div class="generic-text">No items in this user's cart.</div>
                             }
                         </td>
                     </tr>
@@ -142,9 +138,9 @@ else
 
     <!-- Pagination Controls -->
     <div class="d-flex justify-content-between align-items-center">
-        <button class="btn btn-secondary" @onclick="GoToPreviousPage" disabled="@IsFirstPage">Previous</button>
-        <span>Page @_currentPage of @TotalPages</span>
-        <button class="btn btn-secondary" @onclick="GoToNextPage" disabled="@IsLastPage">Next</button>
+        <button class="simple-arcade-btn" @onclick="GoToPreviousPage" disabled="@IsFirstPage">Previous</button>
+        <span class="generic-text">Page @_currentPage of @TotalPages</span>
+        <button class="simple-arcade-btn" @onclick="GoToNextPage" disabled="@IsLastPage">Next</button>
     </div>
 
     <ConfirmDialog @ref="_confirmDialogRef" />

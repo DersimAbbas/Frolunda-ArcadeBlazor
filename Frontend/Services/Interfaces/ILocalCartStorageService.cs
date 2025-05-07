@@ -10,6 +10,7 @@ public interface ILocalCartStorageService
     Task ClearCartAsync();
     Task LoadCartAsync();
     Task AddToCart(Product product);
+    Task AddToCartByProductId(string id);
     Task SaveCartAsync();
     int GetCartItemCount();
     decimal GetCartCost(List<Product> allProducts);

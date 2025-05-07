@@ -10,3 +10,21 @@
     justify-content: center;
     align-items: center;
 }
+
+input, .form-control {
+    background-color: #d6d6d6 !important;
+}
+
+input
+{
+    color: black !important;
+}
+
+.arcade-error {
+    font-family: monospace;
+    color: #f55;
+}
+
+label {
+    color: #fff !important;
+}
