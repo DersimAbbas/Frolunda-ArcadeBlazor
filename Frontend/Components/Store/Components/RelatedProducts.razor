@@ -1,0 +1,38 @@
+﻿@using Frontend.Models
+@using Frontend.Services.Interfaces
+@inject IUserService UserService
+@inject IOrderService OrderService
+@inject IFirebaseAuthService FirebaseAuthService
+@inject IJSRuntime JsRuntime
+
+@if (_recommendedProducts.Count > 0)
+{
+    <div class="mb-4 text-center">
+        <h5 class="sub-heading mb-1 mt-5">Related Products</h5>
+        <ProductCarousel Products="_recommendedProducts" AutoScrollInterval="AutoScrollInterval" />
+    </div>
+}
+
+@code {
+    [Parameter] public List<Product> CachedProducts { get; set; }
+    [Parameter] public Product Product { get; set; } = new();
+    [Parameter] public int AutoScrollInterval { get; set; } = 0;
+
+    private List<Product> _recommendedProducts = new();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        var productWithGenre = CachedProducts.FirstOrDefault(p => p.Id == Product.Id);
+        if (productWithGenre == null) return;
+
+        var genre = productWithGenre.Genre;
+
+        _recommendedProducts = CachedProducts
+            .Where(p => p.Genre == genre && p.Id != productWithGenre.Id)
+            .ToList();
+
+        StateHasChanged();
+    }
+}
