@@ -12,8 +12,8 @@
 @if (IsForumModalOpen)
 {
     <div class="modal fade show d-block" tabindex="-1" style="background: rgba(0,0,0,0.6);">
-        <div class="modal-dialog modal-dialog-centered modal-lg">
-            <div class="modal-content bg-dark text-light border-secondary">
+        <div class="modal-dialog modal-dialog-centered ">
+            <div class="modal-content text-light  arcade-post-card">
                 <div class="modal-header">
                     <h5 class="modal-title">Create New Post</h5>
                     <button type="button" class="btn-close btn-close-white" @onclick="CloseForumModal"></button>
@@ -38,8 +38,8 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button class="btn btn-secondary" @onclick="CloseForumModal">Cancel</button>
-                    <button class="btn btn-success" @onclick="CreatePost">Post</button>
+                    <button class="simple-arcade-btn" style="background-color: red" @onclick="CloseForumModal">Cancel</button>
+                    <button class="simple-arcade-btn" style="background-color: limegreen"  @onclick="CreatePost">Post</button>
                 </div>
             </div>
         </div>
