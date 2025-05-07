@@ -6,7 +6,6 @@
 @using Frontend.Services.Interfaces
 @using Frontend.Components.Store
 @using Frontend.Components.Store.Components
-
 @inject IProductService ProductService
 @inject HttpClient http
 @inject IJSRuntime JsRuntime
@@ -45,14 +44,12 @@
             <p class="mb-0">@_selectedProduct.Description</p>
         </div>
 
-       
         <div class="card bg-transparent border border-secondary text-light mb-4 p-4">
             <h5 class="mb-3">Reviews</h5>
             <ReviewViewer 
             Reviews="_selectedProduct.Reviews" 
             SelectedProduct="_selectedProduct" />
         </div>
-
         
         <div class="mb-4 text-center">
             <h5 class="text-light mb-3">You might Also Like</h5>
