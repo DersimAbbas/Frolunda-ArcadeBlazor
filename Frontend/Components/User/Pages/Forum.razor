@@ -7,7 +7,7 @@
 
 <h2 class="text-center welcome-text mb-5">Forum Home</h2>
 
-@if (ForumPosts.Any())
+@if (!IsLoading)
 {
     
     <div class="container-fluid px-3 text-light">
@@ -122,14 +122,19 @@ else
     private List<ForumPost> ForumPosts { get; set; } = new();
     private HashSet<ForumCategory> ExpandedCategories { get; set; } = new();
     private HashSet<ForumCategory> FullyExpandedCategories { get; set; } = new();
-
+    private bool IsLoading { get; set; } = true;
     private bool _isForumModalOpen = false;
-
-    protected override async Task OnInitializedAsync()
+    
+    
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (!firstRender) return;
+
+        IsLoading = false;
         ExpandedCategories = Categories.ToHashSet();
         var posts = await ForumService.GetAllForumPostsAsync();
         ForumPosts = posts.OrderBy(p => (int)p.Category).ToList();
+        StateHasChanged();
     }
 
     private void ToggleCategory(ForumCategory category)

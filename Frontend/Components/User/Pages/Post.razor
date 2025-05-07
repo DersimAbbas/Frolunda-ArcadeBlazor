@@ -13,7 +13,7 @@
 <h2 class="text-center welcome-text mb-5">Forum Post</h2>
 
 
-@if (ForumPost.Id == null)
+@if (IsLoading)
 {
     <LoadingAnimation LoadingText="Loading..."/>
 }
@@ -93,16 +93,17 @@ else
     private ForumPost? ForumPost { get; set; }
     private string CurrentUserEmail { get; set; }
     private bool IsCurrentUserAdmin { get; set; }
-
-    protected override async Task OnInitializedAsync()
-    {
-        ForumPost = await ForumService.GetForumPostByIdAsync(PostId);
-    }
-
+    private bool IsLoading { get; set; } = true;
+    
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
 
+        ForumPost = await ForumService.GetForumPostByIdAsync(PostId);
+        
+        IsLoading = false; 
+        StateHasChanged();
+        
         var token = await JsRuntime.InvokeAsync<string>("getCookie", "token");
 
         if (!string.IsNullOrEmpty(token))
@@ -115,6 +116,7 @@ else
                 var user = await UserService.GetUserByIdAsync(firebaseAuthUserId);
                 CurrentUserEmail = user.Email;
                 IsCurrentUserAdmin = user.Role == "admin";
+
                 StateHasChanged();
             }
         }
