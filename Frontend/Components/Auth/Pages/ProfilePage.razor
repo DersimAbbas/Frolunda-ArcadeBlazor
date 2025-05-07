@@ -2,7 +2,6 @@
 @using System.Globalization
 @using Firebase.Auth
 @using Frontend.Models
-@using Frontend.Services
 @using Frontend.Services.Interfaces
 @using User = Frontend.Models.User
 @inject IFirebaseAuthService FirebaseAuthService
@@ -16,29 +15,53 @@
 <h2 class="text-center medium-title mb-5">Your Profile</h2>
 
 <div class="d-flex flex-column flex-md-row justify-content-center gap-5 m-5">
+    @if (UserProfile.Id == null)
+    {
+        <LoadingAnimation LoadingText="Loading..." />
+    }
+    else
+    {
+        
     <div class="col-12 col-md-6">
         <div class="generic-text mb-3" style="font-size: 1.4rem">
             Your account information
         </div>
-        <div class="p-4" style="background-color: #444444; border: 1px solid #5e5e5e; border-radius: 2%;">
+        <div class="p-4 arcade-post-card">
 
             <EditForm Model="@UserProfile" OnValidSubmit="UpdateProfile">
-                <DataAnnotationsValidator />
-                <ValidationSummary />
+                <DataAnnotationsValidator/>
+                <ValidationSummary/>
 
                 <div class="form-group mb-3">
                     <label class="form-label generic-text " style="font-size: 1rem">Username</label>
-                    <InputText class="form-control bg-dark text-light border-secondary" @bind-Value="UserProfile.Username" />
+                    <InputText class="form-control bg-dark text-light border-secondary" @bind-Value="UserProfile.Username"/>
                 </div>
 
                 <div class="form-group mb-3">
                     <label class="form-label generic-text " style="font-size: 1rem">Email</label>
-                    <InputText type="email" class="form-control bg-dark text-light border-secondary" @bind-Value="UserProfile.Email" />
+                    <InputText type="email" class="form-control bg-dark text-light border-secondary" @bind-Value="UserProfile.Email"/>
                 </div>
 
                 <div class="form-group mb-3">
+                    <label class="form-label generic-text " style="font-size: 1rem">First name</label>
+                    <InputText class="form-control bg-dark text-light border-secondary" @bind-Value="UserProfile.FirstName"/>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label generic-text " style="font-size: 1rem">Last name</label>
+                    <InputText class="form-control bg-dark text-light border-secondary" @bind-Value="UserProfile.LastName"/>
+                </div>
+                
+                <div class="form-group mb-3">
                     <label class="form-label generic-text " style="font-size: 1rem">Address</label>
-                    <InputText class="form-control bg-dark text-light border-secondary" @bind-Value="UserProfile.Address" />
+                    <InputText class="form-control bg-dark text-light border-secondary" @bind-Value="UserProfile.Address"/>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label generic-text" style="font-size: 1rem">Phone number</label>
+                    <InputText class="form-control bg-dark text-light border-secondary"
+                               @bind-Value="UserProfile.PhoneNumber"
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
                 </div>
 
                 <div class="form-group text-center">
@@ -49,8 +72,9 @@
             </EditForm>
         </div>
     </div>
+    }
 
-    <div class="col-12 col-md-6" >
+    <div class="col-12 col-md-6">
         <div class="generic-text mb-3" style="color: #EDEDED; font-size: 1.4rem">Your Order History</div>
         @if (UserOrderHistory?.Any() == true)
         {
@@ -58,12 +82,12 @@
                 @foreach (var order in UserOrderHistory)
                 {
                     var items = order.Products
-                    .Join(_cachedProducts,
-                    kvp => kvp.Key,
-                    p => p.Id,
-                    (kvp, p) => new { Product = p, Quantity = kvp.Value });
+                        .Join(_cachedProducts,
+                            kvp => kvp.Key,
+                            p => p.Id,
+                            (kvp, p) => new { Product = p, Quantity = kvp.Value });
 
-                    <div style="background-color: #444444; color: #EDEDED; border: 1px solid #5e5e5e; border-radius: 2%; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);" class="p-4">
+                    <div class="p-4 arcade-post-card">
                         <div class="d-flex justify-content-between align-items-center mb-3">
                             <div class="fw-bold fs-5" style="color: #EDEDED;">
                                 Order <span style="color: #bf1f1f;">#@order.OrderId</span>
@@ -76,9 +100,9 @@
                                 <div style="background-color: rgba(68, 68, 68, 0.1); color: #EDEDED; border: 1px solid #5e5e5e; border-radius: 2%;" class="d-flex justify-content-between align-items-center p-3">
                                     <div>
                                         <div class="fw-semibold fs-6">@x.Product.Name</div>
-                                        <div class="text-muted small">@x.Product.Genre</div>
+                                        <div class="small">@x.Product.Genre</div>
                                     </div>
-                                    <div class="fw-bold" style="color: #bf1f1f;">@x.Product.Price.ToString("C", CultureInfo.CurrentCulture)</div>
+                                    <div class="fw-bold">@x.Product.Price.ToString("C", CultureInfo.CurrentCulture)</div>
                                 </div>
                             }
                         </div>
@@ -94,26 +118,19 @@
 </div>
 
 @code {
-    [Parameter] public RegisterOrder? order { get; set; }
+    [Parameter] public RegisterOrder? Order { get; set; }
     private User? UserProfile { get; set; } = new();
     private List<RegisterOrder>? UserOrderHistory { get; set; } = new();
     private List<Product>? _cachedProducts { get; set; } = new();
     private string UserId { get; set; } = string.Empty;
 
-
-    protected override async Task OnInitializedAsync()
-    {
-        _cachedProducts = await productService.GetAllProductsAsync();
-
-    }
-
-
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-
-
         if (!firstRender) return;
+        
+        _cachedProducts = await productService.GetAllProductsAsync();
+
+        _cachedProducts = await productService.GetAllProductsAsync();
 
         var token = await JsRuntime.InvokeAsync<string>("getCookie", "token");
 

@@ -10,48 +10,51 @@
 @inject IFirebaseAuthService FirebaseAuthService
 @inject ILocalCartStorageService LocalCartService
 @inject FirebaseAuthClient FirebaseAuthClient
-<h3>Checkout</h3>
+<h3 class="welcome-text text-center mb-3">Checkout</h3>
 
-<div class="form-group d-flex flex-column gap-2 text-light">
-    <label>Name</label>
-    <input class="form-control p-2" @bind="_customerName" />
+<div class="d-flex justify-content-center align-items-center">
+    <div class="arcade-post-card form-group d-flex flex-column gap-3 p-5 w-75 align-self-center">
+        <label>Name</label>
+        <input id="Name-text" class="form-control arcade-input" @bind="_customerName" />
 
-    <label>Email</label>
-    <input class="form-control p-2" @bind="_customerEmail" />
+        <label>Email</label>
+        <input id="email-text" class="form-control arcade-input" @bind="_customerEmail" />
 
-    <label>Card Number</label>
-    <div id="card-number-element" class="form-control p-3"></div>
+        <label>Card Number</label>
+        <div id="card-number-element" class="form-control arcade-input p-3"></div>
 
-    <label>Expiry Date</label>
-    <div id="card-expiry-element" class="form-control p-3"></div>
+        <label>Expiry Date</label>
+        <div id="card-expiry-element" class="form-control arcade-input p-3"></div>
 
-    <label>CVC</label>
-    <div id="card-cvc-element" class="form-control p-3"></div>
+        <label>CVC</label>
+        <div id="card-cvc-element" class="form-control arcade-input p-3"></div>
 
-    <label>Postal Code</label>
-    <div id="card-postal-element" class="form-control p-3"></div>
+        <label>Postal Code</label>
+        <div id="card-postal-element" class="form-control arcade-input p-3"></div>
+
+        <button class="arcade-btn mt-5 w-50 align-self-center" @onclick="HandleCheckout">Pay</button>
+
+        <div id="card-errors" class="text-danger my-2"></div>
+        <div class="text-danger my-2">@_statusMessage</div>
+    </div>
 </div>
-
-<div id="card-errors" class="text-danger mb-2"></div>
-
-<button class="btn btn-primary" @onclick="HandleCheckout">Pay</button>
 
 @if (_paymentComplete)
 {
     <div id="receipt-overlay" class="receipt-overlay">
         <ReceiptPopup TicketNumber="R2-9R-S2"
         DateTime="@DateTime.Now.ToString("yyyy-MM-dd, HH:mm:ss")"
-        Cart="@CartStorageService.Cart"
+        Cart="@CartItems"
         Products="@AllProducts"
-        Amount="@Amount"
-        OnClose="@(() => _paymentComplete = false)" />
+        Amount="@_amount"
+        OnClose="@(() => ResetCart())" />
     </div>
 }
 <LoadingOverlay IsLoading="_isLoading" LoadingText="Processing payment..." />
 
 @code {
-    private string PaymentMethodId { get; set; } = string.Empty;
-    private decimal Amount { get; set; }
+    private string _paymentMethodId { get; set; } = string.Empty;
+    private decimal _amount { get; set; }
 
     private List<Models.Product> AllProducts { get; set; } = new();
     private Dictionary<string, int> CartItems { get; set; } = new();
@@ -63,12 +66,13 @@
 
     private bool _paymentComplete = false;
     private DotNetObjectReference<Checkout>? _dotNetRef;
-    private string userId = string.Empty;
+    private string _userId = string.Empty;
 
     private bool _isLoading = false;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (!firstRender) { return; }
         var token = await JsRuntime.InvokeAsync<string>("getCookie", "token");
 
         if (!string.IsNullOrEmpty(token))
@@ -78,26 +82,22 @@
             if (tokenVerified && FirebaseAuthClient.User.Uid is not null)
             {
                 var firebaseAuthUserId = FirebaseAuthClient.User.Uid;
-                userId = firebaseAuthUserId;
-
+                _userId = firebaseAuthUserId;
             }
         }
-    }
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if (firstRender)
+        foreach (var item in CartStorageService.Cart)
         {
-            CartItems = CartStorageService.Cart;
-            AllProducts = await ProductService.GetAllProductsAsync();
-            Amount = CartStorageService.GetCartCost(AllProducts);
-            await JsRuntime.InvokeVoidAsync("stripeInterop.initStripe", "pk_test_51RH08UGb53lseiZnINEQMqyRvewkBu0ilq4bUUB2FVlwHUxD4sPcBK7dir8yUtrh2Hxw5iZYZxXnUL4cNX4l7d6Y00jd0I1nhf");
+            CartItems.Add(item.Key, item.Value);
         }
+        AllProducts = await ProductService.GetAllProductsAsync();
+        _amount = CartStorageService.GetCartCost(AllProducts);
 
+        await JsRuntime.InvokeVoidAsync("stripeInterop.initStripe", "pk_test_51RH08UGb53lseiZnINEQMqyRvewkBu0ilq4bUUB2FVlwHUxD4sPcBK7dir8yUtrh2Hxw5iZYZxXnUL4cNX4l7d6Y00jd0I1nhf");
         if (_paymentComplete && _dotNetRef == null)
         {
             _dotNetRef = DotNetObjectReference.Create(this);
-            await JsRuntime.InvokeVoidAsync("outsideClickInterop.register", "arcade-ticket", _dotNetRef, "CloseReceipt");
+            await JsRuntime.InvokeVoidAsync("outsideClickInterop.register", "arcade-ticket", _dotNetRef, "ResetCart");
         }
         else if (!_paymentComplete && _dotNetRef != null)
         {
@@ -112,13 +112,20 @@
         _statusMessage = "Processing payment...";
         _isLoading = true;
 
+        if(_amount == 0 || CartItems.Count == 0)
+        {
+            _statusMessage = "Your cart is empty";
+            _isLoading = false;
+            return;
+        }
+
         var PaymentMethodId = await JsRuntime.InvokeAsync<string>("stripeInterop.createPaymentMethod", _customerName, _customerEmail);
 
-        var result = await PaymentService.ProcessPayment(PaymentMethodId, Amount, userId, CartItems);
+        var result = await PaymentService.ProcessPayment(PaymentMethodId, _amount, _userId, CartItems);
 
         if (!result.IsSuccess)
         {
-            _statusMessage = $"Error: {result.ErrorMessage}";
+            _statusMessage = "";
             _isLoading = false;
             return;
         }
@@ -128,7 +135,7 @@
             _statusMessage = "Additional authentication required...";
             var confirmed = await PaymentService.ConfirmPayment(result.ClientSecret);
 
-            _statusMessage = confirmed ? "Payment confirmed!" : "Payment confirmation failed.";
+            _statusMessage = confirmed ? "" : "Payment confirmation failed.";
             _paymentComplete = confirmed;
             _isLoading = false;
 
@@ -136,20 +143,24 @@
             {
                 await LocalCartService.ClearCartAsync();
             }
+            StateHasChanged();
             return;
         }
 
         _paymentComplete = true;
-        await PaymentService.RegisterOrderAfterPayment(userId,CartItems);
-        
-        _statusMessage = "Payment successful!";
+        await PaymentService.RegisterOrderAfterPayment(_userId,CartItems);
+
+        _statusMessage = "";
         _isLoading = false;
         await LocalCartService.ClearCartAsync();
+        StateHasChanged();
     }
 
     [JSInvokable]
-    public void CloseReceipt()
+    private void ResetCart()
     {
+        _amount = 0;
+        CartItems = new();
         _paymentComplete = false;
         StateHasChanged();
     }
@@ -159,5 +170,3 @@
         _dotNetRef?.Dispose();
     }
 }
-
-<link rel="stylesheet" href="css/CheckoutStyle.css"/>

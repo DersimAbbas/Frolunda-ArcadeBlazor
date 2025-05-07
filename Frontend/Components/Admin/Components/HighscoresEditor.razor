@@ -2,10 +2,12 @@
 @using Frontend.Services.Interfaces
 @inject IHighscoresService HighscoresService
 
+<button id="add-highscores-btn" class="simple-arcade-btn mt-3 mb-2" @onclick="() => _showAddDialog = true" style="background-color:limegreen">Add Highscores Object</button>
+
 @if (HighscoresList == null || HighscoresList.Count == 0)
 {
     <div class="text-center">
-        <img src="images/no-results.png" alt="No highscores found" style="max-height: 300px;" />
+        <img src="images/no-results.png" alt="No highscores found" style="max-height: 300px;"/>
         <p class="text-muted">No highscores available.</p>
     </div>
 }
@@ -13,83 +15,81 @@ else
 {
     <table class="table table-dark table-bordered align-middle text-light">
         <thead class="table-dark">
-            <tr>
-                <th>Game</th>
-                <th>Users & Scores</th>
-                <th>Actions</th>
-            </tr>
+        <tr>
+            <th>Game</th>
+            <th>Users & Scores</th>
+            <th>Actions</th>
+        </tr>
         </thead>
         <tbody>
-            @foreach (var hs in _paginatedHighscores)
-            {
-                <tr>
-                    <td>@hs.Name</td>
-                    <td class="text-center">
-                        <button class="btn btn-sm btn-secondary mb-1" @onclick="() => ToggleExpanded(hs.Id)">
-                            @(_expandedRows.Contains(hs.Id) ? "▲" : "▼")
-                        </button>
-                        @if (_expandedRows.Contains(hs.Id))
-                        {
-                            <div class="mt-2 text-start">
-                                <table class="table table-sm table-striped text-light border">
-                                    <thead>
-                                        <tr>
-                                            <th>User</th>
-                                            <th>Score</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        @for (int i = 0; i < hs.UserScores.Count; i++)
-                                        {
-                                            var entry = hs.UserScores.ElementAt(i);
-                                            <tr>
-                                                <td>
-                                                    <div id="user-@hs.Id-@i" class="form-control form-control-sm bg-white" style="pointer-events: none;">
-                                                        @entry.Key
-                                                    </div>
-                                                </td>
-                                                <td>
-                                                    <input id="score-@hs.Id-@i" type="number" class="form-control form-control-sm"
-                                                    @bind="hs.UserScores[entry.Key]" />
-                                                </td>
-                                            </tr>
-                                        }
-                                    </tbody>
-                                </table>
-                            </div>
+        @foreach (var hs in _paginatedHighscores)
+        {
+            <tr>
+                <td>@hs.Name</td>
+                <td class="text-center">
+                    <button class="btn btn-sm btn-secondary mb-1" @onclick="() => ToggleExpanded(hs.Id)">
+                        @(_expandedRows.Contains(hs.Id) ? "▲" : "▼")
+                    </button>
+                    @if (_expandedRows.Contains(hs.Id))
+                    {
+                        <div class="mt-2 text-start">
+                            <table class="table table-dark table-sm table-striped text-light border">
+                                <thead>
+                                <tr>
+                                    <th>User</th>
+                                    <th>Score</th>
+                                </tr>
+                                </thead>
+                                <tbody>
+                                @for (int i = 0; i < hs.UserScores.Count; i++)
+                                {
+                                    var entry = hs.UserScores.ElementAt(i);
+                                    <tr>
+                                        <td>
+                                            <div id="user-@hs.Id-@i" class="form-control" style="pointer-events: none; background-color: rgb(80, 80, 80); color: #fff;">
+                                                @entry.Key
+                                            </div>
+                                        </td>
+                                        <td>
+                                            <input id="score-@hs.Id-@i" type="number" class="form-control"
+                                                   @bind="hs.UserScores[entry.Key]"/>
+                                        </td>
+                                    </tr>
+                                }
+                                </tbody>
+                            </table>
+                        </div>
 
-                            <div class="mt-3">
-                                <div class="input-group input-group-sm">
-                                    <input id="new-user-@hs.Id" class="form-control" placeholder="User ID" @bind="_newUserID" />
-                                    <button id="add-user-btn-@hs.Id" class="btn btn-outline-success" @onclick="() => AddUserScore(hs)">Add</button>
-                                </div>
+                        <div class="mt-3">
+                            <div class="input-group input-group-sm">
+                                <input id="new-user-@hs.Id" class="form-control" placeholder="User ID" @bind="_newUserID"/>
+                                <button id="add-user-btn-@hs.Id" class="btn btn-outline-success" @onclick="() => AddUserScore(hs)">Add</button>
                             </div>
-                        }
-                    </td>
-                    <td class="text-center align-middle">
-                        <button id="update-btn-@hs.Id" class="btn btn-success btn-sm w-100" @onclick="() => UpdateHighscoreAsync(hs)">Update</button>
-                        <button id="delete-btn-@hs.Id" class="btn btn-danger btn-sm w-100" @onclick="() => DeleteHighscoresAsync(hs.Id)">Delete</button>
-                    </td>
-                </tr>
-            }
+                        </div>
+                    }
+                </td>
+                <td class="text-center align-middle">
+                    <button id="update-btn-@hs.Id" class="simple-arcade-btn btn-sm w-100" @onclick="() => UpdateHighscoreAsync(hs)" style="background-color: limegreen">Update</button>
+                    <button id="delete-btn-@hs.Id" class="simple-arcade-btn btn-sm w-100" @onclick="() => DeleteHighscoresAsync(hs.Id)" style="background-color: darkred">Delete</button>
+                </td>
+            </tr>
+        }
         </tbody>
     </table>
 
 
     <div class="d-flex justify-content-between align-items-center mt-3">
-        <button class="arcade-btn btn-secondary" @onclick="PreviousPage" disabled="@_isFirstPage">Previous</button>
+        <button class="simple-arcade-btn" @onclick="PreviousPage" disabled="@_isFirstPage">Previous</button>
         <span class="generic-text">Page @_currentPage of @_totalPages</span>
-        <button class="arcade-btn btn-secondary" @onclick="NextPage" disabled="@_isLastPage">Next</button>
+        <button class="simple-arcade-btn" @onclick="NextPage" disabled="@_isLastPage">Next</button>
     </div>
 }
 
-<button id="add-highscores-btn" class="btn btn-primary mt-3" @onclick="() => _showAddDialog = true">Add Highscores Object</button>
-
 <AddHighscoresDialog Visible="_showAddDialog"
-OnCancel="() => _showAddDialog = false"
-OnAdd="AddHighscoresAsync" />
+                     OnCancel="() => _showAddDialog = false"
+                     OnAdd="AddHighscoresAsync"/>
 
-<ConfirmDialog @ref="_confirmDialogRef" />
+<ConfirmDialog @ref="_confirmDialogRef"/>
 
 @code {
     [Parameter] public List<Highscores> HighscoresList { get; set; } = new();
@@ -129,11 +129,11 @@ OnAdd="AddHighscoresAsync" />
     private async Task DeleteHighscoresAsync(string id)
     {
         var confirmed = await _confirmDialogRef!.ShowAsync(
-        "Delete Highscore",
-        $"Are you sure you want to delete highscores object with id: {id}?"
+            "Delete Highscore",
+            $"Are you sure you want to delete highscores object with id: {id}?"
         );
 
-        if(confirmed)
+        if (confirmed)
         {
             await HighscoresService.DeleteHighscoresAsync(id);
             await OnChange.InvokeAsync();
@@ -169,11 +169,15 @@ OnAdd="AddHighscoresAsync" />
             return;
 
         var response = await HighscoresService.UpdateUserHighscoreAsync(hs.Id, Id, 0);
-        if (!response) { return; }
+        if (!response)
+        {
+            return;
+        }
 
         hs.UserScores.Add(Id, 0);
         _newUserID = string.Empty;
 
         StateHasChanged();
     }
+
 }

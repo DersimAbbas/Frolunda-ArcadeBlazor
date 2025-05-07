@@ -1,27 +1,35 @@
 @using Frontend.Models
 @inject IJSRuntime JsRuntime
 @implements IDisposable
-
-<div class="scroll-carousel-container position-relative py-3">
-    <button class="carousel-arrow left btn shadow" @onclick="() => Scroll(-1)">‹</button>
-
-    <div class="scroll-carousel" @ref="_carouselRef">
-        @foreach (var _event in Events)
-        {
-            <div class="carousel-item-card text-light ms-0">
-                <div class="card bg-dark border-secondary shadow-sm ms-0">
-                    <div class="card-body">
-                        <h5 class="card-title text-danger">@_event.Name</h5>
-                        <p class="card-text text-light small">@_event.Description</p>
-                        <p class="card-text text-light small">@_event.Date.ToShortDateString()</p>
-                        <span class="badge bg-secondary">@(_event.Participants?.Count ?? 0) participants</span>
+<div class="mb-4 text-center" style="margin-top: 50px">
+    <h5 class="sub-heading mb-1 mt-5">Upcoming Events</h5>
+    <div class="scroll-carousel-container position-relative py-3 text-light">
+        <button class="carousel-arrow left" @onclick="() => Scroll(-1)">
+            ‹
+        </button>
+    
+        <div class="scroll-carousel" @ref="_carouselRef">
+            @foreach (var _event in Events)
+            {
+                <div class="carousel-item-card px-2">
+                    <div class="arcade-post-card p-3 d-flex flex-column justify-content-between" style="height: 215px">
+                        <div>
+                            <h5 class="arcade-glow-text">@_event.Name</h5>
+                            <p class="generic-text small">@_event.Description</p>
+                        </div>
+                        <div>
+                            <p class="generic-text small">@_event.Date.ToShortDateString()</p>
+                            <span class="badge arcade-badge px-2 py-1 small">@(_event.Participants?.Count ?? 0) participants</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-        }
+            }
+        </div>
+    
+        <button class="carousel-arrow right" @onclick="() => Scroll(1)">
+            ›
+        </button>
     </div>
-
-    <button class="carousel-arrow right btn shadow" @onclick="() => Scroll(1)">›</button>
 </div>
 @code {
     [Parameter] public List<Event> Events { get; set; } = new();
