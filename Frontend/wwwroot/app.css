@@ -141,6 +141,15 @@ article.content {
     color: #bf1f1f;
 }
 
+.sub-heading {
+    font-family: 'Press Start 2P', cursive;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    line-height: 1.4;
+    font-size: 1.2rem;
+    color: #bf1f1f;
+}
+
 .generic-text {
     font-family: 'Franklin Gothic Medium', 'Arial Narrow', Arial, sans-serif;
     letter-spacing: 2px;

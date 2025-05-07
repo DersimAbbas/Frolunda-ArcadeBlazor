@@ -1,6 +1,14 @@
 ﻿@page "/"
 @using Frontend.Components.User.Components
+@using Frontend.Models
+@using Frontend.Services.Interfaces
+@using System.Text.Json
 @inject NavigationManager Navigation
+@inject HttpClient Http
+@inject IProductService ProductService
+@inject IFirebaseAuthService FirebaseAuthService
+@inject IOrderService OrderService
+@inject IJSRuntime JsRuntime
 
 <PageTitle>Home</PageTitle>
 
@@ -29,13 +37,15 @@
     </div>
 </div>
 
-<div class="mt-5">
-    <h3 class="text-center generic-text mb-4">Upcoming Events</h3>
-    <EventCarousel Events="@DemoEvents" AutoScrollInterval="5000"/>
+<EventCarousel Events="@DemoEvents" AutoScrollInterval="5000" />
 
-</div>
+<RecommendedProducts _cachedProducts="_products" AutoScrollInterval="5000"/>
 
 @code {
+    private List<Product> _products = new();
+    private bool _userOrdersExist = false;
+    private const string _imageMapKey = "productImageMap";
+    private const string _funcTrigger = "https://frolunda-arcadefunc.azurewebsites.net/api/GetImageFunction";
 
     private List<EventCarousel.Event> DemoEvents = new()
     {
@@ -51,5 +61,49 @@
         new EventCarousel.Event { Name = "Speedrun Sunday", Description = "Show off your best speedruns!", Date = DateTime.Today.AddDays(19), Participants = new() },
         new EventCarousel.Event { Name = "Board Game Bonanza", Description = "Take a break from screens", Date = DateTime.Today.AddDays(21), Participants = new() }
     };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) { return; }
+
+        _products = await ProductService.GetAllProductsAsync();
+
+        await AssignImageMaps();
+
+        StateHasChanged();
+    }
+    private async Task AssignImageMaps()
+    {
+        var rawJson = await JsRuntime.InvokeAsync<string>("localStorage.getItem", _imageMapKey);
+        Dictionary<string, string>? imageMap = null;
+
+        if (!string.IsNullOrWhiteSpace(rawJson))
+            imageMap = JsonSerializer.Deserialize<Dictionary<string, string>>(rawJson);
+
+        if (imageMap == null)
+        {
+            imageMap = await Http.GetFromJsonAsync<Dictionary<string, string>>(_funcTrigger);
+            await JsRuntime.InvokeVoidAsync("localStorage.setItem", _imageMapKey,
+                JsonSerializer.Serialize(imageMap));
+        }
+
+        if (imageMap != null)
+        {
+            foreach (var product in _products!)
+            {
+                var matchKey = imageMap.Keys
+                 .FirstOrDefault(k =>
+                     string.Equals(k, product.Name, StringComparison.OrdinalIgnoreCase)
+                 );
+
+                if (matchKey != null && imageMap.TryGetValue(matchKey, out var url))
+                {
+                    product.ImageLink = url;
+                }
+
+            }
+            await InvokeAsync(StateHasChanged);
+        }
+    }
 
 }
