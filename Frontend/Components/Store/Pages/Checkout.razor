@@ -1,4 +1,5 @@
 ﻿@page "/checkout"
+@using Firebase.Auth
 @using Frontend.Services
 @using Frontend.Components.Store.Components
 @using Frontend.Services.Interfaces
@@ -6,6 +7,8 @@
 @inject IPaymentService PaymentService
 @inject IProductService ProductService
 @inject ILocalCartStorageService CartStorageService
+@inject IFirebaseAuthService FirebaseAuthService
+@inject FirebaseAuthClient FirebaseAuthClient
 <h3>Checkout</h3>
 
 <div class="form-group d-flex flex-column gap-2 text-light">
@@ -58,7 +61,24 @@
 
     private bool _paymentComplete = false;
     private DotNetObjectReference<Checkout>? _dotNetRef;
+    private string userId = string.Empty;
 
+    protected override async Task OnInitializedAsync()
+    {
+        var token = await JsRuntime.InvokeAsync<string>("getCookie", "token");
+
+        if (!string.IsNullOrEmpty(token))
+        {
+            var tokenVerified = await FirebaseAuthService.VerifyTokenAsync(token);
+
+            if (tokenVerified && FirebaseAuthClient.User.Uid is not null)
+            {
+                var firebaseAuthUserId = FirebaseAuthClient.User.Uid;
+                userId = firebaseAuthUserId;
+
+            }
+        }
+    }
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -87,8 +107,9 @@
     {
         _statusMessage = "Processing payment...";
 
+
         var PaymentMethodId = await JsRuntime.InvokeAsync<string>("stripeInterop.createPaymentMethod", _customerName, _customerEmail);
-        string userId = "123";
+
         var result = await PaymentService.ProcessPayment(PaymentMethodId, Amount, userId, CartItems);
 
         if (!result.IsSuccess)
@@ -106,9 +127,10 @@
             _paymentComplete = confirmed;
             return;
         }
-        
+
         _paymentComplete = true;
-        await PaymentService.RegisterOrderAfterPayment(_customerEmail,CartItems);
+        await PaymentService.RegisterOrderAfterPayment(userId,CartItems);
+        
         _statusMessage = "Payment successful!";
     }
 

@@ -1,42 +1,52 @@
 ﻿@page "/store-front"
+@using System.Text.Json
 @using Firebase.Auth
 @using Frontend.Models
 @using Frontend.Services
 @using Frontend.Components.Store.Components
+@using Frontend.Services.Interfaces
 @inject HttpClient http
 @inject IJSRuntime JsRuntime
+@inject IProductService ProductService
 
-<FilterBar Filter="@currentFilter" OnApplyFilters="HandleFilterApplied" />
-<ProductCard Name="testone" Genre="Action" Price="12.99" Description="Thrilling action game" />
+<FilterBar Filter="@_currentFilter" OnApplyFilters="HandleFilterApplied" Genres="_genres" />
 
 @if(@filterTest == false){
-@foreach (var product in allProducts)
-{
-    <ProductCard Name="@product.Name" Genre="@product.Genre" Price="@product.Price" Description="@product.Description" ImageLink="@product.ImageLink" ButtonId1="@product.Id" ButtonId2="@product.Name"/>
-}}else
-@foreach (var product in filteredProducts)
-{
-        <ProductCard Name="@product.Name" Genre="@product.Genre" Price="@product.Price" Description="@product.Description" ImageLink="@product.ImageLink" ButtonId1="@product.Id" ButtonId2="@product.Name" />
-}
+    @foreach (var product in _allProducts)
+    {
+        <ProductCard SelectedProduct="@product" />
+    }}else
+    @foreach (var product in _filteredProducts)
+    {
+        <ProductCard SelectedProduct="@product" />
+    }
 
 @code {
-    private ProductFilter currentFilter = new();
-    private List<Product> allProducts = new(); 
-    private List<Product> filteredProducts = new();
+    private ProductFilter _currentFilter = new();
+    private List<Product> _allProducts = new(); 
+    private List<Product> _filteredProducts = new();
+    private List<string> _genres = new();
+    private const string _imageMapKey = "productImageMap";
+    private const string _funcTrigger = "https://frolunda-arcadefunc.azurewebsites.net/api/GetImageFunction";
     private bool filterTest = false;
 
     protected override async Task OnInitializedAsync()
     {
-        ProductService productService = new ProductService(http, JsRuntime);
-
-        allProducts = await productService.GetAllProductsAsync();
-
+        _allProducts = await ProductService.GetAllProductsAsync();
+        _genres = GetGenres(_allProducts);
     }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+        await AssignImageMaps();
+        
+    }
+
 
     private void HandleFilterApplied(ProductFilter filter)
     {
         filterTest = true;
-        filteredProducts = allProducts
+        _filteredProducts = _allProducts
          .Where(p =>
              (string.IsNullOrEmpty(filter.SearchTerm) || p.Name.Contains(filter.SearchTerm, StringComparison.OrdinalIgnoreCase)) &&
              (string.IsNullOrEmpty(filter.SelectedGenre) || p.Genre == filter.SelectedGenre) &&
@@ -44,4 +54,47 @@
              (!filter.MaxPrice.HasValue || p.Price <= filter.MaxPrice.Value)
          ).ToList();
     }
+    
+    private async Task AssignImageMaps()
+    {
+        var rawJson = await JsRuntime.InvokeAsync<string>("localStorage.getItem", _imageMapKey);
+        Dictionary<string, string>? imageMap = null;
+
+        if (!string.IsNullOrWhiteSpace(rawJson))
+            imageMap = JsonSerializer.Deserialize<Dictionary<string, string>>(rawJson);
+
+        if (imageMap == null)
+         {
+            imageMap = await http.GetFromJsonAsync<Dictionary<string, string>>(_funcTrigger);
+            await JsRuntime.InvokeVoidAsync("localStorage.setItem", _imageMapKey,
+                JsonSerializer.Serialize(imageMap));
+        }
+
+        if (imageMap != null)
+        {
+            foreach (var product in _allProducts!)
+            {
+                var matchKey = imageMap.Keys
+                    .FirstOrDefault(k =>
+                        string.Equals(k, product.Name, StringComparison.OrdinalIgnoreCase)
+                    );
+
+                if (matchKey != null && imageMap.TryGetValue(matchKey, out var url))
+                {
+                    product.ImageLink = url;
+                }
+
+            }
+            await InvokeAsync(StateHasChanged);
+        }
+    }
+
+    private List<string> GetGenres(List<Product> products)
+    {
+        return products
+            .Select(p => p.Genre)
+            .Distinct()
+            .ToList();
+    }
+
 }
