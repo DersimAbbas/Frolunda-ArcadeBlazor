@@ -6,7 +6,7 @@
 @inject IFirebaseAuthService FirebaseAuthService
 
 <h3 class="text-center mb-4 medium-title" >Create an Account</h3>
-
+<LoadingOverlay IsLoading="@IsLoading" LoadingText="Registrering account..." />
 <div class="container text-light my-5">
     <div class="row justify-content-center gap-5">
         <div class="col-md-5 arcade-post-card" style="padding: 2rem;">
@@ -111,15 +111,18 @@
         
     };
     private string? ErrorMessage { get; set; }
-
+    private bool IsLoading { get; set; }
+    
     private async void HandleRegistration()
     {
        try
        {
            var token = await FirebaseAuthService.RegisterUser(RegisterUser);
+           IsLoading = true;
 
            if (!string.IsNullOrEmpty(token))
            {
+               IsLoading = false;
                NavigationManager.NavigateTo("/login", forceLoad: true);
            }
            else

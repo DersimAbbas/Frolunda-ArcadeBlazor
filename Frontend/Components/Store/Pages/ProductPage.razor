@@ -12,7 +12,7 @@
 @inject IJSRuntime JsRuntime
 @layout ProductPageLayout
 
-@if (_selectedProduct is not null)
+@if (_selectedProduct.Id is not null)
 {
     <div class="container py-5">
 
@@ -59,6 +59,10 @@
             <RecommendedProducts _cachedProducts="_products" />
         </div>
     </div>
+}
+else
+{
+    <LoadingAnimation LoadingText="Loading..." />
 }
 @code
 {

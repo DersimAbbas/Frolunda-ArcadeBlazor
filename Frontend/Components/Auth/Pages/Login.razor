@@ -8,7 +8,7 @@
 @inject IFirebaseAuthService FirebaseAuthService
 
 <h3 class="text-center mb-4 medium-title">Login</h3>
-
+<LoadingOverlay IsLoading="@IsLoading" LoadingText="Logging in..." />
 <div class="container text-light my-5">
     <div class="row justify-content-center gap-5">
         <div class="col-md-5 arcade-post-card" style="padding: 2rem;">
@@ -64,6 +64,7 @@
     };
 
     private string ErrorMessage { get; set; }
+    private bool IsLoading { get; set; }
 
     private async Task HandleLogin()
     {
@@ -71,9 +72,11 @@
         try
         {
             var token = await FirebaseAuthService.LoginUser(LoginUser.Email, LoginUser.Password);
+            IsLoading = true;
 
             if (!string.IsNullOrEmpty(token))
             {
+                IsLoading = false;
                 try
                 {
                     await AssignUserCart();
