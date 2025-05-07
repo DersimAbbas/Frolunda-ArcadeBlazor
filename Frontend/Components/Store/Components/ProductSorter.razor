@@ -1,6 +1,7 @@
 ﻿@using Frontend.Models
+@using System.Globalization
 
-<div class="mb-4 text-light">
+<div class="mb-4 text-light container-fluid w-100">
     <!-- Search & Sort -->
     <div class="d-flex justify-content-between align-items-center mb-2">
         <input class="form-control w-50 me-3" placeholder="Search by name..."
@@ -19,22 +20,28 @@
     <!-- Price Range -->
     <div class="mb-2 d-flex justify-content-between align-items-center mt-5">
         <label class="form-label">
-            Price Range: @SelectedMinPrice.ToString("0.00") - @SelectedMaxPrice.ToString("0.00")
+            Price Range: @SelectedMinPrice.ToString("C", CultureInfo.CurrentCulture) - @SelectedMaxPrice.ToString("C", CultureInfo.CurrentCulture)
         </label>
     </div>
 
-    <div class="d-flex align-items-center gap-3">
-        <!-- Min Price Slider -->
-        <input type="range" min="@_minPrice" max="@_maxPrice" step="1"
+    <div class="d-flex align-items-center gap-3 justify-content-between">
+        <!-- Min Price -->
+        <div>
+            <h3 class="text-light">Min price</h3>
+            <input type="number" min="@_minPrice" max="@_maxPrice" step="1"
                value="@SelectedMinPrice"
                @oninput="@((args) => SelectedMinPrice = Convert.ToDouble(args.Value))"
-               class="form-range" style="width: 100%;" />
+                   class="form-control w-50 me-3" placeholder="Enter Min Price..." style="min-width:25vw" />
+        </div>
 
-        <!-- Max Price Slider -->
-        <input type="range" min="@_minPrice" max="@_maxPrice" step="1"
-               value="@SelectedMaxPrice"
-               @oninput="@((args) => SelectedMaxPrice = Convert.ToDouble(args.Value))"
-               class="form-range" style="width: 100%;" />
+        <!-- Max Price -->
+        <div>
+            <h3 class="text-light">Max price</h3>
+            <input type="number" min="@_minPrice" max="@_maxPrice" step="1"
+                   value="@SelectedMaxPrice"
+                   @oninput="@((args) => SelectedMaxPrice = Convert.ToDouble(args.Value))"
+                   class="form-control w-50 me-3" placeholder="Enter Max Price..." style="min-width:25vw"/>
+        </div>
     </div>
 </div>
 
