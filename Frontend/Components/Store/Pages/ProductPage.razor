@@ -67,7 +67,17 @@ else
 
     private bool _loadedImages;
     private List<Product>? _products;
-    private Product? _selectedProduct;
+    private Product _selectedProduct;
+     
+    // public Product SelectedProduct
+    // {
+    //     get { return _selectedProduct; }
+    //     set
+    //     {
+    //         _selectedProduct = value;
+    //         StateHasChanged();
+    //     }
+    // }
     private const string _imageMapKey = "productImageMap";
     private const string _funcTrigger = "https://frolunda-arcadefunc.azurewebsites.net/api/GetImageFunction";
     private bool _showAllReviews = false;
@@ -82,18 +92,18 @@ else
         _selectedProduct = _products.FirstOrDefault(p => p.Name.Equals(ProductName, StringComparison.OrdinalIgnoreCase));
         await AssignImageMaps();
     }
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if(!firstRender) return;
-        await AssignImageMaps();
-        if (_products == null)
-        {
-            _products = await GetProductsAsync();
-        }
-        _selectedProduct = _products.FirstOrDefault(p => p.Name.Equals(ProductName, StringComparison.OrdinalIgnoreCase));
-        await AssignImageMaps();
-
-    }
+    // protected override async Task OnAfterRenderAsync(bool firstRender)
+    // {
+    //     if(!firstRender) return;
+        
+    //     if (_products == null)
+    //     {
+    //         _products = await GetProductsAsync();
+    //     }
+    //     SelectedProduct = _products.FirstOrDefault(p => p.Name.Equals(ProductName, StringComparison.OrdinalIgnoreCase));
+    //     await AssignImageMaps();
+        
+    // }
 
     private async Task<List<Product>?> GetProductsAsync()
     {
