@@ -12,7 +12,7 @@
 @inject IJSRuntime JsRuntime
 @layout ProductPageLayout
 
-@if (_selectedProduct.Id is not null)
+@if (_selectedProduct != null)
 {
     <div class="container py-5">
 
@@ -74,7 +74,7 @@ else
     private const string _imageMapKey = "productImageMap";
     private const string _funcTrigger = "https://frolunda-arcadefunc.azurewebsites.net/api/GetImageFunction";
     private bool _showAllReviews = false;
-
+    
     protected override async Task OnParametersSetAsync()
     {
 
@@ -85,10 +85,6 @@ else
         _selectedProduct = _products.FirstOrDefault(p => p.Name.Equals(ProductName, StringComparison.OrdinalIgnoreCase));
         await AssignImageMaps();
     }
-            
-
-
-
 
     private async Task<List<Product>?> GetProductsAsync()
     {
