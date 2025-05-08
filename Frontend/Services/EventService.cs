@@ -3,14 +3,10 @@ using static Frontend.Components.User.Components.EventCarousel;
 
 namespace Frontend.Services
 {
-    public class EventService:IEventService
+    public class EventService(HttpClient _httpClient) :IEventService
     {
-        private readonly HttpClient _httpClient;
-        public EventService(HttpClient httpClient)
-        {
-            _httpClient = httpClient;
-        }
 
+        private IEventService _eventServiceImplementation;
         public async Task<Models.Event> GetEventByIdAsync(string id)
         {
             return await _httpClient.GetFromJsonAsync<Models.Event>($"api/events/{id}");
@@ -21,7 +17,7 @@ namespace Frontend.Services
             return await _httpClient.GetFromJsonAsync<List<Models.Event>?>("api/events");
         }
 
-        public async Task<bool> AddEvent(Models.Event _event)
+        public async Task<bool> AddEventAsync(Models.Event _event)
         {
             var response = await _httpClient.PostAsJsonAsync("api/events", _event);
             return response.IsSuccessStatusCode;

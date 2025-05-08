@@ -6,7 +6,7 @@ namespace Frontend.Services.Interfaces
     {
         Task<Models.Event> GetEventByIdAsync(string id);
         Task<List<Models.Event>?> GetAllEventsAsync();
-        Task<bool> AddEvent(Models.Event _event);
+        Task<bool> AddEventAsync(Models.Event _event);
         Task<bool> UpdateEvent(string id, Models.Event _event);
         Task<bool> DeleteEvent(string id);
     }
