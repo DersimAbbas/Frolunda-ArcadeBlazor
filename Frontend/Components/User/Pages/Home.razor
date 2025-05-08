@@ -89,12 +89,9 @@
     </div>
 </div>
 
-@if(DemoEvents.Count > 0)
-{
-    <EventCarousel Events="@DemoEvents" AutoScrollInterval="5000" />
-}
+<EventCarousel Events="@DemoEvents" />
 
-<RecommendedProducts _cachedProducts="_products" AutoScrollInterval="5000"/>
+<RecommendedProducts _cachedProducts="_products"/>
 
 @code {
     private List<Product> _products = new();
@@ -148,7 +145,7 @@
                     product.ImageLink = url;
             }
 
-            await InvokeAsync(StateHasChanged);
+            StateHasChanged();
         }
     }
 }

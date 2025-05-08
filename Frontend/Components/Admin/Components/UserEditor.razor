@@ -191,8 +191,8 @@ else
             _users = await UserService.GetAllUsersAsync();
             _orders = await OrderService.GetAllOrdersAsync();
             _carts = await CartService.GetAllCartsAsync();
+            StateHasChanged();
         }
-        StateHasChanged();
     }
 
     private void ToggleCart(string userId)

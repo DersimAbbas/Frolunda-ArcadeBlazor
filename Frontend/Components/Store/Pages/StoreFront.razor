@@ -59,7 +59,7 @@
              (!filter.MaxPrice.HasValue || p.Price <= filter.MaxPrice.Value)
          ).ToList();
     }
-    
+
     private async Task AssignImageMaps()
     {
         var rawJson = await JsRuntime.InvokeAsync<string>("localStorage.getItem", _imageMapKey);
@@ -69,7 +69,7 @@
             imageMap = JsonSerializer.Deserialize<Dictionary<string, string>>(rawJson);
 
         if (imageMap == null)
-         {
+        {
             imageMap = await http.GetFromJsonAsync<Dictionary<string, string>>(_funcTrigger);
             await JsRuntime.InvokeVoidAsync("localStorage.setItem", _imageMapKey,
                 JsonSerializer.Serialize(imageMap));
@@ -89,7 +89,7 @@
                     product.ImageLink = url;
                 }
             }
-            await InvokeAsync(StateHasChanged);
+            StateHasChanged();
         }
     }
 
