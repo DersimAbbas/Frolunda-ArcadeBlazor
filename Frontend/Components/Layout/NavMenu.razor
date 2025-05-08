@@ -12,18 +12,13 @@
 @inject ConfirmDialogService ConfirmDialogService
 
 <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
-    <div class="container-fluid py-2 px-3" style="max-height:200px;">
+    <div class="container py-2 px-3">
 
-        <!-- ◀ Brand: logo + title -->
         <a class="navbar-brand d-flex align-items-center" href="/">
-            <img src="images/logo.png"
-                 alt="Logo"
-                 style="max-height:80px"
-                 class="d-inline-block align-text-top ms-3" />
+            <img src="images/logo.png" alt="Logo" style="max-height:80px" class="ms-3" />
             <span class="header-title text-nowrap ps-5">Frölunda Arcade</span>
         </a>
 
-        <!-- ☰ mobile toggler -->
         <button class="navbar-toggler" type="button"
                 data-bs-toggle="collapse"
                 data-bs-target="#mainNav"
@@ -33,99 +28,81 @@
             <span class="navbar-toggler-icon"></span>
         </button>
 
-        <!-- ● collapsible nav (centered & evenly spaced) -->
-        <div class="collapse navbar-collapse justify-content-center" id="mainNav">
-            <div class="navbar-nav d-flex align-items-center justify-content-evenly w-75">
-                <div class="nav-item">
-                    <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
-                        <span class="bi bi-house" aria-hidden="true"></span> Home
-                    </NavLink>
-                </div>
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav ms-auto text-center text-lg-start w-100 justify-content-evenly">
 
                 <AuthorizeView>
                     <NotAuthorized>
-                        <div class="nav-item">
-                            <NavLink class="nav-link" href="/login" Match="NavLinkMatch.All">
-                                <span class="bi bi-box-arrow-in-right" aria-hidden="true"></span> Login
+                        <li class="nav-item">
+                            <NavLink class="nav-link" href="/login" Match="NavLinkMatch.All" >
+                                <i class="bi bi-box-arrow-in-right"></i> Login
                             </NavLink>
-                        </div>
+                        </li>
                     </NotAuthorized>
-                </AuthorizeView>
-
-                <AuthorizeView>
                     <Authorized>
-                        <div class="nav-item">
+                        <li class="nav-item">
                             <NavLink class="nav-link" href="/profile-page" Match="NavLinkMatch.All">
-                                <span class="bi bi-person" aria-hidden="true"></span> Profile Page
+                                <i class="bi bi-person"></i> Profile
                             </NavLink>
-                        </div>
+                        </li>
+                        <li class="nav-item">
+                            <NavLink class="nav-link" href="#" @onclick="OnSignOutClicked">
+                                <i class="bi bi-door-open"></i> Logout
+                            </NavLink>
+                        </li>
                     </Authorized>
                 </AuthorizeView>
 
                 <AuthorizeView Roles="admin">
                     <Authorized>
-                        <div class="nav-item">
+                        <li class="nav-item">
                             <NavLink class="nav-link" href="/admin-page" Match="NavLinkMatch.All">
-                                <span class="bi bi-lock" aria-hidden="true"></span> Admin Page
+                                <i class="bi bi-lock"></i> Admin
                             </NavLink>
-                        </div>
+                        </li>
                     </Authorized>
                 </AuthorizeView>
 
-                <div class="nav-item">
-                    <NavLink class="nav-link" href="/store-front" Match="NavLinkMatch.All">
-                        <span class="bi bi-controller" aria-hidden="true"></span> Products
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="/store-front" Match="NavLinkMatch.Prefix">
+                        <i class="bi bi-controller"></i> Products
                     </NavLink>
-                </div>
-                <div class="nav-item">
-                    <NavLink class="nav-link" href="/forum" Match="NavLinkMatch.All">
-                        <span class="bi bi-people" aria-hidden="true"></span> Forum
+                </li>
+                <li class="nav-item">
+                    <NavLink class="nav-link" href="/forum" Match="NavLinkMatch.Prefix">
+                        <i class="bi bi-people"></i> Forum
                     </NavLink>
-                </div>
-                <div class="nav-item">
+                </li>
+                <li class="nav-item">
                     <NavLink class="nav-link" href="/events" Match="NavLinkMatch.All">
-                        <span class="bi bi-calendar-event" aria-hidden="true"></span> Events
+                        <i class="bi bi-calendar-event"></i> Events
                     </NavLink>
-                </div>
-                <div class="nav-item">
+                </li>
+                <li class="nav-item">
                     <NavLink class="nav-link" href="/contact" Match="NavLinkMatch.All">
-                        <span class="bi bi-pin-map-fill" aria-hidden="true"></span> Contact
+                        <i class="bi bi-pin-map-fill"></i> Contact
                     </NavLink>
-                </div>
+                </li>
 
-                <AuthorizeView>
-                    <Authorized>
-                        <div class="nav-item">
-                            <NavLink class="nav-link"
-                                     href="#"
-                                     @onclick="OnSignOutClicked"
-                                     Match="NavLinkMatch.All">
-                                <span class="bi bi-door-open" aria-hidden="true"></span> Logout
-                            </NavLink>
-                        </div>
-                    </Authorized>
-                </AuthorizeView>
-            </div>
+            </ul>
         </div>
 
-       
-        <div class="cart-button-wrapper align-items-center position-relative pe-3">
+        <div class="cart-button-wrapper position-relative pe-3 d-flex align-items-center">
             <button id="cartToggleButton"
                     class="arcade-cart-btn"
                     @onclick="ToggleCart"
                     aria-label="Shopping Cart">
                 <i class="bi bi-cart-fill"></i>
-                
                 @if (_cartItemCount > 0)
                 {
-                    <span class="arcade-cart-badge">@_cartItemCount</span>
+                <span class="arcade-cart-badge">@_cartItemCount</span>
                 }
             </button>
             <ShoppingCart Visible="_isCartOpen" OnClose="ToggleCart" />
         </div>
     </div>
 </nav>
-<link rel="stylesheet" href="css/HeaderStyle.css" />
+@* <link rel="stylesheet" href="css/HeaderStyle.css" /> *@
 
 @code {
     private ConfirmDialog confirmed = default!;
