@@ -74,7 +74,6 @@ else
 
     protected override async Task OnParametersSetAsync()
     {
-
         if(_products == null)
         {
             _products = await GetProductsAsync();
@@ -82,18 +81,18 @@ else
         _selectedProduct = _products.FirstOrDefault(p => p.Name.Equals(ProductName, StringComparison.OrdinalIgnoreCase));
         await AssignImageMaps();
     }
-    protected override async Task OnAfterRenderAsync(bool firstRender)
-    {
-        if(!firstRender) return;
-        await AssignImageMaps();
-        if (_products == null)
-        {
-            _products = await GetProductsAsync();
-        }
-        _selectedProduct = _products.FirstOrDefault(p => p.Name.Equals(ProductName, StringComparison.OrdinalIgnoreCase));
-        await AssignImageMaps();
+    // protected override async Task OnAfterRenderAsync(bool firstRender)
+    // {
+    //     if(!firstRender) return;
+    //     await AssignImageMaps();
+    //     if (_products == null)
+    //     {
+    //         _products = await GetProductsAsync();
+    //     }
+    //     _selectedProduct = _products.FirstOrDefault(p => p.Name.Equals(ProductName, StringComparison.OrdinalIgnoreCase));
+    //     await AssignImageMaps();
 
-    }
+    // }
 
     private async Task<List<Product>?> GetProductsAsync()
     {

@@ -39,16 +39,12 @@
     private const string _funcTrigger = "https://frolunda-arcadefunc.azurewebsites.net/api/GetImageFunction";
     private bool filterTest = false;
 
-    protected override async Task OnInitializedAsync()
-    {
-        _allProducts = await ProductService.GetAllProductsAsync();
-        _filteredProducts = _allProducts;
-        _genres = GetGenres(_allProducts);
-    }
-
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
+        _allProducts = await ProductService.GetAllProductsAsync();
+        _filteredProducts = _allProducts;
+        _genres = GetGenres(_allProducts);
         await AssignImageMaps();
     }
 
