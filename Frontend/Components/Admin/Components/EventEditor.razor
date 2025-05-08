@@ -20,21 +20,14 @@
 @code {
     [Parameter] public string? EventName { get; set; }
     [Parameter] public string? EventDescription { get; set; }
-    [Parameter] public int EventParticipants { get; set; }
+    [Parameter] public List<User> EventParticipants { get; set; }
     [Parameter] public DateTime EventDate { get; set; }
 
 
     
     private void CreateEvent()
     {
-    EventModel eventModel = new EventModel();
-       
-        eventModel.Date = EventDate;
-        eventModel.Description = EventDescription;
-        eventModel.Name = EventName;
-        eventModel.Participants = EventParticipants;
-        
-        // Create service and backend after lunch
+        //working on it
     }
 
 

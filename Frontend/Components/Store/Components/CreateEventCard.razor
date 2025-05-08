@@ -1,0 +1,26 @@
+﻿
+<MudPaper Height="400px" Width="100%" Square="true" Style="width: 600px">
+    <div class="card rounded-0 p-3 " style="justify-content:center">
+        <div class="d-flex justify-content-between align-items-center gap-3">
+            <MudStack>
+                <MudField Label="Name of event">testt</MudField>
+                <MudField Label="">testt</MudField>
+                <MudField>testt</MudField>
+                <MudDatePicker PickerVariant="PickerVariant.Dialog" Label="Pick date"  Text="2020-10-19" ShowToolbar="false" />
+                <MudButton Variant="Variant.Filled">Create event</MudButton>
+            </MudStack>
+        </div>
+    </div>
+</MudPaper>
+
+
+
+@code {
+    [Parameter] public string? EventName { get; set; }
+    [Parameter] public string? EventDescription { get; set; }
+    [Parameter] public int EventParticipants { get; set; }
+    [Parameter] public DateOnly EventDate { get; set; }
+
+    
+
+}
