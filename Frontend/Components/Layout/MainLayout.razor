@@ -4,20 +4,20 @@
 @using Frontend.Components.User.Components
 @using Frontend.Services
 
-<NavMenu/>
-<div class="page">
- 
+<div class="page d-flex flex-column min-vh-100">
+    <NavMenu />
 
-    <main style="background-color:#1A1A1A">
-       
-        <ConfirmDialog @ref="_confirmDialogRef" />
-
+    <main class="flex-fill">
         <article class="content">
             @Body
         </article>
     </main>
-    
+    <div class="mt-auto" style="background: #242424;">
+        <Footer />
+    </div>
+
 </div>
+ 
 @* Required *@
 <MudThemeProvider />
 <MudPopoverProvider />

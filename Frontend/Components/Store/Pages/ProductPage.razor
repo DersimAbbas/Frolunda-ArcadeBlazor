@@ -24,7 +24,7 @@
                     alt="@_selectedProduct.Name"
                     class="img-fluid h-100 w-100 object-cover rounded-start">
                 </div>
-               
+
                 <div class="col-md-6 d-flex flex-column justify-content-center p-4">
                     <h2 class="mb-3">@_selectedProduct.Name <MudRating SelectedValue="@GetAvgRating()" ReadOnly="true" Class="justify-content-sm-center" /></h2>
                     <ul class="list-unstyled small mb-4">
@@ -50,7 +50,7 @@
             Reviews="_selectedProduct.Reviews" 
             SelectedProduct="_selectedProduct" />
         </div>
-        
+
         <div class="mb-4 text-center">
             <h5 class="text-light mb-3">You might Also Like</h5>
             <RecommendedProducts _cachedProducts="_products" />
@@ -71,7 +71,7 @@ else
     private const string _imageMapKey = "productImageMap";
     private const string _funcTrigger = "https://frolunda-arcadefunc.azurewebsites.net/api/GetImageFunction";
     private bool _showAllReviews = false;
-    
+
     protected override async Task OnParametersSetAsync()
     {
 
@@ -81,6 +81,18 @@ else
         }
         _selectedProduct = _products.FirstOrDefault(p => p.Name.Equals(ProductName, StringComparison.OrdinalIgnoreCase));
         await AssignImageMaps();
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(!firstRender) return;
+        await AssignImageMaps();
+        if (_products == null)
+        {
+            _products = await GetProductsAsync();
+        }
+        _selectedProduct = _products.FirstOrDefault(p => p.Name.Equals(ProductName, StringComparison.OrdinalIgnoreCase));
+        await AssignImageMaps();
+
     }
 
     private async Task<List<Product>?> GetProductsAsync()

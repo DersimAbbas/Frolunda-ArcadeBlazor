@@ -10,6 +10,19 @@
 @inject IOrderService OrderService
 @inject IJSRuntime JsRuntime
 <PageTitle>Home</PageTitle>
+<div class="container-fluid py-0 mb-4">
+    <div class="tournament-banner rounded-4 overflow-hidden position-relative">
+        <img src="/Images/tekken8banner.jpg" style="max-height:60vh"
+             alt="Upcoming Tournament"
+             class="img-fluid w-100"/>
+        <div class="overlay position-absolute top-0 start-0 w-100 h-100
+                d-flex align-items-center justify-content-center">
+            <h2 class="text-white display-6 fw-bold text-center px-3">
+                Don’t miss our next Tournament — May 30th! Sign up now!
+            </h2>
+        </div>
+    </div>
+</div>
 <div class="container-fluid hero-wrapper px-0">
     <div class="row g-0 align-items-center">
         <div class="col-lg-3 d-none d-lg-flex justify-content-center pe-4">
@@ -88,7 +101,7 @@
     private List<EventCarousel.Event> DemoEvents = new()
     {
         new EventCarousel.Event { Name = "Retro Game Night", Description = "Play classics all evening!", Date = DateTime.Today.AddDays(1) },
-        new EventCarousel.Event { Name = "Street Fighter Showdown", Description = "Who’s the best fighter?", Date = DateTime.Today.AddDays(3) },
+        new EventCarousel.Event { Name = "Tekken 8 King Of The Hill", Description = "Who’s the best fighter?", Date = DateTime.Today.AddDays(3) },
         new EventCarousel.Event { Name = "Mario Kart Madness", Description = "Fast-paced kart battles!", Date = DateTime.Today.AddDays(5) },
         new EventCarousel.Event { Name = "Indie Game Expo", Description = "Discover local devs' creations", Date = DateTime.Today.AddDays(7) },
         new EventCarousel.Event { Name = "LAN Party Weekend", Description = "Bring your rig and join the fun!", Date = DateTime.Today.AddDays(9) },
