@@ -13,8 +13,8 @@
 <div class="container-fluid py-0 mb-4">
     <div class="tournament-banner rounded-4 overflow-hidden position-relative">
         <img src="/Images/tekken8banner.jpg" style="max-height:60vh"
-             alt="Upcoming Tournament"
-             class="img-fluid w-100"/>
+        alt="Upcoming Tournament"
+        class="img-fluid w-100"/>
         <div class="overlay position-absolute top-0 start-0 w-100 h-100
                 d-flex align-items-center justify-content-center">
             <h2 class="text-white display-6 fw-bold text-center px-3">
@@ -89,7 +89,10 @@
     </div>
 </div>
 
-<EventCarousel Events="@DemoEvents" AutoScrollInterval="5000" />
+@if(DemoEvents.Count > 0)
+{
+    <EventCarousel Events="@DemoEvents" AutoScrollInterval="5000" />
+}
 
 <RecommendedProducts _cachedProducts="_products" AutoScrollInterval="5000"/>
 
