@@ -6,13 +6,13 @@
 @using MudBlazor
 <h3>Events</h3>
 <div style="width:1000px; height:1000px;">
-<MudCalendar T="CustomItem" Items="_calendarItems" MonthCellMinHeight="120" Style="background-color:#444444; color:#EDEDED">
-    <CellTemplate>
-        <div style="width: inherit; height: 100%; border: 2px solid; background-color:red; border:solid; border-width:1px; border-color: darkgrey;">
-            <div style="background-color:#444444"><MudText Style="color: #ffffff;" Typo="Typo.body1" Align="Align.Center">@(context.Title)</MudText></div>
-        </div>
-    </CellTemplate>
-</MudCalendar>
+    <MudCalendar T="CustomItem" Items="_calendarItems" MonthCellMinHeight="120" Style="background-color:#444444; color:#EDEDED">
+        <CellTemplate>
+            <div style="width: inherit; height: 100%; border: 2px solid; background-color:red; border:solid; border-width:1px; border-color: darkgrey;">
+                <div style="background-color:#444444"><MudText Style="color: #ffffff;" Typo="Typo.body1" Align="Align.Center">@(context.Title)</MudText></div>
+            </div>
+        </CellTemplate>
+    </MudCalendar>
 </div>
 <br>
 <br/>
@@ -36,8 +36,9 @@
     private string GetColor(Color color) => $"var(--mud-palette-{color.ToDescriptionString()})";
     List<CustomItem> _calendarItems = new List<CustomItem>();
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (!firstRender) { return; }
         List<Models.Event> DummyEvents = new()
     {
         new Models.Event { Name = "Retro Game Night", Description = "Play classics all evening!", Date = DateTime.Today.AddDays(1), Participants = new() },
