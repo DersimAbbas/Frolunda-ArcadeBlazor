@@ -33,19 +33,19 @@
 
                 <AuthorizeView>
                     <NotAuthorized>
-                        <li class="nav-item">
+                        <li class="nav-item" id="login-btn">
                             <NavLink class="nav-link" href="/login" Match="NavLinkMatch.All" >
                                 <i class="bi bi-box-arrow-in-right"></i> Login
                             </NavLink>
                         </li>
                     </NotAuthorized>
                     <Authorized>
-                        <li class="nav-item">
+                        <li class="nav-item" id="profile-btn">
                             <NavLink class="nav-link" href="/profile-page" Match="NavLinkMatch.All">
                                 <i class="bi bi-person"></i> Profile
                             </NavLink>
                         </li>
-                        <li class="nav-item">
+                        <li class="nav-item" id="logout-btn">
                             <NavLink class="nav-link" href="#" @onclick="OnSignOutClicked">
                                 <i class="bi bi-door-open"></i> Logout
                             </NavLink>
@@ -55,7 +55,7 @@
 
                 <AuthorizeView Roles="admin">
                     <Authorized>
-                        <li class="nav-item">
+                        <li class="nav-item" id="admin-btn">
                             <NavLink class="nav-link" href="/admin-page" Match="NavLinkMatch.All">
                                 <i class="bi bi-lock"></i> Admin
                             </NavLink>
@@ -63,22 +63,22 @@
                     </Authorized>
                 </AuthorizeView>
 
-                <li class="nav-item">
+                <li class="nav-item" id="products-btn">
                     <NavLink class="nav-link" href="/store-front" Match="NavLinkMatch.Prefix">
                         <i class="bi bi-controller"></i> Products
                     </NavLink>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" id="forum-btn">
                     <NavLink class="nav-link" href="/forum" Match="NavLinkMatch.Prefix">
                         <i class="bi bi-people"></i> Forum
                     </NavLink>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" id="events-btn">
                     <NavLink class="nav-link" href="/events" Match="NavLinkMatch.All">
                         <i class="bi bi-calendar-event"></i> Events
                     </NavLink>
                 </li>
-                <li class="nav-item">
+                <li class="nav-item" id="contact-btn">
                     <NavLink class="nav-link" href="/contact" Match="NavLinkMatch.All">
                         <i class="bi bi-pin-map-fill"></i> Contact
                     </NavLink>
