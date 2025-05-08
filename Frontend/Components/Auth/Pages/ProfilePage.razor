@@ -2,7 +2,6 @@
 @using System.Globalization
 @using Firebase.Auth
 @using Frontend.Models
-@using Frontend.Services
 @using Frontend.Services.Interfaces
 @using User = Frontend.Models.User
 @inject IFirebaseAuthService FirebaseAuthService
@@ -10,107 +9,162 @@
 @inject FirebaseAuthClient FirebaseAuthClient
 @inject IUserService UserService
 @inject IOrderService OrderService
+@inject IProductService productService
 
 
-<h2 class="text-center welcome-text mb-5">Your Profile</h2>
+<h2 class="text-center medium-title mb-5">Your Profile</h2>
 
 <div class="d-flex flex-column flex-md-row justify-content-center gap-5 m-5">
+    @if (UserProfile.Id == null)
+    {
+        <LoadingAnimation LoadingText="Loading..." />
+    }
+    else
+    {
+        
     <div class="col-12 col-md-6">
-        <div class="generic-text mb-3">
+        <div class="generic-text mb-3" style="font-size: 1.4rem">
             Your account information
         </div>
-        <div class="p-4" style="background-color: #444444; border: 1px solid #5e5e5e; border-radius: 2%;">
-    
+        <div class="p-4 arcade-post-card">
+
             <EditForm Model="@UserProfile" OnValidSubmit="UpdateProfile">
-                <DataAnnotationsValidator />
-                <ValidationSummary />
-    
+                <DataAnnotationsValidator/>
+                <ValidationSummary/>
+
                 <div class="form-group mb-3">
-                    <label class="form-label generic-text generic-text-size">Username</label>
-                    <InputText class="form-control bg-dark text-light border-secondary" @bind-Value="UserProfile.FirstName" />
+                    <label class="form-label generic-text " style="font-size: 1rem">Username</label>
+                    <InputText class="form-control bg-dark text-light border-secondary" @bind-Value="UserProfile.Username"/>
                 </div>
-    
+
                 <div class="form-group mb-3">
-                    <label class="form-label generic-text generic-text-size">Email</label>
-                    <InputText type="email" class="form-control bg-dark text-light border-secondary" @bind-Value="UserProfile.Email" />
+                    <label class="form-label generic-text " style="font-size: 1rem">Email</label>
+                    <InputText type="email" class="form-control bg-dark text-light border-secondary" @bind-Value="UserProfile.Email"/>
                 </div>
-    
+
                 <div class="form-group mb-3">
-                    <label class="form-label generic-text generic-text-size">Address</label>
-                    <InputText class="form-control bg-dark text-light border-secondary" @bind-Value="UserProfile.Address" />
+                    <label class="form-label generic-text " style="font-size: 1rem">First name</label>
+                    <InputText class="form-control bg-dark text-light border-secondary" @bind-Value="UserProfile.FirstName"/>
                 </div>
-    
+
+                <div class="form-group mb-3">
+                    <label class="form-label generic-text " style="font-size: 1rem">Last name</label>
+                    <InputText class="form-control bg-dark text-light border-secondary" @bind-Value="UserProfile.LastName"/>
+                </div>
+                
+                <div class="form-group mb-3">
+                    <label class="form-label generic-text " style="font-size: 1rem">Address</label>
+                    <InputText class="form-control bg-dark text-light border-secondary" @bind-Value="UserProfile.Address"/>
+                </div>
+
+                <div class="form-group mb-3">
+                    <label class="form-label generic-text" style="font-size: 1rem">Phone number</label>
+                    <InputText class="form-control bg-dark text-light border-secondary"
+                               @bind-Value="UserProfile.PhoneNumber"
+                               oninput="this.value = this.value.replace(/[^0-9]/g, '')" />
+                </div>
+
                 <div class="form-group text-center">
-                    <button class="btn btn-secondary px-4 generic-text-size generic-text" style="background-color: #bf1f1f; border-color: #DA0037;">
+                    <button class="btn btn-secondary px-4 generic-text" style="background-color: #bf1f1f; border-color: #DA0037;">
                         Update Profile
                     </button>
                 </div>
             </EditForm>
         </div>
     </div>
+    }
 
-    <div class="col-12 col-md-6" style="font-family: 'Futura', sans-serif;">
-        <div class="generic-text mb-3" style="color: #EDEDED;">Your Order History</div>
-
+    <div class="col-12 col-md-6">
+        <div class="generic-text mb-3" style="color: #EDEDED; font-size: 1.4rem">Your Order History</div>
         @if (UserOrderHistory?.Any() == true)
         {
-        <div class="d-flex flex-column gap-4">
-            @foreach (var order in UserOrderHistory)
-            {
-            <div style="background-color: #444444; color: #EDEDED; border: 1px solid #5e5e5e; border-radius: 2%; box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);" class="p-4">
-                <div class="d-flex justify-content-between align-items-center mb-3">
-                    <div class="fw-bold fs-5" style="color: #EDEDED;">
-                        Order <span style="color: #bf1f1f;">#@order.Id</span>
-                    </div>
-                    <span class="small text-muted">@order.OrderDate.ToString("yyyy-MM-dd")</span>
-                </div>
+            <div class="d-flex flex-column gap-4">
+                @foreach (var order in UserOrderHistory)
+                {
+                    var items = order.Products
+                        .Join(_cachedProducts,
+                            kvp => kvp.Key,
+                            p => p.Id,
+                            (kvp, p) => new { Product = p, Quantity = kvp.Value });
 
-                <div class="d-flex flex-column gap-2">
-                    @foreach (var product in order.Products)
-                    {
-                    <div style="background-color: rgba(68, 68, 68, 0.1); color: #EDEDED; border: 1px solid #5e5e5e; border-radius: 2%;" class="d-flex justify-content-between align-items-center p-3">
-                        <div>
-                            <div class="fw-semibold fs-6">@product.Name</div>
-                            <div class="text-muted small">@product.Genre</div>
+                    <div class="p-4 arcade-post-card">
+                        <div class="d-flex justify-content-between align-items-center mb-3">
+                            <div class="fw-bold fs-5" style="color: #EDEDED;">
+                                Order <span style="color: #bf1f1f;">#@order.OrderId</span>
+                            </div>
+                            <span class="small text-muted">@order.CreatedAt.ToString("yyyy-MM-dd")</span>
                         </div>
-                        <div class="fw-bold" style="color: #bf1f1f;">@product.Price.ToString("C", CultureInfo.CurrentCulture)</div>
+                        <div class="d-flex flex-column gap-2">
+                            @foreach (var x in items)
+                            {
+                                <div style="background-color: rgba(68, 68, 68, 0.1); color: #EDEDED; border: 1px solid #5e5e5e; border-radius: 2%;" class="d-flex justify-content-between align-items-center p-3">
+                                    <div>
+                                        <div class="fw-semibold fs-6">@x.Product.Name</div>
+                                        <div class="small">@x.Product.Genre</div>
+                                    </div>
+                                    <div class="fw-bold">@x.Product.Price.ToString("C", CultureInfo.CurrentCulture)</div>
+                                </div>
+                            }
+                        </div>
                     </div>
-                    }
-                </div>
+                }
             </div>
-            }
-        </div>
         }
         else
         {
-        <div class="text-center mt-4" style="color: #EDEDED;">You haven't placed any orders yet.</div>
+            <div class="text-center mt-4" style="color: #EDEDED;">You haven't placed any orders yet.</div>
         }
     </div>
 </div>
 
 @code {
-
+    [Parameter] public RegisterOrder? Order { get; set; }
     private User? UserProfile { get; set; } = new();
-    private List<Order>? UserOrderHistory { get; set; } = new();
+    private List<RegisterOrder>? UserOrderHistory { get; set; } = new();
+    private List<Product>? _cachedProducts { get; set; } = new();
+    private string UserId { get; set; } = string.Empty;
 
-    protected override async Task OnInitializedAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if (!firstRender) return;
+        
+        _cachedProducts = await productService.GetAllProductsAsync();
+
+        _cachedProducts = await productService.GetAllProductsAsync();
+
         var token = await JsRuntime.InvokeAsync<string>("getCookie", "token");
 
         if (!string.IsNullOrEmpty(token))
         {
             var tokenVerified = await FirebaseAuthService.VerifyTokenAsync(token);
 
-            if (tokenVerified && FirebaseAuthClient.User is not null)
+            if (tokenVerified)
             {
                 var firebaseAuthUserId = FirebaseAuthClient.User.Uid;
                 UserProfile = await UserService.GetUserByIdAsync(firebaseAuthUserId);
+                UserId = firebaseAuthUserId;
 
-                UserOrderHistory = await OrderService.GetOrdersByUserIdAsync(firebaseAuthUserId); 
-                
+
                 StateHasChanged();
-            } 
+            }
         }
+        UserOrderHistory = await OrderService.GetOrdersByUserIdAsync(UserId);
+        if (_cachedProducts == null || _cachedProducts.Count == 0)
+        {
+            _cachedProducts = await productService.GetAllProductsAsync();
+        }
+
+        if(UserOrderHistory == null)
+        {
+            return;
+        }
+        if (UserOrderHistory.Count == 0)
+        {
+            return;
+        }
+
+        StateHasChanged();
+
     }
 
 

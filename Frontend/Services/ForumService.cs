@@ -24,6 +24,7 @@ public class ForumService(HttpClient httpClient) : IForumService
     public async Task<bool> AddForumPostAsync(ForumPost forumPost)
     {
         var response = await httpClient.PostAsJsonAsync("api/forumposts", forumPost);
+        Console.WriteLine(JsonSerializer.Serialize(forumPost));
         return response.IsSuccessStatusCode;
     }
 

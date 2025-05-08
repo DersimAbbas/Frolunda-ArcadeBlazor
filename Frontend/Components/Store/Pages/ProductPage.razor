@@ -9,79 +9,91 @@
 @inject IProductService ProductService
 @inject HttpClient http
 @inject IJSRuntime JsRuntime
+@layout ProductPageLayout
 
-<h3>Product Page</h3>
-
-@if (_selectedProduct is not null)
+@if (_selectedProduct != null)
 {
-    <div class="container-fluid px-3">
-        <div class="row gx-4">
-            <!-- Main Product Content -->
-            <div class="col-12 col-lg-9 mb-4">
-                <!-- Product Card -->
-                <div class="product-card p-4 text-light mb-3">
-                    <h2 class="product-title">@_selectedProduct.Name</h2>
-                    <hr />
-                    <div class="row gx-4">
-                        <div class="col-12 col-lg-4 d-flex flex-column justify-content-between p-3">
-                            <p>@_selectedProduct.Description</p>
-                            <div class="product-meta mt-4">
-                                <span><strong>Genre:</strong> @_selectedProduct.Genre</span><br />
-                                <span><strong>Age Rating:</strong> @_selectedProduct.AgeRating</span><br />
-                                <span><strong>Status:</strong> @_selectedProduct.Status</span>
-                            </div>
-                        </div>
-                        <div class="col-12 col-lg-8 d-flex align-items-stretch p-3">
-                            <img src="@_selectedProduct.ImageLink" alt="@_selectedProduct.Name" class="img-fluid rounded product-img w-100" />
-                        </div>
-                    </div>
+    <div class="container py-5">
+
+        <div class="card bg-transparent border border-secondary text-light mb-4">
+            <div class="row g-0">
+
+                <div class="col-md-6">
+                    <img 
+                    src="@_selectedProduct.ImageLink"
+                    alt="@_selectedProduct.Name"
+                    class="img-fluid h-100 w-100 object-cover rounded-start">
                 </div>
 
-                <!-- Reviews + Related Products -->
-                <div class="product-info-card p-4 text-light ">
-                    <h5 class="mb-3">Reviews</h5>
-                    <div class="row gx-4">
-                        <div class="col-12 col-lg-4 p-3">
-                            <ReviewViewer Reviews="_selectedProduct.Reviews" SelectedProduct="_selectedProduct" />
-                        </div>
-
-                        <div class="col-12 col-lg-8 p-3">
-                            <h5 class="mb-3">Related Products</h5>
-                            <ProductCarousel Products="_products" AutoScrollInterval="4000" />
-                        </div>
+                <div class="col-md-6 d-flex flex-column justify-content-center p-4">
+                    <h2 class="mb-3">@_selectedProduct.Name <MudRating SelectedValue="@GetAvgRating()" ReadOnly="true" Class="justify-content-sm-center" /></h2>
+                    <ul class="list-unstyled small mb-4">
+                        <li><strong>Genre:</strong> @_selectedProduct.Genre</li>
+                        <li><strong>Age Rating:</strong> @_selectedProduct.AgeRating</li>
+                        <li><strong>Status:</strong> @_selectedProduct.Status</li>
+                    </ul>
+                    <div class="mt-auto">
+                        <ProductSidebar Product="_selectedProduct" />
                     </div>
                 </div>
             </div>
+        </div>
 
-            <div class="col-12 col-lg-3 mb-4">
-                    <ProductSidebar Product="_selectedProduct" />
-            </div>
+        <div class="card bg-transparent border border-secondary text-light mb-4 p-4">
+            <h5 class="mb-3">Description</h5>
+            <p class="mb-0">@_selectedProduct.Description</p>
+        </div>
+
+        <div class="card bg-transparent border border-secondary text-light mb-4 p-4">
+            <h5 class="mb-3">Reviews</h5>
+            <ReviewViewer 
+            Reviews="_selectedProduct.Reviews" 
+            SelectedProduct="_selectedProduct" />
+        </div>
+
+        <div class="mb-4 text-center">
+            <h5 class="text-light mb-3"></h5>
+            <RelatedProducts CachedProducts="_products" Product="_selectedProduct" />
         </div>
     </div>
 }
-
+else
+{
+    <LoadingAnimation LoadingText="Loading..." />
+}
 @code
 {
-    [Parameter]public string? ProductName { get; set; }
+    [Parameter] public string? ProductName { get; set; }
 
     private bool _loadedImages;
     private List<Product>? _products;
     private Product? _selectedProduct;
+    private const string _timestampKey = "productImageMapTimestamp";
     private const string _imageMapKey = "productImageMap";
     private const string _funcTrigger = "https://frolunda-arcadefunc.azurewebsites.net/api/GetImageFunction";
     private bool _showAllReviews = false;
 
-    protected override async Task OnAfterRenderAsync(bool firstRender)
+    protected override async Task OnParametersSetAsync()
     {
-        if (!firstRender) return;
-
-        //TODO: Get product first and then get related products
-        _products = await GetProductsAsync();
-
+        if(_products == null)
+        {
+            _products = await GetProductsAsync();
+        }
         _selectedProduct = _products.FirstOrDefault(p => p.Name.Equals(ProductName, StringComparison.OrdinalIgnoreCase));
-
         await AssignImageMaps();
     }
+    // protected override async Task OnAfterRenderAsync(bool firstRender)
+    // {
+    //     if(!firstRender) return;
+    //     await AssignImageMaps();
+    //     if (_products == null)
+    //     {
+    //         _products = await GetProductsAsync();
+    //     }
+    //     _selectedProduct = _products.FirstOrDefault(p => p.Name.Equals(ProductName, StringComparison.OrdinalIgnoreCase));
+    //     await AssignImageMaps();
+
+    // }
 
     private async Task<List<Product>?> GetProductsAsync()
     {
@@ -98,17 +110,33 @@
 
     private async Task AssignImageMaps()
     {
+        var timestampString = await JsRuntime.InvokeAsync<string>("myLocalStorage.getItem", _timestampKey);
         var rawJson = await JsRuntime.InvokeAsync<string>("localStorage.getItem", _imageMapKey);
+
         Dictionary<string, string>? imageMap = null;
 
-        if (!string.IsNullOrWhiteSpace(rawJson))
-            imageMap = JsonSerializer.Deserialize<Dictionary<string, string>>(rawJson);
+        if (!string.IsNullOrEmpty(rawJson) && long.TryParse(timestampString, out var ticks))
+        {
+            var savedTime = new DateTime(ticks);
+            if ((DateTime.UtcNow - savedTime).TotalHours < 24)
+            {
+                try
+                {
+                    imageMap = JsonSerializer.Deserialize<Dictionary<string, string>>(rawJson);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error deserializing cached images: {ex.Message}");
+                }
+            }
+        }
 
         if (imageMap == null)
         {
             imageMap = await http.GetFromJsonAsync<Dictionary<string, string>>(_funcTrigger);
             await JsRuntime.InvokeVoidAsync("localStorage.setItem", _imageMapKey,
                 JsonSerializer.Serialize(imageMap));
+            await JsRuntime.InvokeVoidAsync("myLocalStorage.setItem", _timestampKey, DateTime.UtcNow.Ticks.ToString());
         }
 
         if (imageMap != null)
@@ -126,8 +154,20 @@
                 }
 
             }
-            await InvokeAsync(StateHasChanged);
+            StateHasChanged();
         }
+    }
+
+    private int GetAvgRating()
+    {
+        var avgRating = 0.0;
+        var reviewCount = _selectedProduct.Reviews.Count != 0 ? _selectedProduct.Reviews.Count : 1;
+        foreach (var review in _selectedProduct.Reviews)
+        {
+            avgRating += review.Ratings;
+        }
+
+        return (int)Math.Round(avgRating / reviewCount);
     }
 
     private void ToggleReviews()

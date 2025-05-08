@@ -11,24 +11,23 @@ public class FirebaseAuthService(
     FirebaseAuthClient firebaseAuthClient,
     HttpClient httpClient,
     IUserService userService,
-    IJSRuntime JSRuntime,
+    IJSRuntime JsRuntime,
     NavigationManager navigationManager)
     : IFirebaseAuthService
 {
-    public async Task<string?> RegisterUser(string email, string password)
+    public async Task<string?> RegisterUser(RegisterUserDto user)
     {
-        var userCred = await firebaseAuthClient.CreateUserWithEmailAndPasswordAsync(email, password);
+        var userCred = await firebaseAuthClient.CreateUserWithEmailAndPasswordAsync(user.Email, user.Password);
         await userService.AddUser(new User()
         {
             Id = userCred.User.Uid,
-            Email = email,
+            Email = user.Email,
             Role = "user",
-            //Kanske flytta detta till models? Eller bara göra detta mer "clean:t"
-            FirstName = string.Empty,
-            LastName = string.Empty,
-            // Password = string.Empty,
+            FirstName = user.FirstName,
+            LastName = user.LastName,
             PhoneNumber = string.Empty,
-            Address = string.Empty,
+            Address = user.Address,
+            Username = user.Username,
         });
         
         var userRole = new RoleDto()
@@ -49,7 +48,7 @@ public class FirebaseAuthService(
         var userCred = await firebaseAuthClient.SignInWithEmailAndPasswordAsync(email, password);
         var token = await userCred.User.GetIdTokenAsync(forceRefresh: true);
 
-        await JSRuntime.InvokeVoidAsync("setCookie", "token", token);
+        await JsRuntime.InvokeVoidAsync("setCookie", "token", token);
 
         return token;
     }
@@ -80,9 +79,32 @@ public class FirebaseAuthService(
             firebaseAuthClient.SignOut();
         }
 
-        await JSRuntime.InvokeVoidAsync("clearAuthCookies");
+        await JsRuntime.InvokeVoidAsync("clearAuthCookies");
 
         navigationManager.NavigateTo("/", forceLoad: true);
     }
 
+    public async Task<string> GetUserId()
+    {
+        var token = await JsRuntime.InvokeAsync<string>("getCookie", "token");
+
+        if (!string.IsNullOrEmpty(token))
+        {
+            var tokenVerified = await VerifyTokenAsync(token);
+
+            if (tokenVerified)
+            {
+                try
+                {
+                    var firebaseAuthUserId = firebaseAuthClient.User.Uid;
+                    return firebaseAuthUserId;
+                }
+                catch(Exception ex)
+                {
+                    Console.WriteLine(ex.Message);
+                }
+            }
+        }
+        return null;
+    }
 }

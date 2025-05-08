@@ -45,7 +45,7 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.Name = "token";
         options.Cookie.HttpOnly = true;
         options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
-        options.Cookie.SameSite = SameSiteMode.Strict;
+        options.Cookie.SameSite = SameSiteMode.Lax;
         options.ExpireTimeSpan = TimeSpan.FromDays(7);
         options.LoginPath = "/login";
         options.LogoutPath = "/";
@@ -91,8 +91,10 @@ builder.Services.AddScoped<IProductService, ProductService>();
 builder.Services.AddScoped<IPaymentService, PaymentService>();
 builder.Services.AddScoped<IHighscoresService, HighscoresService>();
 builder.Services.AddScoped<IForumService, ForumService>();
+builder.Services.AddScoped<IEventService, EventService>();
 builder.Services.AddScoped<ILocalCartStorageService, LocalCartStorageService>();
 builder.Services.AddScoped<ProtectedLocalStorage>();
+builder.Services.AddScoped<ConfirmDialogService>();
 
 builder.Services.AddMudServices();
 

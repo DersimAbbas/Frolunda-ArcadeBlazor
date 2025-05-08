@@ -1,37 +1,90 @@
-﻿body {
-}
-.cart-button-wrapper {
-    position: relative;
-    display: inline-block;
-}
+﻿/*body {*/
+/*}*/
+/*.cart-button-wrapper {*/
+/*    position: relative;*/
+/*    display: inline-block;*/
+/*}*/
 
-.shopping-cart-popup {
-    position: absolute;
-    top: 100%;
-    right: 0;
-    background-color: white;
-    border: 1px solid #ccc;
-    border-radius: 8px;
-    padding: 1rem;
-    z-index: 1000;
-    min-width: 250px;
-    max-height: 400px;
-    overflow-y: auto;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
-}
+/*.shopping-cart-popup {*/
+/*    position: absolute;*/
+/*    top: 100%;*/
+/*    right: 0;*/
+/*    padding: 1rem;*/
+/*    z-index: 1000;*/
+/*    min-width: 250px;*/
+/*    max-height: 400px;*/
+/*    overflow-y: auto;*/
+/*}*/
 
-.shopping-cart-popup {
-    animation: dropdownFade 0.2s ease-out;
-}
+/*.shopping-cart-popup {*/
+/*    animation: dropdownFade 0.2s ease-out;*/
+/*}*/
 
-@keyframes dropdownFade {
-    from {
-        opacity: 0;
-        transform: translateY(-10px);
-    }
+/*.arcade-cart-btn {*/
+/*    display: inline-flex;*/
+/*    align-items: center;*/
+/*    justify-content: center;*/
+/*    gap: 0.4rem;*/
+/*    background-color: #4b3fb4; */
+/*    color: #ffffff;*/
+/*    padding: 0.6rem 1.2rem;*/
+/*    border-radius: 8px;*/
+/*    font-family: 'Press Start 2P', monospace;*/
+/*    font-size: 0.65rem;*/
+/*    font-weight: bold;*/
+/*    text-transform: uppercase;*/
+/*    text-shadow: 1px 1px #000;*/
+/*    box-shadow:*/
+/*            0 0 10px #c53a3a,*/
+/*            0 0 6px rgba(75, 63, 180, 0.5);*/
+/*    cursor: pointer;*/
+/*    transition: all 0.2s ease-in-out;*/
+/*    position: relative;*/
+/*    border: 2px solid #312b89;*/
+/*    overflow: visible;*/
+/*}*/
 
-    to {
-        opacity: 1;
-        transform: translateY(0);
-    }
-}
+/*    .arcade-cart-btn:hover {*/
+/*        background-color: #3d3291;*/
+/*        box-shadow: 0 0 15px #c53a3a, 0 0 10px rgba(107, 93, 252, 0.5);*/
+/*        transform: translateY(-2px);*/
+/*    }*/
+
+/*.arcade-cart-btn:active {*/
+/*    transform: translateY(1px);*/
+/*    box-shadow: inset 0 0 4px rgba(0, 0, 0, 0.5);*/
+/*}*/
+
+/*.arcade-cart-badge {*/
+/*    position: absolute;*/
+/*    top: -10px;*/
+/*    right: -10px;*/
+/*    background-color: #ffe600;*/
+/*    color: #000;*/
+/*    font-size: 0.55rem;*/
+/*    font-weight: bold;*/
+/*    padding: 0.3rem 0.45rem;*/
+/*    border-radius: 50%;*/
+/*    font-family: 'Press Start 2P', monospace;*/
+/*    text-shadow: 0 0 1px #000;*/
+/*    box-shadow:*/
+/*            0 0 4px #ffc107;*/
+/*    border: 2px solid #a67c00;*/
+/*    z-index: 2;*/
+/*}*/
+
+
+
+
+
+/*@keyframes dropdownFade {*/
+/*    from {*/
+/*        opacity: 0;*/
+/*        transform: translateY(-10px);*/
+/*    }*/
+
+/*    to {*/
+/*        opacity: 1;*/
+/*        transform: translateY(0);*/
+/*    }*/
+/*}*/

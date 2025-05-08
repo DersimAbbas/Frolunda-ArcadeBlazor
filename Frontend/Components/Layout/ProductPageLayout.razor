@@ -1,0 +1,52 @@
+﻿@using Frontend.Components.User.Components
+@using Frontend.Components.Layout
+@using Frontend.Components
+@inherits LayoutComponentBase
+@using Frontend.Services
+
+<div class="page d-flex flex-column min-vh-100">
+    <NavMenu />
+
+    <main class="flex-fill">
+        <article class="content">
+            @Body
+        </article>
+    </main>
+    <div class="mt-auto" style="background: #242424;">
+        <Footer />
+    </div>
+
+</div>
+<MudThemeProvider />
+<MudPopoverProvider />
+
+@* Needed for dialogs *@
+<MudDialogProvider />
+
+@* Needed for snackbars *@
+<MudSnackbarProvider />
+
+<div id="blazor-error-ui">
+    An unhandled error has occurred.
+    <a href="" class="reload">Reload</a>
+    <a class="dismiss">🗙</a>
+</div>
+
+<script src="/js/ScrollCarousel.js"></script>
+
+<script src="js/cart.js"></script>
+
+@code
+{
+    [Inject] private ConfirmDialogService ConfirmDialogService { get; set; } = default!;
+    private ConfirmDialog _confirmDialogRef = default!;
+
+    public ConfirmDialog ConfirmDialogInstance => _confirmDialogRef;
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender)
+        {
+            ConfirmDialogService.ConfirmDialogInstance = _confirmDialogRef;
+        }
+    }
+}

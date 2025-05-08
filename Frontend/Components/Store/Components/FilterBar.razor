@@ -1,9 +1,6 @@
 ﻿@using Frontend.Models
 
-
-<h3>FilterBar</h3>
-
-<button class="btn btn-outline-secondary mb-2" @onclick="ToggleFilter">
+<button class="simple-arcade-btn mb-2" @onclick="ToggleFilter">
     @(_showFilters ? "Hide Filters" : "Show Filters")
 </button>
 
@@ -12,7 +9,7 @@
     <div class="mb-3">
         <input @bind="Filter.SearchTerm" placeholder="Search..." class="form-control mb-2" />
         <select @bind="Filter.SelectedGenre" class="form-control mb-2">
-            <option value="">Genres</option>
+            <option value="">All Genres</option>
             @foreach (var g in Genres)
             {
                 <option value="@g">@g</option>
@@ -24,7 +21,7 @@
             <input type="number" @bind="Filter.MaxPrice" placeholder="Max Price" class="form-control" />
         </div>
 
-        <button class="btn btn-primary" @onclick="ApplyClicked">Apply Filters</button>
+        <button class="simple-arcade-btn" @onclick="ApplyClicked">Apply Filters</button>
     </div>
 }
 
@@ -38,12 +35,6 @@
     [Parameter] public EventCallback<ProductFilter> OnApplyFilters { get; set; }
 
     [Parameter] public List<string> Genres { get; set; } = new();
-
-    protected override Task OnInitializedAsync()
-    {
-        Genres.AddRange(new[] { "Action", "RPG", "Survival Horror", "Roguelike" });
-        return Task.CompletedTask;
-    }
 
     private async Task ApplyClicked()
     {

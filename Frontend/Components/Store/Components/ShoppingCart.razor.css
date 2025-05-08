@@ -1,6 +1,38 @@
 ﻿:root {
     --primary-color: #4635B1;
 }
+
+.shopping-cart-popup {
+    position: fixed;
+    top: 100px;
+    right: 20px;
+    width: 350px;
+    max-height: 80vh;
+    overflow-y: auto;
+    /*background-color: #111;*/
+    /*border: 2px solid #B771E5;*/
+    /*border-radius: 12px;*/
+    /*box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);*/
+    padding: 20px;
+    z-index: 9999;
+    transition: all 0.3s ease-in-out;
+}
+
+@media (max-width: 576px) {
+    .shopping-cart-popup {
+        width: 90%;
+        right: 5%;
+        top: 80px;
+    }
+}
+
+@media (min-width: 2200px) {
+    .shopping-cart-popup {
+        right: 25rem;
+    }
+}
+
+
 .cart-wrapper {
     position: relative;
     margin-left: 20px;
@@ -128,13 +160,11 @@
 .cart-item-name {
     font-size: 0.9rem;
     margin: 0 0 0.25rem 0;
-    color: var(--text-color, #4635B1);
     font-family: 'Press Start 2P', cursive, 'Segoe UI', Tahoma, sans-serif;
 }
 
 .cart-item-price {
     font-size: 0.85rem;
-    color: var(--secondary-color, #B771E5);
     font-weight: bold;
     font-family: 'Press Start 2P', cursive, 'Segoe UI', Tahoma, sans-serif;
 }
@@ -162,12 +192,7 @@
     justify-content: space-between;
     margin-bottom: 1rem;
     font-weight: bold;
-    color: var(--text-color, #4635B1);
     font-family: 'Press Start 2P', cursive, 'Segoe UI', Tahoma, sans-serif;
-}
-
-#cartTotal {
-    color: var(--secondary-color, #B771E5);
 }
 
 .checkout-btn {
@@ -178,7 +203,6 @@
 .empty-cart {
     text-align: center;
     padding: 2rem 1rem;
-    color: var(--text-color, #4635B1);
     font-family: 'Press Start 2P', cursive, 'Segoe UI', Tahoma, sans-serif;
 }
 
@@ -186,7 +210,6 @@
         font-size: 2rem;
         margin-bottom: 1rem;
         animation: pulse 2s infinite;
-        color: var(--primary-color, #4635B1);
     }
 
 .cart-item-quantity {
@@ -194,26 +217,6 @@
     align-items: center;
     margin-top: 0.25rem;
 }
-
-.quantity-btn {
-    background: none;
-    border: 1px solid var(--primary-color, #4635B1);
-    color: var(--text-color, #4635B1);
-    width: 20px;
-    height: 20px;
-    border-radius: 50%;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    font-size: 0.75rem;
-    cursor: pointer;
-    transition: all 0.2s ease;
-}
-
-    .quantity-btn:hover {
-        background-color: var(--primary-color, #4635B1);
-        color: white;
-    }
 
 .item-quantity {
     margin: 0 0.5rem;

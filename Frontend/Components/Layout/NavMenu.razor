@@ -5,136 +5,171 @@
 @using Frontend.Services.Interfaces
 @using Microsoft.AspNetCore.Components.Authorization
 @inject IFirebaseAuthService FirebaseAuthService
-@inject ILocalCartStorageService cartStorage
+@inject ILocalCartStorageService CartStorage
 @inject ICartService CartService
 @inject IJSRuntime JsRuntime
 @inject FirebaseAuthClient FirebaseAuthClient
-<ConfirmDialog @ref="confirmed" />
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+@inject ConfirmDialogService ConfirmDialogService
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="flex-column">
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
-                <span class="bi bi-house" aria-hidden="true"></span> Home
-            </NavLink>
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container py-2 px-3">
+
+        <a class="navbar-brand d-flex align-items-center" href="/">
+            <img src="images/logo.png" alt="Logo" style="max-height:80px" class="ms-3" />
+            <span class="header-title text-nowrap ps-5">Frölunda Arcade</span>
+        </a>
+
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#mainNav"
+                aria-controls="mainNav"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <div class="collapse navbar-collapse" id="mainNav">
+            <ul class="navbar-nav ms-auto text-center text-lg-start w-100 justify-content-evenly">
+
+                <AuthorizeView>
+                    <NotAuthorized>
+                        <li class="nav-item" id="login-btn">
+                            <NavLink class="nav-link" href="/login" Match="NavLinkMatch.All" >
+                                <i class="bi bi-box-arrow-in-right"></i> Login
+                            </NavLink>
+                        </li>
+                    </NotAuthorized>
+                    <Authorized>
+                        <li class="nav-item" id="profile-btn">
+                            <NavLink class="nav-link" href="/profile-page" Match="NavLinkMatch.All">
+                                <i class="bi bi-person"></i> Profile
+                            </NavLink>
+                        </li>
+                        <li class="nav-item" id="logout-btn">
+                            <NavLink class="nav-link" href="#" @onclick="OnSignOutClicked">
+                                <i class="bi bi-door-open"></i> Logout
+                            </NavLink>
+                        </li>
+                    </Authorized>
+                </AuthorizeView>
+
+                <AuthorizeView Roles="admin">
+                    <Authorized>
+                        <li class="nav-item" id="admin-btn">
+                            <NavLink class="nav-link" href="/admin-page" Match="NavLinkMatch.All">
+                                <i class="bi bi-lock"></i> Admin
+                            </NavLink>
+                        </li>
+                    </Authorized>
+                </AuthorizeView>
+
+                <li class="nav-item" id="products-btn">
+                    <NavLink class="nav-link" href="/store-front" Match="NavLinkMatch.Prefix">
+                        <i class="bi bi-controller"></i> Products
+                    </NavLink>
+                </li>
+                <li class="nav-item" id="forum-btn">
+                    <NavLink class="nav-link" href="/forum" Match="NavLinkMatch.Prefix">
+                        <i class="bi bi-people"></i> Forum
+                    </NavLink>
+                </li>
+                <li class="nav-item" id="events-btn">
+                    <NavLink class="nav-link" href="/events" Match="NavLinkMatch.All">
+                        <i class="bi bi-calendar-event"></i> Events
+                    </NavLink>
+                </li>
+                <li class="nav-item" id="contact-btn">
+                    <NavLink class="nav-link" href="/contact" Match="NavLinkMatch.All">
+                        <i class="bi bi-pin-map-fill"></i> Contact
+                    </NavLink>
+                </li>
+
+            </ul>
         </div>
 
-        <AuthorizeView>
-            <NotAuthorized>
-                <div class="nav-item px-3">
-
-
-
-                    <NavLink class="nav-link" id="nav-login" href="/login" Match="NavLinkMatch.All">
-
-                        <span class="bi bi-box-arrow-in-right" aria-hidden="true"></span> Login
-                    </NavLink>
-                </div>
-            </NotAuthorized>
-        </AuthorizeView>
-
-        <AuthorizeView>
-            <Authorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" href="/profile-page" Match="NavLinkMatch.All">
-                        <span class="bi bi-person" aria-hidden="true"></span> Profile Page
-                    </NavLink>
-                </div>
-            </Authorized>
-        </AuthorizeView>
-
-        <AuthorizeView Roles="admin">
-            <Authorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" id="nav-admin" href="/admin-page" Match="NavLinkMatch.All">
-                        <span class="bi bi-lock" aria-hidden="true" ></span> Admin Page
-                    </NavLink>
-                </div>
-            </Authorized>
-        </AuthorizeView>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/forum" Match="NavLinkMatch.All">
-                <span class="bi bi-people" aria-hidden="true"></span> Forum
-            </NavLink>
+        <div class="cart-button-wrapper position-relative pe-3 d-flex align-items-center">
+            <button id="cartToggleButton"
+                    class="arcade-cart-btn"
+                    @onclick="ToggleCart"
+                    aria-label="Shopping Cart">
+                <i class="bi bi-cart-fill"></i>
+                @if (_cartItemCount > 0)
+                {
+                <span class="arcade-cart-badge">@_cartItemCount</span>
+                }
+            </button>
+            <ShoppingCart Visible="_isCartOpen" OnClose="ToggleCart" />
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/events" Match="NavLinkMatch.All">
-                <span class="bi bi-calendar-event" aria-hidden="true"></span> Events
-            </NavLink>
-        </div>
-
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="/contact" Match="NavLinkMatch.All">
-                <span class="bi bi-pin-map-fill" aria-hidden="true"></span> Contact
-            </NavLink>
-        </div>
-
-        <AuthorizeView>
-            <Authorized>
-                <div class="nav-item px-3">
-                    <NavLink class="nav-link" @onclick="OnSignOutClicked" href="#" Match="NavLinkMatch.All">
-                        <span class="bi bi-door-open" aria-hidden="true"></span> Logout
-                    </NavLink>
-                </div>
-            </Authorized>
-        </AuthorizeView>
-
-    </nav>
-</div>
-
-<style>
-    .nav-link span {
-    font-size: 1.2rem;
-    line-height: 1;
-    }
-</style>
+    </div>
+</nav>
+@* <link rel="stylesheet" href="css/HeaderStyle.css" /> *@
 
 @code {
     private ConfirmDialog confirmed = default!;
     private Cart Cart { get; set; } = new();
+    private bool _isCartOpen = false;
+    private int _cartItemCount;
+
+    protected override void OnInitialized()
+    {
+        CartStorage.OnChange += UpdateCartCount;
+        UpdateCartCount();
+    }
+
+    private void UpdateCartCount()
+    {
+        _cartItemCount = CartStorage.GetCartItemCount();
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        CartStorage.OnChange -= UpdateCartCount;
+    }
+
+    private void ToggleCart()
+    {
+        _isCartOpen = !_isCartOpen;
+    }
     private async Task OnSignOutClicked()
     {
-        await cartStorage.LoadCartAsync();
-        Cart.cartItems = cartStorage.Cart;
-        bool saveCart = await confirmed.ShowAsync(
-       "Leaving So Soon?",
-       "Do you want to save your shopping cart for your next session?"
-       );
-        if (saveCart && Cart.cartItems.Count > 0)
+        try
         {
-            var token = await JsRuntime.InvokeAsync<string>("getCookie", "token");
+            var userId = await FirebaseAuthService.GetUserId();
+            await CartStorage.LoadCartAsync();
+            Cart.cartItems = CartStorage.Cart;
 
-            if (!string.IsNullOrEmpty(token))
+            if (Cart.cartItems.Count == 0)
             {
-                var tokenVerified = await FirebaseAuthService.VerifyTokenAsync(token);
+                await CartStorage.ClearCartAsync();
 
-                if (tokenVerified && FirebaseAuthClient.User is not null)
-                {
-                    var firebaseAuthUserId = FirebaseAuthClient.User.Uid;
+                await CartService.DeleteCartByUserId(userId);
 
-                    Cart.UserId = firebaseAuthUserId;
-
-                }
+                await FirebaseAuthService.Logout();
+                return;
             }
-
-                   
-                   
-            await CartService.AddCart(Cart);
+            bool saveCart = await ConfirmDialogService.ConfirmDialogInstance!.ShowAsync(
+                "Leaving So Soon?",
+                "Do you want to save your shopping cart for your next session?"
+           );
+            if (saveCart && Cart.cartItems.Count > 0)
+            {
+                if (userId == null) { return; }
+                Cart.UserId = userId;
+                await CartService.AddCart(Cart);
+            }
+            else
+            {
+                await CartService.DeleteCartByUserId(userId);
+            }
+            await CartStorage.ClearCartAsync();
+            await FirebaseAuthService.Logout();
         }
-        await cartStorage.ClearCartAsync();
-        await FirebaseAuthService.Logout();
-        
+        catch(Exception ex)
+        {
+            await CartStorage.ClearCartAsync();
+            await FirebaseAuthService.Logout();
+            Console.WriteLine(ex.Message);
+        }
     }
 }
-
-
-
-                
-            
-            
-            
-            
-
-       

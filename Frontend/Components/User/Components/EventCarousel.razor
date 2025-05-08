@@ -1,0 +1,77 @@
+@using Frontend.Models
+@inject IJSRuntime JsRuntime
+@implements IDisposable
+<div class="mb-4 text-center" style="margin-top: 50px">
+    <h5 class="sub-heading mb-1 mt-5">Upcoming Events</h5>
+    <div class="scroll-carousel-container position-relative py-3 text-light">
+        <button class="carousel-arrow left" @onclick="() => Scroll(-1)">
+            ‹
+        </button>
+    
+        <div class="scroll-carousel" @ref="_carouselRef">
+            @foreach (var _event in Events)
+            {
+                <div class="carousel-item-card px-2">
+                    <div class="arcade-post-card p-3 d-flex flex-column justify-content-between" style="height: 215px">
+                        <div>
+                            <h5 class="arcade-glow-text">@_event.Name</h5>
+                            <p class="generic-text small">@_event.Description</p>
+                        </div>
+                        <div>
+                            <p class="generic-text small">@_event.Date.ToShortDateString()</p>
+                            <span class="badge arcade-badge px-2 py-1 small">@(_event.Participants?.Count ?? 0) participants</span>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    
+        <button class="carousel-arrow right" @onclick="() => Scroll(1)">
+            ›
+        </button>
+    </div>
+</div>
+@code {
+    [Parameter] public List<Event> Events { get; set; } = new();
+    [Parameter] public int AutoScrollInterval { get; set; } = 0;
+
+    private ElementReference _carouselRef;
+    private Timer? _autoScrollTimer;
+
+    protected override void OnAfterRender(bool firstRender)
+    {
+        if (firstRender && AutoScrollInterval > 0)
+        {
+            _autoScrollTimer = new Timer(async _ => await AutoScroll(), null, AutoScrollInterval, AutoScrollInterval);
+        }
+    }
+
+    private async Task Scroll(int direction)
+    {
+        await JsRuntime.InvokeVoidAsync("scrollCarousel", _carouselRef, direction);
+        Dispose();
+        _autoScrollTimer = new Timer(async _ => await AutoScroll(), null, AutoScrollInterval, AutoScrollInterval);
+    }
+
+    private async Task AutoScroll()
+    {
+        if (Events.Count == 0) return;
+        await JsRuntime.InvokeVoidAsync("autoScrollCarousel", _carouselRef);
+    }
+
+    public void Dispose()
+    {
+        _autoScrollTimer?.Dispose();
+        _autoScrollTimer = null;
+    }
+
+    public class Event
+    {
+        public string Name { get; set; }
+        public string Description { get; set; }
+        public List<User> Participants { get; set; }
+        public DateTime Date { get; set; }
+    }
+}
+
+<link rel="stylesheet" href="css/ProductCarouselStyle.css"/>

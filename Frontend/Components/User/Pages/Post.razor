@@ -12,85 +12,79 @@
 
 <h2 class="text-center welcome-text mb-5">Forum Post</h2>
 
-@if (ForumPost == null)
+
+@if (IsLoading)
 {
-    <div class="text-center text-light">
-        Loading post...
-    </div>
+    <LoadingAnimation LoadingText="Loading..."/>
 }
 else
 {
-    <div class="container-fluid px-3 text-light">
-        <div class="row">
-            <div class="col-12">
-                <div class="p-4 mb-4" style="background-color: #333; border-radius: 8px; border: 1px solid #555;">
-                    <div class="d-flex justify-content-between align-items-center mb-3">
-                        <h3 class="text-light m-0">@ForumPost.Title</h3>
-                        <small>@ForumPost.Created.ToString("yyyy-MM-dd HH:mm")</small>
-                    </div>
-
-                    <div class="mb-3">
-                        <span class="badge bg-danger me-2">@ForumPost.Category</span>
-                        <small >by @ForumPost.Author.Email</small>
-                    </div>
-
-                    <p class="text-light mt-3">@ForumPost.Content</p>
-
-                    <div class="mt-4">
-                        <button class="btn btn-outline-light" @onclick="GoBack">
-                            Back to Forum
-                        </button>
-                    </div>
-
-                    <div class="mt-5">
-                        <LeaveComment PostId="@PostId" OnCommentSubmitted="RefreshPost"/>
-                    </div>
-                </div>
-                @if (CurrentUserEmail == ForumPost.Author.Email || IsCurrentUserAdmin)
-                {
-                    <div class="mt-4">
-                        <button class="btn btn-outline-light" @onclick="DeletePost">
-                            Delete Post
-                        </button>
-                    </div>
-                }
+    <div class="container text-light">
+        <div class="arcade-post-card p-4">
+            <div class="d-flex justify-content-between align-items-center">
+                <h3 class="fw-bold">@ForumPost.Title</h3>
+                <span class="text-muted">@ForumPost.Created.ToString("yyyy-MM-dd HH:mm")</span>
             </div>
-            @if (ForumPost.Comments?.Any() == true)
+
+            <div class="my-2">
+                <span class="badge arcade-badge">@ForumPost.Category</span>
+                <span class="ms-2">by <strong>@ForumPost.Author.Username</strong></span>
+            </div>
+
+            <p class="mt-4 fs-5">@ForumPost.Content</p>
+
+            @if (CurrentUserEmail == ForumPost.Author.Email || IsCurrentUserAdmin)
             {
                 <div class="mt-4">
-                    <h5 class="text-light mb-3">Comments</h5>
+                    <button class="btn btn-danger arcade-shadow" @onclick="DeletePost">🗑 Delete Post</button>
+                </div>
+            }
 
-                    @foreach (var comment in ForumPost.Comments.OrderByDescending(c => c.Created))
-                    {
-                        <div class="p-3 mb-3 border rounded bg-dark border-secondary shadow-sm">
-                            <div class="d-flex justify-content-between align-items-center mb-2">
-                                <strong class="text-light">@comment.Title</strong>
-                                <small >@comment.Created.ToString("yyyy-MM-dd HH:mm")</small>
-                            </div>
-                            <div class="mb-2 text-light">@comment.Comment</div>
-                            <small>By @comment.User.Email</small>
+            <div class="mt-5">
+                <LeaveComment PostId="@PostId" OnCommentSubmitted="RefreshPost" />
+            </div>
+
+            <div class="mt-4">
+                <button class="simple-arcade-btn" @onclick="GoBack">Back to Forum</button>
+            </div>
+        </div>
+
+        <div class="mt-5">
+            <h4 class="welcome-text">Comments</h4>
+
+            @if (ForumPost.Comments?.Any() == true)
+            {
+                @foreach (var comment in ForumPost.Comments.OrderByDescending(c => c.Created))
+                {
+                    <div class="arcade-comment-card p-3 mb-4">
+                        <div class="d-flex justify-content-between">
+                            <strong>@comment.Title</strong>
+                            <small>@comment.Created.ToString("yyyy-MM-dd HH:mm")</small>
                         </div>
+                        <div class="my-2">@comment.Comment</div>
+                        <div class="text-end text-light">
+                            — <em>@comment.User.Username</em>
+                        </div>
+
                         @if (IsCurrentUserAdmin)
                         {
-                            <button class="btn btn-outline-danger mb-4" @onclick="() => DeleteComment(comment)" >Delete Comment</button>
+                            <div class="text-end mt-2">
+                                <button class="btn btn-outline-danger btn-sm" @onclick="() => DeleteComment(comment)">
+                                    Delete Comment
+                                </button>
+                            </div>
                         }
-                    }
-                </div>
+                    </div>
+                }
             }
             else
             {
-                <div class="text-light mt-4 fst-italic">No comments yet. Be the first to reply!</div>
+                <div class="text-center fst-italic text-secondary mt-3">
+                    No comments yet. Be the first to reply!
+                </div>
             }
         </div>
     </div>
-    
-    <style>
-        article.content {
-            flex: 1;
-            padding: 2rem;
-            overflow-y: hidden;
-        }
-    </style>
 }
 
 @code {
@@ -99,23 +93,16 @@ else
     private ForumPost? ForumPost { get; set; }
     private string CurrentUserEmail { get; set; }
     private bool IsCurrentUserAdmin { get; set; }
-    
-    protected override async Task OnInitializedAsync()
-    {
-        try
-        {
-            ForumPost = await ForumService.GetForumPostByIdAsync(PostId);
-        }
-        catch
-        {
-            // You could navigate to an error page or show a "Post not found" message
-            ForumPost = null;
-        }
-    }
+    private bool IsLoading { get; set; } = true;
     
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
         if (!firstRender) return;
+
+        ForumPost = await ForumService.GetForumPostByIdAsync(PostId);
+        
+        IsLoading = false; 
+        StateHasChanged();
         
         var token = await JsRuntime.InvokeAsync<string>("getCookie", "token");
 
@@ -129,23 +116,20 @@ else
                 var user = await UserService.GetUserByIdAsync(firebaseAuthUserId);
                 CurrentUserEmail = user.Email;
                 IsCurrentUserAdmin = user.Role == "admin";
+
                 StateHasChanged();
-            } 
+            }
         }
-
     }
 
-    private void GoBack()
-    {
-        Navigation.NavigateTo("/forum");
-    }
+    private void GoBack() => Navigation.NavigateTo("/forum");
 
     private async void DeletePost()
     {
         await ForumService.DeleteForumPostAsync(PostId);
         Navigation.NavigateTo("/forum");
     }
-    
+
     private async Task RefreshPost()
     {
         ForumPost = await ForumService.GetForumPostByIdAsync(PostId);
@@ -155,8 +139,8 @@ else
     private async Task DeleteComment(ForumComment forumComment)
     {
         await ForumService.DeleteForumPostComment(PostId, forumComment);
-
         await RefreshPost();
     }
 
 }
+

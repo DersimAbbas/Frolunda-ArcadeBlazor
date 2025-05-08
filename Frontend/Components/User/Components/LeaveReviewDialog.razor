@@ -16,12 +16,12 @@
 
             <div class="form-group mb-3">
                 <label class="form-label generic-text-size generic-text ">Title</label>
-                <input class="form-control bg-dark text-light border-secondary" @bind="NewReview.Title" />
+                <input id="title" class="form-control bg-dark text-light border-secondary" @bind="NewReview.Title" />
             </div>
 
             <div class="form-group mb-3">
                 <label class="form-label generic-text-size generic-text ">Comment</label>
-                <textarea class="form-control bg-dark text-light border-secondary" rows="4" @bind="NewReview.Comment" style="resize: vertical;"></textarea>
+                <textarea id="comment" class="form-control bg-dark text-light border-secondary" rows="4" @bind="NewReview.Comment" style="resize: vertical;"></textarea>
             </div>
 
             <div class="form-group mb-3">
@@ -52,8 +52,11 @@
     [Parameter] public Product SelectedProduct { get; set; }
     private Review NewReview { get; set; }
 
-    protected override async Task OnParametersSetAsync()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
+        if(!firstRender)
+            return;
+        
         var reviewProduct = new CartProductDto()
         {
             Id = SelectedProduct.Id,

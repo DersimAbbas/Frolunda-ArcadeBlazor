@@ -12,6 +12,11 @@ public class LocalCartStorageService(ProtectedLocalStorage storage) : ILocalCart
 
     public event Action? OnChange;
 
+    private void NotifyCartChanged()
+    {
+        OnChange?.Invoke();
+    }
+
     public async Task LoadCartAsync()
     {
         var result = await storage.GetAsync<Dictionary<string, int>>(CartKey);
@@ -32,10 +37,23 @@ public class LocalCartStorageService(ProtectedLocalStorage storage) : ILocalCart
         await SaveCartAsync();
     }
 
+    public async Task AddToCartByProductId(string productId)
+    {
+        if (Cart.ContainsKey(productId))
+        {
+            Cart[productId]++;
+        }
+        else
+        {
+            Cart[productId] = 1;
+        }
+        await SaveCartAsync();
+    }
+
     public async Task SaveCartAsync()
     {
         await storage.SetAsync(CartKey, Cart);
-        OnChange?.Invoke();
+        NotifyCartChanged();
     }
 
     public async Task RemoveFromCart(CartProductDto product)

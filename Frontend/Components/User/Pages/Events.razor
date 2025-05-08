@@ -1,7 +1,84 @@
 ﻿@page "/events"
+
+@using Frontend.Models
+@using Frontend.Components.User.Components
+@using Frontend.Services.Interfaces
+@using Heron.MudCalendar
+@using MudBlazor
 <h3>Events</h3>
- <CreateEventCard/>
+<div style="width:1000px; height:1000px;">
+    <MudCalendar T="CustomItem" Items="_calendarItems" MonthCellMinHeight="120" Style="background-color:#444444; color:#EDEDED">
+        <CellTemplate>
+            <div style="width: inherit; height: 100%; border: 2px solid; background-color:red; border:solid; border-width:1px; border-color: darkgrey;">
+                <div style="background-color:#444444"><MudText Style="color: #ffffff;" Typo="Typo.body1" Align="Align.Center">@(context.Title)</MudText></div>
+            </div>
+        </CellTemplate>
+    </MudCalendar>
+</div>
+<br>
+<br/>
 
 @code {
+    // List<Models.Event> DummyEvents = new()
+    // {
+    //     new Models.Event { Name = "Retro Game Night", Description = "Play classics all evening!", Date = DateTime.Today.AddDays(1), Participants = new() },
+    //     new Models.Event { Name = "Street Fighter Showdown", Description = "Who’s the best fighter?", Date = DateTime.Today.AddDays(3), Participants = new() },
+    //     new Models.Event{ Name = "Mario Kart Madness", Description = "Fast-paced kart battles!", Date = DateTime.Today.AddDays(5), Participants = new() },
+    //     new Models.Event { Name = "Indie Game Expo", Description = "Discover local devs' creations", Date = DateTime.Today.AddDays(7), Participants = new() },
+    //     new Models.Event { Name = "LAN Party Weekend", Description = "Bring your rig and join the fun!", Date = DateTime.Today.AddDays(9), Participants = new() },
+    //     new Models.Event { Name = "Pinball Tournament", Description = "Compete for the highest score!", Date = DateTime.Today.AddDays(11), Participants = new() },
+    //     new Models.Event { Name = "VR Experience Night", Description = "Explore virtual worlds together", Date = DateTime.Today.AddDays(13), Participants = new() },
+    //     new Models.Event { Name = "Smash Bros Bash", Description = "Ultimate showdown of legends", Date = DateTime.Today.AddDays(15), Participants = new() },
+    //     new Models.Event { Name = "Horror Game Marathon", Description = "Scary games till midnight!", Date = DateTime.Today.AddDays(17), Participants = new() },
+    //     new Models.Event { Name = "Speedrun Sunday", Description = "Show off your best speedruns!", Date = DateTime.Today.AddDays(19), Participants = new() },
+    //     new Models.Event { Name = "Board Game Bonanza", Description = "Take a break from screens", Date = DateTime.Today.AddDays(21), Participants = new() }
+    // };
 
+    private string GetColor(Color color) => $"var(--mud-palette-{color.ToDescriptionString()})";
+    List<CustomItem> _calendarItems = new List<CustomItem>();
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) { return; }
+        List<Models.Event> DummyEvents = new()
+    {
+        new Models.Event { Name = "Retro Game Night", Description = "Play classics all evening!", Date = DateTime.Today.AddDays(1), Participants = new() },
+        new Models.Event { Name = "Street Fighter Showdown", Description = "Who’s the best fighter?", Date = DateTime.Today.AddDays(3), Participants = new() },
+        new Models.Event{ Name = "Mario Kart Madness", Description = "Fast-paced kart battles!", Date = DateTime.Today.AddDays(5), Participants = new() },
+        new Models.Event { Name = "Indie Game Expo", Description = "Discover local devs' creations", Date = DateTime.Today.AddDays(7), Participants = new() },
+        new Models.Event { Name = "LAN Party Weekend", Description = "Bring your rig and join the fun!", Date = DateTime.Today.AddDays(9), Participants = new() },
+        new Models.Event { Name = "Pinball Tournament", Description = "Compete for the highest score!", Date = DateTime.Today.AddDays(11), Participants = new() },
+        new Models.Event { Name = "VR Experience Night", Description = "Explore virtual worlds together", Date = DateTime.Today.AddDays(13), Participants = new() },
+        new Models.Event { Name = "Smash Bros Bash", Description = "Ultimate showdown of legends", Date = DateTime.Today.AddDays(15), Participants = new() },
+        new Models.Event { Name = "Horror Game Marathon", Description = "Scary games till midnight!", Date = DateTime.Today.AddDays(17), Participants = new() },
+        new Models.Event { Name = "Speedrun Sunday", Description = "Show off your best speedruns!", Date = DateTime.Today.AddDays(19), Participants = new() },
+        new Models.Event { Name = "Board Game Bonanza", Description = "Take a break from screens", Date = DateTime.Today.AddDays(21), Participants = new() }
+    };
+
+        foreach (var item in DummyEvents)
+        {
+            var calendarItem = new CustomItem
+                {
+                    Title = item.Name,
+                    Description = item.Description,
+                    Date = item.Date,
+                    ed = item.Date.AddDays(1),
+                    Participants = item.Participants,
+                    Start = item.Date,
+                    End = item.Date,
+                    Text = item.Name
+                };
+            _calendarItems.Add(calendarItem);
+            Console.WriteLine($"Item {item.Name} added!");
+        }
+    }
+    private class CustomItem : CalendarItem
+    {
+        public string Title { get; set; }
+        public string Description { get; set; }
+        public DateTime Date { get; set; }
+        public DateTime ed { get; set; }
+        public List<Models.User> Participants { get; set; } = new();
+    }
 }
+

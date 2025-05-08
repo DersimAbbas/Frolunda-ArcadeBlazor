@@ -1,8 +1,14 @@
 ﻿@page "/contact"
 
 @using Frontend.Components.User.Components
+@using Frontend.Services.Interfaces
+@using static Frontend.Components.User.Components.ContactSupportModal
 <PageTitle>Contact</PageTitle>
-<ContactSupportModal @ref="modalTicket"></ContactSupportModal>
+<ContactSupportModal @ref="modalTicket"
+OnSubmit="CreateNewDisputeAsync">
+
+</ContactSupportModal>
+@inject IOrderService OrderService
 <div class="container mt-5">
     <div class="row">
         <div class="col-12 text-center mb-5">
@@ -32,7 +38,7 @@
         <div class="col-md-4 mb-4">
             <div class="card h-100">
                 <div class="card-body bg-dark">
-                    <h3 class="card-title">Extensive Game Library</h3>
+                    <h3 class="card-title text-white">Extensive Game Library</h3>
                     <p class="body-text">With over 50+ games in our collection, we offer something for everyone. From classic arcade games to the latest releases, our selection is constantly growing.</p>
                 </div>
             </div>
@@ -40,7 +46,7 @@
         <div class="col-md-4 mb-4">
             <div class="card h-100">
                 <div class="card-body bg-dark">
-                    <h3 class="card-title">Community Focus</h3>
+                    <h3 class="card-title text-white">Community Focus</h3>
                     <p class="body-text">We host regular gaming tournaments, special events, and community meetups. Our space is designed to bring gamers together and create lasting memories.</p>
                 </div>
             </div>
@@ -48,7 +54,7 @@
         <div class="col-md-4 mb-4">
             <div class="card h-100">
                 <div class="card-body bg-dark">
-                    <h3 class="card-title">Quality Experience</h3>
+                    <h3 class="card-title text-white">Quality Experience</h3>
                     <p class="body-text">All our games are maintained to the highest standards, ensuring the best possible gaming experience for our visitors.</p>
                 </div>
             </div>
@@ -56,9 +62,9 @@
     </div>
 
     <div class="row mb-5">
-        <div class="col-12 text-center">
+        <div class="col-12 text-center" id="location">
             <h2 class="welcome-text">Visit Us</h2>
-            <p>Come experience the magic of Frölunda Arcade for yourself!</p>
+            <p class="text-white" >Come experience the magic of Frölunda Arcade for yourself!</p>
             <iframe style="min-height: 400px; min-width: 350px;" class="img-fluid"
                     src="https://www.google.com/maps/embed?pb=!1m17!1m8!1m3!1d448.78995229473395!2d11.910708370378963!3d57.651600819879384!3m2!1i1024!2i768!4f13.1!4m6!3e1!4m0!4m3!3m2!1d57.651467499999995!2d11.910746699999999!5e0!3m2!1sen!2sse!4v1745923504935!5m2!1sen!2sse">
                 allowfullscreen
@@ -69,12 +75,18 @@
         </div>
     </div>
 </div>
+
 @code {
 
     private ContactSupportModal modalTicket = default!;
+    private SupportRequestModel supportRequest { get; set; }
     private void OpenContactModal()
     {
         modalTicket.Show();
     }
-    
+    public async Task CreateNewDisputeAsync(SupportRequestModel support)
+    {
+        await OrderService.DisputeOrder(support.Email, support.Name, support.OrderId);
+    }
+
 }

@@ -1,20 +1,176 @@
 ﻿@page "/"
+@using Frontend.Components.User.Components
+@using Frontend.Models
+@using Frontend.Services.Interfaces
+@using System.Text.Json
 @inject NavigationManager Navigation
-
+@inject HttpClient Http
+@inject IProductService ProductService
+@inject IFirebaseAuthService FirebaseAuthService
+@inject IOrderService OrderService
+@inject IJSRuntime JsRuntime
 <PageTitle>Home</PageTitle>
-
-<div class="welcome-text text-center mb-5">Welcome to Frölunda Arcade!</div>
-
-<div class="d-flex flex-column flex-md-row justify-content-center gap-5 m-5">
-    <div class="col-12 col-md-7">
-        <div class="generic-text">
-            Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin dignissim placerat risus dignissim ullamcorper. Aenean id lacus egestas, viverra velit non, malesuada mauris. Sed at mi porttitor, elementum nisi a, laoreet orci.
+<div class="container-fluid py-0 mb-4">
+    <div class="tournament-banner rounded-4 overflow-hidden position-relative">
+        <img src="/Images/tekken8banner.jpg" style="max-height:60vh"
+        alt="Upcoming Tournament"
+        class="img-fluid w-100"/>
+        <div class="overlay position-absolute top-0 start-0 w-100 h-100
+                d-flex align-items-center justify-content-center">
+            <h2 class="text-white display-6 fw-bold text-center px-3">
+                Don’t miss our next Tournament — May 30th! Sign up now!
+            </h2>
         </div>
-    </div>
-    <div class="col-12 col-md-3 d-flex flex-column justify-content-center">
-        <div class="generic-text mb-3">
-            Discover a world of classic and modern gaming at Frölunda Arcade
-        </div>
-        <button type="button" class="arcade-btn w-auto" @onclick='() => Navigation.NavigateTo("/store-front")'><span class="arcade-text">View Products</span></button>
     </div>
 </div>
+<div class="container-fluid hero-wrapper px-0">
+    <div class="row g-0 align-items-center">
+        <div class="col-lg-3 d-none d-lg-flex justify-content-center pe-4">
+            <ArcadeGame />
+        </div>
+
+        <div class="col-lg-6 px-4">
+            <div class="hero-highlight text-white p-5 rounded-4">
+                <div class="row align-items-center">
+                    <div class="col-lg-8 mb-4 mb-lg-0">
+                        <h1 class="display-5 fw-bold welcome-text mb-3">Welcome to Frölunda Arcade!</h1>
+                        <p class="lead pixel-subtitle mb-4">Power up your fun – classic to cutting-edge gaming awaits!</p>
+                        <p class="fs-5">
+                            Step into the world of Frölunda Arcade — where nostalgia meets next-gen gaming!<br />
+                            From epic tournaments to laid-back board game nights, we bring gamers of all kinds together under one pixel-perfect roof.
+                        </p>
+                    </div>
+
+                    <div class="col-lg-4 d-flex flex-column align-items-center">
+                        <div class="text-center mb-4">
+                            <h4 class="medium-title">Explore the Arcade</h4>
+                            <p class="generic-text">Discover a world of classic and modern games handpicked for you.</p>
+                        </div>
+
+                        <button class="arcade-btn arcade-text w-100" @onclick='() => Navigation.NavigateTo("/store-front")'>
+                            View Products
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+<!-- TODO Blir väldigt mycket neon här, men kommer inte på något bättre byt gärna ut detta och resten. Är inte super nöjd med detta  -->
+<!-- TODO Blir väldigt mycket neon här, men kommer inte på något bättre byt gärna ut detta och resten. Är inte super nöjd med detta  -->
+<!-- TODO Blir väldigt mycket neon här, men kommer inte på något bättre byt gärna ut detta och resten. Är inte super nöjd med detta  -->
+
+<div class="container" style="margin-top: 50px">
+    <div class="row mb-5 text-white">
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 arcade-post-card" style="border: 1px solid dodgerblue; box-shadow: 0 0 5px dodgerblue; ">
+                <div class="card-body">
+                    <h3 class="card-title arcade-text text-white">Extensive Game Library</h3>
+                    <p class="body-text text-white">With over 50+ games in our collection, we offer something for everyone. From classic arcade games to the latest releases, our selection is constantly growing.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 arcade-post-card" style="border: 1px solid limegreen; box-shadow: 0 0 5px limegreen;">
+                <div class="card-body">
+                    <h3 class="card-title arcade-text text-white">Community Focus</h3>
+                    <p class="body-text text-white">We host regular gaming tournaments, special events, and community meetups. Our space is designed to bring gamers together and create lasting memories.</p>
+                </div>
+            </div>
+        </div>
+        <div class="col-md-4 mb-4">
+            <div class="card h-100 arcade-post-card" style="border: 1px solid yellow; box-shadow: 0 0 5px yellow;">
+                <div class="card-body">
+                    <h3 class="card-title arcade-text text-white">Quality Experience</h3>
+                    <p class="body-text text-white">All our games are maintained to the highest standards, ensuring the best possible gaming experience for our visitors.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<EventCarousel Events="@DemoEvents" />
+
+<RecommendedProducts _cachedProducts="_products"/>
+
+@code {
+    private List<Product> _products = new();
+    private const string _imageMapKey = "productImageMap";
+    private const string _timestampKey = "productImageMapTimestamp";
+    private const string _funcTrigger = "https://frolunda-arcadefunc.azurewebsites.net/api/GetImageFunction";
+
+    private List<EventCarousel.Event> DemoEvents = new()
+    {
+        new EventCarousel.Event { Name = "Retro Game Night", Description = "Play classics all evening!", Date = DateTime.Today.AddDays(1) },
+        new EventCarousel.Event { Name = "Tekken 8 King Of The Hill", Description = "Who’s the best fighter?", Date = DateTime.Today.AddDays(3) },
+        new EventCarousel.Event { Name = "Mario Kart Madness", Description = "Fast-paced kart battles!", Date = DateTime.Today.AddDays(5) },
+        new EventCarousel.Event { Name = "Indie Game Expo", Description = "Discover local devs' creations", Date = DateTime.Today.AddDays(7) },
+        new EventCarousel.Event { Name = "LAN Party Weekend", Description = "Bring your rig and join the fun!", Date = DateTime.Today.AddDays(9) },
+        new EventCarousel.Event { Name = "Pinball Tournament", Description = "Compete for the highest score!", Date = DateTime.Today.AddDays(11) },
+        new EventCarousel.Event { Name = "VR Experience Night", Description = "Explore virtual worlds together", Date = DateTime.Today.AddDays(13) },
+        new EventCarousel.Event { Name = "Smash Bros Bash", Description = "Ultimate showdown of legends", Date = DateTime.Today.AddDays(15) },
+        new EventCarousel.Event { Name = "Horror Game Marathon", Description = "Scary games till midnight!", Date = DateTime.Today.AddDays(17) },
+        new EventCarousel.Event { Name = "Speedrun Sunday", Description = "Show off your best speedruns!", Date = DateTime.Today.AddDays(19) },
+        new EventCarousel.Event { Name = "Board Game Bonanza", Description = "Take a break from screens", Date = DateTime.Today.AddDays(21) }
+    };
+
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        _products = await ProductService.GetAllProductsAsync();
+        await AssignImageMaps();
+        StateHasChanged();
+    }
+
+    private async Task AssignImageMaps()
+    {
+        var timestampString = await JsRuntime.InvokeAsync<string>("myLocalStorage.getItem", _timestampKey);
+        var rawJson = await JsRuntime.InvokeAsync<string>("localStorage.getItem", _imageMapKey);
+
+        Dictionary<string, string>? imageMap = null;
+
+        if (!string.IsNullOrEmpty(rawJson) && long.TryParse(timestampString, out var ticks))
+        {
+            var savedTime = new DateTime(ticks);
+            if ((DateTime.UtcNow - savedTime).TotalHours < 24)
+            {
+                try
+                {
+                    imageMap = JsonSerializer.Deserialize<Dictionary<string, string>>(rawJson);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error deserializing cached images: {ex.Message}");
+                }
+            }
+        }
+
+        if (imageMap == null)
+        {
+            imageMap = await Http.GetFromJsonAsync<Dictionary<string, string>>(_funcTrigger);
+            await JsRuntime.InvokeVoidAsync("localStorage.setItem", _imageMapKey,
+                JsonSerializer.Serialize(imageMap));
+            await JsRuntime.InvokeVoidAsync("myLocalStorage.setItem", _timestampKey, DateTime.UtcNow.Ticks.ToString());
+        }
+
+        if (imageMap != null)
+        {
+            foreach (var product in _products!)
+            {
+                var matchKey = imageMap.Keys
+                 .FirstOrDefault(k =>
+                     string.Equals(k, product.Name, StringComparison.OrdinalIgnoreCase)
+                 );
+
+                if (matchKey != null && imageMap.TryGetValue(matchKey, out var url))
+                {
+                    product.ImageLink = url;
+                }
+
+            }
+
+            StateHasChanged();
+        }
+    }
+}

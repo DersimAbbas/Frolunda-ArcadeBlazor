@@ -5,11 +5,11 @@
 @inject NavigationManager NavigationManager
 @inject IFirebaseAuthService FirebaseAuthService
 
-<h3 class="text-center mb-4 register-text" >Create an Account</h3>
-
+<h3 class="text-center mb-4 medium-title" >Create an Account</h3>
+<LoadingOverlay IsLoading="@IsLoading" LoadingText="Registrering account..." />
 <div class="container text-light my-5">
     <div class="row justify-content-center gap-5">
-        <div class="col-md-5" style="background-color: #444444; padding: 2rem; border: 1px solid #5e5e5e; border-radius: 2%;">
+        <div class="col-md-5 arcade-post-card" style="padding: 2rem;">
 
             <EditForm Model="@RegisterUser" OnValidSubmit="HandleRegistration">
                 <DataAnnotationsValidator/>
@@ -20,40 +20,76 @@
                 }
 
                 <div class="form-group mb-3">
-                    <label for="email" class="form-label generic-text generic-text-size">Email</label>
+                    <label for="email" class="form-label generic-text" style="font-size: 1rem">Email</label>
                     <InputText type="email" id="email" name="Email"
-                               class="form-control bg-dark text-light border-secondary"
+                               class="form-control text-light border-secondary"
                                @bind-Value="@RegisterUser.Email"
                                required />
                     <ValidationMessage For="@(() => RegisterUser.Email)" />
                 </div>
 
                 <div class="form-group mb-3">
-                    <label for="password" class="form-label generic-text generic-text-size">Password</label>
+                    <label for="firstname" class="form-label generic-text" style="font-size: 1rem">First name</label>
+                    <InputText type="text" id="firstname" name="firstname"
+                               class="form-control text-light border-secondary"
+                               @bind-Value="@RegisterUser.FirstName"
+                               required />
+                    <ValidationMessage For="@(() => RegisterUser.FirstName)" />
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="lastname" class="form-label generic-text " style="font-size: 1rem">Last name</label>
+                    <InputText type="text" id="lastname" name="lastname"
+                               class="form-control text-light border-secondary"
+                               @bind-Value="@RegisterUser.LastName"
+                               required />
+                    <ValidationMessage For="@(() => RegisterUser.LastName)" />
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="username" class="form-label generic-text " style="font-size: 1rem">Username</label>
+                    <InputText type="text" id="username" name="username"
+                               class="form-control text-light border-secondary"
+                               @bind-Value="@RegisterUser.Username"
+                               required />
+                    <ValidationMessage For="@(() => RegisterUser.Username)" />
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="address" class="form-label generic-text " style="font-size: 1rem">Address</label>
+                    <InputText type="text" id="address" name="address"
+                               class="form-control text-light border-secondary"
+                               @bind-Value="@RegisterUser.Address"
+                               required />
+                    <ValidationMessage For="@(() => RegisterUser.Address)" />
+                </div>
+
+                <div class="form-group mb-3">
+                    <label for="password" class="form-label generic-text " style="font-size: 1rem">Password</label>
                     <InputText type="password" id="password" name="Password"
-                           class="form-control bg-dark text-light border-secondary"
+                           class="form-control text-light border-secondary"
                            @bind-Value="@RegisterUser.Password"
                            required minlength="6" />
                     <ValidationMessage For="@(() => RegisterUser.Password)" />
                 </div>
 
                 <div class="form-group mb-4">
-                    <label for="confirmPassword" class="form-label generic-text generic-text-size">Confirm Password</label>
+                    <label for="confirmPassword" class="form-label generic-text " style="font-size: 1rem">Confirm Password</label>
                     <InputText type="password" id="confirmPassword" name="ConfirmPassword"
-                               class="form-control bg-dark text-light border-secondary"
+                               class="form-control text-light border-secondary"
                                @bind-Value="@RegisterUser.ConfirmPassword"
                                required />
                     <ValidationMessage For="@(() => RegisterUser.ConfirmPassword)" />
                 </div>
 
                 <div class="form-group text-center">
-                    <button type="submit" class="btn btn-secondary px-4 generic-text generic-text-size" style="background-color: #bf1f1f; border-color: #DA0037;">
+                    <button type="submit" class="arcade-btn">
                         Register
                     </button>
                 </div>
 
                 <div class="mt-3 text-center">
-                    <p>Already have an account? <a href="/login"id="10" class="text-info generic-text generic-text-size">Login here</a></p>
+                    <p>Already have an account? <a href="/login"id="10" class="text-info generic-text ">Login here</a></p>
                 </div>
            </EditForm>
 
@@ -65,20 +101,28 @@
 
     private RegisterUserDto RegisterUser { get; set; } = new()
     {
-        Email = null,
-        Password = null,
-        Role = "user"
+        Email = string.Empty,
+        Password = string.Empty,
+        Role = "user",
+        FirstName = string.Empty,
+        LastName = string.Empty,
+        Username = string.Empty,
+        Address = string.Empty
+        
     };
     private string? ErrorMessage { get; set; }
-
+    private bool IsLoading { get; set; }
+    
     private async void HandleRegistration()
     {
        try
        {
-           var token = await FirebaseAuthService.RegisterUser(RegisterUser.Email, RegisterUser.Password);
+           var token = await FirebaseAuthService.RegisterUser(RegisterUser);
+           IsLoading = true;
 
            if (!string.IsNullOrEmpty(token))
            {
+               IsLoading = false;
                NavigationManager.NavigateTo("/login", forceLoad: true);
            }
            else

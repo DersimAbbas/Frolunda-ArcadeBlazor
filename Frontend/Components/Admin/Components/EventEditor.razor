@@ -1,18 +1,22 @@
 ﻿@using Frontend.Services
 @using Frontend.Models
+@using Frontend.Services.Interfaces
+@using MudBlazor
+@inject IForumService ForumService
+@inject IEventService EventService
 
-
-    <div class="card rounded-0 p-3 w-25 " style="justify-content:center">
-        <div class="d-flex justify-content-between align-items-center gap-3">
-            <MudStack>
-                <MudField  Label="Name of event">testt</MudField>
-                <MudField  Label="Description"></MudField>
-                <MudField Label="Number of participants"></MudField>
-                <MudDatePicker PickerVariant="PickerVariant.Dialog" Label="Pick date"  Text="2020-10-19" ShowToolbar="false" />
-                <MudButton Variant="Variant.Filled">Create event</MudButton>
-            </MudStack>
-        </div>
-    </div>
+<MudForm>
+    <MudItem xs="12">
+        <MudTextField @bind-Value="_event.Name" Label="Event Name" Required="true" />
+    </MudItem>
+    <MudItem xs="12">
+        <MudTextField @bind-Value="_event.Description" Label="Event Description" Required="false" />
+    </MudItem>
+    <MudItem xs="12">
+        <MudDatePicker  Text="2020-10-19" />
+    </MudItem>
+    <button class="simple-arcade-btn btn-sm w-100" id="@_event.Name+1" @onclick="() => EventService.AddEventAsync(_event)" style="background-color: limegreen">Add</button>
+</MudForm>
 
 
 
@@ -20,21 +24,26 @@
 @code {
     [Parameter] public string? EventName { get; set; }
     [Parameter] public string? EventDescription { get; set; }
-    [Parameter] public int EventParticipants { get; set; }
     [Parameter] public DateTime EventDate { get; set; }
-
-
     
-    private void CreateEvent()
-    {
-    EventModel eventModel = new EventModel();
-       
-        eventModel.Date = EventDate;
-        eventModel.Description = EventDescription;
-        eventModel.Name = EventName;
-        eventModel.Participants = EventParticipants;
+
+    private Models.Event _event = new Models.Event() { Date=DateTime.Now};
+
+
         
-        // Create service and backend after lunch
+
+    public void CreateEvent()
+    {
+        
+
+       ForumService.AddForumPostAsync(new ForumPost
+          {
+          Title = _event.Name,
+          Content = _event.Description,
+          Category = ForumCategory.Announcements,
+          Created = DateTime.Now,
+          Author = new User { Username = "Admin" },
+       });
     }
 
 

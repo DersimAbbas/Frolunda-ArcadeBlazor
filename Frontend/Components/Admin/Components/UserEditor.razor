@@ -5,6 +5,7 @@
 @inject IUserService UserService
 @inject IOrderService OrderService
 @inject ICartService CartService
+@inject IJSRuntime js
 
 <!-- Search Bars -->
 <div class="mb-3 d-flex flex-column flex-md-row gap-3">
@@ -14,14 +15,11 @@
 
 @if (filteredUsers.Count == 0)
 {
-    <div class="text-center text-light">
-        <img src="images/no-users.png" alt="No users found" style="max-height: 250px;" />
-        <p class="text-muted">No users match the current filters.</p>
-    </div>
+    <LoadingAnimation LoadingText="No users found..." />
 }
 else
 {
-    <table class="table table-bordered align-middle">
+    <table class="table table-dark table-bordered align-middle">
         <thead class="table-dark">
             <tr>
                 <th>Email</th>
@@ -52,12 +50,12 @@ else
                     </td>
                     <td class="text-center align-middle">
                         <div class="d-flex flex-column gap-1" style="min-width: 120px;">
-                            <button id="Update-button" class="btn btn-success btn-sm w-100" @onclick="() => UpdateUser(user)">Update</button>
-                            <button class="btn btn-danger btn-sm w-100" @onclick="() => DeleteUser(user)">Delete</button>
-                            <button class="btn btn-secondary btn-sm w-100" @onclick="() => ToggleExpanded(user.Id)">
+                            <button id="Update-button" class="simple-arcade-btn btn-sm w-100" @onclick="() => UpdateUser(user)" style="background-color: limegreen">Update</button>
+                            <button class="simple-arcade-btn w-100" @onclick="() => DeleteUser(user)" style="background-color: darkred">Delete</button>
+                            <button class="simple-arcade-btn btn-sm w-100" @onclick="() => ToggleExpanded(user.Id)">
                                 @(_expandedUserId == user.Id ? "▼ Hide Orders" : "▲ Show Orders")
                             </button>
-                            <button class="btn btn-secondary btn-sm w-100" @onclick="() => ToggleCart(user.Id)">
+                            <button class="simple-arcade-btn btn-sm w-100" @onclick="() => ToggleCart(user.Id)">
                                 @(_expandedCartUserId == user.Id ? "▼ Hide Cart" : "▲ Show Cart")
                             </button>
                         </div>
@@ -81,12 +79,12 @@ else
                                         @foreach (var order in _userOrders)
                                         {
                                             <tr>
-                                                <td>@order.Id</td>
+                                                <td>@order.OrderId</td>
                                                 <td>
                                                     <ul class="mb-0">
                                                         @foreach (var product in order.Products)
                                                         {
-                                                            <li>@product.Name (@product.Price.ToString("C"))</li>
+                                                            <li>@product.Key (@product.Value</li>
                                                         }
                                                     </ul>
                                                 </td>
@@ -97,7 +95,7 @@ else
                             }
                             else
                             {
-                                <p class="text-muted">No orders found for this user.</p>
+                                <div class="generic-text">No orders found for this user.</div>
                             }
                         </td>
                     </tr>
@@ -113,14 +111,13 @@ else
                                         <tr>
                                             <th>Product</th>
                                             <th>Quantity</th>
-                                            <th>Total Price</th>
+
                                         </tr>
                                     </thead>
                                     <tbody>
                                         @foreach (var item in _userCartItems)
                                         {
                                             <tr>
-                                                <!--Bind other properties when endpoints are fixed-->
                                                 <td>@item.Key</td>
                                                 <td>@item.Value</td>
                                             </tr>
@@ -130,7 +127,7 @@ else
                             }
                             else
                             {
-                                <p class="text-muted">No items in this user's cart.</p>
+                                <div class="generic-text">No items in this user's cart.</div>
                             }
                         </td>
                     </tr>
@@ -141,9 +138,9 @@ else
 
     <!-- Pagination Controls -->
     <div class="d-flex justify-content-between align-items-center">
-        <button class="btn btn-secondary" @onclick="GoToPreviousPage" disabled="@IsFirstPage">Previous</button>
-        <span>Page @_currentPage of @TotalPages</span>
-        <button class="btn btn-secondary" @onclick="GoToNextPage" disabled="@IsLastPage">Next</button>
+        <button class="simple-arcade-btn" @onclick="GoToPreviousPage" disabled="@IsFirstPage">Previous</button>
+        <span class="generic-text">Page @_currentPage of @TotalPages</span>
+        <button class="simple-arcade-btn" @onclick="GoToNextPage" disabled="@IsLastPage">Next</button>
     </div>
 
     <ConfirmDialog @ref="_confirmDialogRef" />
@@ -153,8 +150,9 @@ else
 @code {
     private List<User>? _users { get; set; }
     private List<Cart>? _carts { get; set; }
-    private List<Order>? _orders { get; set; }
-
+    private List<RegisterOrder>? _orders { get; set; }
+    private bool ShowOrder;
+    private bool ShowCart;
     private ConfirmDialog? _confirmDialogRef;
     private MessageDialog? _messageDialog;
 
@@ -165,7 +163,7 @@ else
     private int _currentPage = 1;
 
     private string? _expandedUserId = null;
-    private List<Order> _userOrders = new();
+    private List<RegisterOrder> _userOrders = new();
 
     private string? _expandedCartUserId = null;
     private Dictionary<string, int> _userCartItems = new();
@@ -199,27 +197,28 @@ else
 
     private void ToggleCart(string userId)
     {
-        if (_expandedCartUserId == userId)
+        _expandedCartUserId = userId;
+        ShowCart = !ShowCart;
+        if (_expandedCartUserId == userId && ShowCart)
         {
-            _expandedCartUserId = null;
-            _userCartItems.Clear();
-        }
-        else
-        {
-            _expandedCartUserId = userId;
-            _expandedUserId = null;
-            _userOrders.Clear();
-
-
-            
-
             var cart = _carts.FirstOrDefault(c => c.UserId == userId);
 
             if (cart != null)
             {
                 _userCartItems = cart.cartItems;
             }
+            // _expandedCartUserId = null;
+            // _userCartItems.Clear();
         }
+        else
+        {
+            _expandedCartUserId = null;
+        }
+
+
+
+
+        InvokeAsync(StateHasChanged);
     }
 
     private void GoToNextPage()
@@ -249,7 +248,7 @@ else
             $"User with id: {user.Id} updated"
             );
         }
-        
+
     }
 
     private async Task DeleteUser(User user)
@@ -274,27 +273,57 @@ else
 
     private void ToggleExpanded(string userId)
     {
-        if (_expandedUserId == userId)
+        _expandedUserId = userId;
+        ShowOrder = !ShowOrder;
+        if (_expandedUserId == userId && ShowOrder)
         {
-            _expandedUserId = null;
-            _userOrders.Clear();
-        }
-        else
-        {
-            _expandedUserId = userId;
-            _expandedCartUserId = null;
-            _userOrders.Clear();
-
             var user = _users.FirstOrDefault(u => u.Id == userId);
             if (user != null)
             {
-                _userOrders = GetUserOrders(user);
+                _userOrders = GetUserOrders(user.Id);
             }
         }
+        else
+        {
+            _expandedUserId = null;
+        }
     }
+    // private void ToggleCart(string userId)
+    // {
+    //     _expandedCartUserId = userId;
+    //     ShowCart = !ShowCart;
+    //     if (_expandedCartUserId == userId && ShowCart)
+    //     {
+    //         var cart = _carts.FirstOrDefault(c => c.UserId == userId);
 
-    private List<Order> GetUserOrders(User user)
+    //         if (cart != null)
+    //         {
+    //             _userCartItems = cart.cartItems;
+    //         }
+    //         // _expandedCartUserId = null;
+    //         // _userCartItems.Clear();
+    //     }
+    //     else
+    //     {
+    //         _expandedCartUserId = null;
+    //     }
+
+
+
+
+    //     InvokeAsync(StateHasChanged);
+    // }
+
+    private List<RegisterOrder> GetUserOrders(string userId)
     {
-        return _orders.Where(o => o.User.Id == user.Id).ToList();
+        if (userId == null)
+        {
+            return new List<RegisterOrder>();
+        };
+        if (_orders.Count == 0)
+        {
+            return new List<RegisterOrder>();
+        }
+        return _orders.Where(o => o.UserId == userId).ToList();
     }
 }

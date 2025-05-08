@@ -1,0 +1,61 @@
+﻿@using Firebase.Auth
+@using Frontend.Models
+@using Frontend.Services.Interfaces
+@inject IUserService UserService
+@inject IOrderService OrderService
+@inject IFirebaseAuthService FirebaseAuthService
+@inject IJSRuntime JsRuntime
+@inject FirebaseAuthClient FirebaseAuthClient
+
+@if (_recommendedProducts.Count > 0)
+{
+    <div class="mb-4 text-center">
+        <h5 class="sub-heading mb-1 mt-5">Recommended Products</h5>
+    <ProductCarousel Products="_recommendedProducts" AutoScrollInterval="AutoScrollInterval" />
+    </div>
+}
+
+@code {
+    [Parameter] public List<Product> _cachedProducts { get; set; }
+    [Parameter] public int AutoScrollInterval { get; set; } = 0;
+
+    private List<Product> _recommendedProducts = new();
+    private List<RegisterOrder> _userOrders = new();
+    private List<RegisterOrder> order { get; set; }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if (!firstRender) return;
+
+        var token = await JsRuntime.InvokeAsync<string>("getCookie", "token");
+
+        if (string.IsNullOrEmpty(token)) return;
+
+        var tokenVerified = await FirebaseAuthService.VerifyTokenAsync(token);
+        if (!tokenVerified || FirebaseAuthClient.User is null) return;
+
+        var firebaseAuthUserId = FirebaseAuthClient.User.Uid;
+        _userOrders = await OrderService.GetOrdersByUserIdAsync(firebaseAuthUserId);
+        if (_userOrders is null || _userOrders.Count < 1) return;
+
+        var lastOrder = _userOrders
+            .OrderByDescending(o => o.CreatedAt)
+            .FirstOrDefault();
+
+        if (lastOrder == null || lastOrder.Products.Count < 1) return;
+
+        var firstProductId = lastOrder.Products.FirstOrDefault().Key;
+
+        if (firstProductId == null) return;
+
+        var productWithGenre = _cachedProducts.FirstOrDefault(p => p.Id == firstProductId);
+        if (productWithGenre == null) return;
+
+        var genre = productWithGenre.Genre;
+
+        _recommendedProducts = _cachedProducts
+            .Where(p => p.Genre == genre && !lastOrder.Products.Any(op => op.Key == p.Id))
+            .ToList();
+
+        StateHasChanged();
+    }
+}

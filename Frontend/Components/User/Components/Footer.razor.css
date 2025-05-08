@@ -1,0 +1,35 @@
+﻿.screen-arcade-text {
+    font-family: 'Press Start 2P', cursive;
+    color: yellow;
+    margin-top: 1rem;
+    text-shadow: 0 0 5px rgba(70, 53, 177, 0.5);
+    animation: blink 2s infinite;
+    font-size: 0.5rem;
+    letter-spacing: 1px;
+}
+.border-purple {
+    border-color: #B771E5!important;
+}
+.social-icons a:hover,
+.social-icons a:focus {
+    color: #B771E5!important;
+    transform: scale(1.15) rotate(-5deg) !important;
+    text-shadow: 0 0 8px #ff4b2b, 2px 2px 4px #222 !important;
+}
+
+
+.footer-links a:hover,
+.footer-links a:focus {
+    color: #B771E5 !important;
+   
+    text-shadow: 2px 2px 4px #222, 0 0 8px #B771E5;
+    outline: none
+   
+}
+
+/* For accessibility: show focus for keyboard navigation */
+.footer-links a:focus-visible {
+    outline: 2px dashed #B771E5!important;
+    outline-offset: 3px;
+    background: rgba(255, 75, 43, 0.08);
+}
