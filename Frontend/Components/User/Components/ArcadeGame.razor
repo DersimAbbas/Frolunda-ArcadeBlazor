@@ -1,0 +1,49 @@
+﻿@code {
+    private bool poweredOn;
+
+    // build the URL when we need it
+    private string GameUrl => "https://freepacman.org/";
+
+    private void TogglePower() => poweredOn = !poweredOn;
+}
+
+<div class="arcade-machine arcade-post-card d-flex flex-column align-items-center p-3">
+    <!-- SCREEN -->
+    <div class="arcade-screen bg-black overflow-hidden mb-3 position-relative">
+        @if (poweredOn)
+        {
+            <iframe src="@GameUrl"
+                    class="w-100 h-100 border-0"
+                    allowfullscreen
+                    loading="lazy">
+            </iframe>
+        }
+        else
+        {
+            <!-- optional “off” overlay -->
+            <div class="w-100 h-100 d-flex justify-content-center align-items-center">
+                <small class="screen-arcade-text text-center">Press button to power on</small>
+            </div>
+        }
+    </div>
+
+    <!-- CONTROLS: power + joystick + buttons -->
+    <div class="d-flex align-items-center">
+        <!-- Power button -->
+        <button class="simple-arcade-btn"
+                @onclick="TogglePower"
+                aria-pressed="@poweredOn">
+            @if (poweredOn)
+            {
+                <span class="text-success">Power On</span>
+            }
+            else
+            {
+                <span class="text-danger">Power off</span>
+            }
+        </button>
+
+     
+     
+    </div>
+</div>

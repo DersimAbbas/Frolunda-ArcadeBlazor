@@ -9,20 +9,26 @@
 @inject HttpClient http
 @inject IJSRuntime JsRuntime
 @inject IProductService ProductService
+<h2 class="arcade-subheading arcade-glow-text text-center">Our Current games In Shop</h2>
+<div class="container-fluid my-4" style="font-family: 'Futura', sans-serif;">
+    <FilterBar Filter="@_currentFilter" OnApplyFilters="HandleFilterApplied" Genres="_genres" />
 
-<FilterBar Filter="@_currentFilter" OnApplyFilters="HandleFilterApplied" Genres="_genres" />
-
-@if(_filteredProducts.Count > 0)
-{
-    @foreach (var product in _filteredProducts)
+    @if (_filteredProducts.Count > 0)
     {
-        <ProductCard SelectedProduct="@product" />
+        <div class="row g-5">
+            @foreach (var product in _filteredProducts)
+            {
+                <div class="col-12 col-sm-6 col-md-4 col-lg-3">
+                    <ProductCard SelectedProduct="@product" />
+                </div>
+            }
+        </div>
     }
-}
-else
-{
-    <LoadingAnimation LoadingText="No products found..." />
-}
+    else
+    {
+        <LoadingAnimation LoadingText="No products found..." />
+    }
+</div>
 
 @code {
     private ProductFilter _currentFilter = new();

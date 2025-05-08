@@ -6,7 +6,6 @@
 @using Frontend.Services.Interfaces
 @using Frontend.Components.Store
 @using Frontend.Components.Store.Components
-
 @inject IProductService ProductService
 @inject HttpClient http
 @inject IJSRuntime JsRuntime
@@ -25,7 +24,7 @@
                     alt="@_selectedProduct.Name"
                     class="img-fluid h-100 w-100 object-cover rounded-start">
                 </div>
-               
+
                 <div class="col-md-6 d-flex flex-column justify-content-center p-4">
                     <h2 class="mb-3">@_selectedProduct.Name <MudRating SelectedValue="@GetAvgRating()" ReadOnly="true" Class="justify-content-sm-center" /></h2>
                     <ul class="list-unstyled small mb-4">
@@ -45,7 +44,6 @@
             <p class="mb-0">@_selectedProduct.Description</p>
         </div>
 
-       
         <div class="card bg-transparent border border-secondary text-light mb-4 p-4">
             <h5 class="mb-3">Reviews</h5>
             <ReviewViewer 
@@ -53,10 +51,9 @@
             SelectedProduct="_selectedProduct" />
         </div>
 
-        
         <div class="mb-4 text-center">
-            <h5 class="text-light mb-3">You might Also Like</h5>
-            <RecommendedProducts _cachedProducts="_products" />
+            <h5 class="text-light mb-3"></h5>
+            <RelatedProducts CachedProducts="_products" Product="_selectedProduct" />
         </div>
     </div>
 }
@@ -74,7 +71,7 @@ else
     private const string _imageMapKey = "productImageMap";
     private const string _funcTrigger = "https://frolunda-arcadefunc.azurewebsites.net/api/GetImageFunction";
     private bool _showAllReviews = false;
-    
+
     protected override async Task OnParametersSetAsync()
     {
 
@@ -84,6 +81,18 @@ else
         }
         _selectedProduct = _products.FirstOrDefault(p => p.Name.Equals(ProductName, StringComparison.OrdinalIgnoreCase));
         await AssignImageMaps();
+    }
+    protected override async Task OnAfterRenderAsync(bool firstRender)
+    {
+        if(!firstRender) return;
+        await AssignImageMaps();
+        if (_products == null)
+        {
+            _products = await GetProductsAsync();
+        }
+        _selectedProduct = _products.FirstOrDefault(p => p.Name.Equals(ProductName, StringComparison.OrdinalIgnoreCase));
+        await AssignImageMaps();
+
     }
 
     private async Task<List<Product>?> GetProductsAsync()

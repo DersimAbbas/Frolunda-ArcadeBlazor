@@ -4,26 +4,19 @@
 @inherits LayoutComponentBase
 @using Frontend.Services
 
-<Header />
-<div class="page">
-    <main>
-        <ConfirmDialog @ref="_confirmDialogRef" />
-        <div class="sidebar">
-            <NavMenu />
-        </div>
+<div class="page d-flex flex-column min-vh-100">
+    <NavMenu />
 
-       <article class="content productpage-main">
+    <main class="flex-fill">
+        <article class="content">
             @Body
-       </article>
-
+        </article>
     </main>
-    @*  <footer>
-         <div class="position-absolute bottom-0 start-50 translate-middle-x w-100 h-25">
+    <div class="mt-auto" style="background: #242424;">
         <Footer />
-    </div> 
-    </footer> *@
+    </div>
+
 </div>
-@* Required *@
 <MudThemeProvider />
 <MudPopoverProvider />
 
