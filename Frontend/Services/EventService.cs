@@ -16,17 +16,17 @@ namespace Frontend.Services
             return await _httpClient.GetFromJsonAsync<Models.Event>($"api/events/{id}");
         }
 
-        public async Task<List<Event>?> GetAllEventsAsync()
+        public async Task<List<Models.Event>?> GetAllEventsAsync()
         {
-            return await _httpClient.GetFromJsonAsync<List<Event>?>("api/events");
+            return await _httpClient.GetFromJsonAsync<List<Models.Event>?>("api/events");
         }
 
-        public async Task<bool> AddEvent(Event _event)
+        public async Task<bool> AddEvent(Models.Event _event)
         {
             var response = await _httpClient.PostAsJsonAsync("api/events", _event);
             return response.IsSuccessStatusCode;
         }
-        public async Task<bool> UpdateEvent(string id, Event _event)
+        public async Task<bool> UpdateEvent(string id, Models.Event _event)
         {
             var response = await _httpClient.PutAsJsonAsync($"api/events/{id}", _event);
             return response.IsSuccessStatusCode;
