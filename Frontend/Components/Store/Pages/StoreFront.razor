@@ -36,6 +36,7 @@
     private List<Product> _filteredProducts = new();
     private List<string> _genres = new();
     private const string _imageMapKey = "productImageMap";
+    private const string _timestampKey = "productImageMapTimestamp";
     private const string _funcTrigger = "https://frolunda-arcadefunc.azurewebsites.net/api/GetImageFunction";
     private bool filterTest = false;
 
@@ -62,17 +63,33 @@
 
     private async Task AssignImageMaps()
     {
+        var timestampString = await JsRuntime.InvokeAsync<string>("myLocalStorage.getItem", _timestampKey);
         var rawJson = await JsRuntime.InvokeAsync<string>("localStorage.getItem", _imageMapKey);
+
         Dictionary<string, string>? imageMap = null;
 
-        if (!string.IsNullOrWhiteSpace(rawJson))
-            imageMap = JsonSerializer.Deserialize<Dictionary<string, string>>(rawJson);
+        if (!string.IsNullOrEmpty(rawJson) && long.TryParse(timestampString, out var ticks))
+        {
+            var savedTime = new DateTime(ticks);
+            if ((DateTime.UtcNow - savedTime).TotalHours < 24)
+            {
+                try
+                {
+                    imageMap = JsonSerializer.Deserialize<Dictionary<string, string>>(rawJson);
+                }
+                catch (Exception ex)
+                {
+                    Console.WriteLine($"Error deserializing cached images: {ex.Message}");
+                }
+            }
+        }
 
         if (imageMap == null)
         {
             imageMap = await http.GetFromJsonAsync<Dictionary<string, string>>(_funcTrigger);
             await JsRuntime.InvokeVoidAsync("localStorage.setItem", _imageMapKey,
                 JsonSerializer.Serialize(imageMap));
+            await JsRuntime.InvokeVoidAsync("myLocalStorage.setItem", _timestampKey, DateTime.UtcNow.Ticks.ToString());
         }
 
         if (imageMap != null)
@@ -80,14 +97,15 @@
             foreach (var product in _allProducts!)
             {
                 var matchKey = imageMap.Keys
-                    .FirstOrDefault(k =>
-                        string.Equals(k, product.Name, StringComparison.OrdinalIgnoreCase)
-                    );
+                 .FirstOrDefault(k =>
+                     string.Equals(k, product.Name, StringComparison.OrdinalIgnoreCase)
+                 );
 
                 if (matchKey != null && imageMap.TryGetValue(matchKey, out var url))
                 {
                     product.ImageLink = url;
                 }
+
             }
             StateHasChanged();
         }
