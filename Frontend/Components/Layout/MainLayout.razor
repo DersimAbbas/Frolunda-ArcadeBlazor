@@ -3,11 +3,14 @@
 @inherits LayoutComponentBase
 @using Frontend.Components.User.Components
 @using Frontend.Services
-<Header />
+
+<NavMenu/>
 <div class="page">
-    <main>
+ 
+
+    <main style="background-color:#1A1A1A">
+       
         <ConfirmDialog @ref="_confirmDialogRef" />
-        <NavMenu />
 
         <article class="content">
             @Body

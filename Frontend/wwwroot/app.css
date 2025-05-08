@@ -84,12 +84,14 @@ article.content {
 }
 
 .header-title {
-    font-family: 'Press Start 2P';
+    font-family: 'Press Start 2P', cursive;
     text-transform: uppercase;
     letter-spacing: 2px;
     line-height: 1.4;
-    font-size: 3rem;
-    color: #bf1f1f;
+    font-size: 2.5rem;
+    color: #B771E5;
+    white-space: nowrap;
+    text-shadow: 0 0 8px rgba(183, 113, 229, 0.7), 0 0 20px rgba(183, 113, 229, 0.4);
 }
 
 .medium-title {
@@ -98,11 +100,11 @@ article.content {
     letter-spacing: 2px;
     line-height: 1.4;
     font-size: 1.4rem;
-    color: #bf1f1f;
+    color: #B771E5;
 }
 
 .header-logo img {
-    max-height: 100px;
+    max-height: 10px;
     padding-left: 1rem;
     padding-right: 1rem;
     padding-top: 0.5rem;
@@ -110,14 +112,20 @@ article.content {
 }
 
 .header {
-    background-color: #322a78;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    gap: 1rem;
-    padding: 0.5rem 1rem;
-    position: relative;
+    background-color: #2a2a2a;
+    position: relative
 }
+    .header .nav-scrollable {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        background: transparent !important;
+        position: static !important;
+        padding: 0 !important;
+        overflow: visible !important;
+        width: 50vw;
+        max-width: 50%;
+    }
 
 @media (max-width: 641px) {
     .header-logo {
@@ -140,7 +148,7 @@ article.content {
     letter-spacing: 2px;
     line-height: 1.4;
     font-size: 1.5rem;
-    color: #bf1f1f;
+    color: #B771E5;
 }
 
 .sub-heading {
@@ -149,7 +157,7 @@ article.content {
     letter-spacing: 2px;
     line-height: 1.4;
     font-size: 1.2rem;
-    color: #bf1f1f;
+    color: #B771E5;
 }
 
 .generic-text {
@@ -398,10 +406,8 @@ input, textarea, select, .arcade-input {
 
 .arcade-subheading {
     font-family: 'Press Start 2P', cursive;
-    color: #c53a3a;
-    text-shadow:
-            0 0 1px #da0037,
-            1px 1px 0 #000; 
+    color: #B771E5;
+    text-shadow: 0 0 8px rgba(183, 113, 229, 0.7), 0 0 20px rgba(183, 113, 229, 0.4);
 }
 .category-header-card {
     background: #2a2a3d;

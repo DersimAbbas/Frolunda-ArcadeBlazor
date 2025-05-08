@@ -9,8 +9,8 @@
 @inject HttpClient http
 @inject IJSRuntime JsRuntime
 @inject IProductService ProductService
-<h2 class="welcome-text arcade-glow-text text-center">Our Current games In Shop</h2>
-<div class="container-fluid my-4">
+<h2 class="arcade-subheading arcade-glow-text text-center">Our Current games In Shop</h2>
+<div class="container-fluid my-4" style="font-family: 'Futura', sans-serif;">
     <FilterBar Filter="@_currentFilter" OnApplyFilters="HandleFilterApplied" Genres="_genres" />
 
     @if (_filteredProducts.Count > 0)

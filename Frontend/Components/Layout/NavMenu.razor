@@ -11,91 +11,149 @@
 @inject FirebaseAuthClient FirebaseAuthClient
 @inject ConfirmDialogService ConfirmDialogService
 
-<input type="checkbox" title="Navigation menu" class="navbar-toggler" />
+<nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+    <div class="container-fluid py-2 px-3" style="max-height:200px;">
 
-<div class="nav-scrollable" onclick="document.querySelector('.navbar-toggler').click()">
-    <nav class="nav-container">
-        <div class="nav-item">
-            <NavLink class="nav-link" id="nav-home" href="/" Match="NavLinkMatch.All">
-                <span class="bi bi-house" aria-hidden="true"></span> Home
-            </NavLink>
-        </div>
+        <!-- ◀ Brand: logo + title -->
+        <a class="navbar-brand d-flex align-items-center" href="/">
+            <img src="images/logo.png"
+                 alt="Logo"
+                 style="max-height:80px"
+                 class="d-inline-block align-text-top ms-3" />
+            <span class="header-title text-nowrap ps-5">Frölunda Arcade</span>
+        </a>
 
-        <AuthorizeView>
-            <NotAuthorized>
+        <!-- ☰ mobile toggler -->
+        <button class="navbar-toggler" type="button"
+                data-bs-toggle="collapse"
+                data-bs-target="#mainNav"
+                aria-controls="mainNav"
+                aria-expanded="false"
+                aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- ● collapsible nav (centered & evenly spaced) -->
+        <div class="collapse navbar-collapse justify-content-center" id="mainNav">
+            <div class="navbar-nav d-flex align-items-center justify-content-evenly w-75">
                 <div class="nav-item">
-                    <NavLink class="nav-link" id="nav-login" href="/login" Match="NavLinkMatch.All">
-
-                        <span class="bi bi-box-arrow-in-right" aria-hidden="true"></span> Login
+                    <NavLink class="nav-link" href="/" Match="NavLinkMatch.All">
+                        <span class="bi bi-house" aria-hidden="true"></span> Home
                     </NavLink>
                 </div>
-            </NotAuthorized>
-        </AuthorizeView>
 
-        <AuthorizeView>
-            <Authorized>
+                <AuthorizeView>
+                    <NotAuthorized>
+                        <div class="nav-item">
+                            <NavLink class="nav-link" href="/login" Match="NavLinkMatch.All">
+                                <span class="bi bi-box-arrow-in-right" aria-hidden="true"></span> Login
+                            </NavLink>
+                        </div>
+                    </NotAuthorized>
+                </AuthorizeView>
+
+                <AuthorizeView>
+                    <Authorized>
+                        <div class="nav-item">
+                            <NavLink class="nav-link" href="/profile-page" Match="NavLinkMatch.All">
+                                <span class="bi bi-person" aria-hidden="true"></span> Profile Page
+                            </NavLink>
+                        </div>
+                    </Authorized>
+                </AuthorizeView>
+
+                <AuthorizeView Roles="admin">
+                    <Authorized>
+                        <div class="nav-item">
+                            <NavLink class="nav-link" href="/admin-page" Match="NavLinkMatch.All">
+                                <span class="bi bi-lock" aria-hidden="true"></span> Admin Page
+                            </NavLink>
+                        </div>
+                    </Authorized>
+                </AuthorizeView>
+
                 <div class="nav-item">
-                    <NavLink class="nav-link" id="nav-profile" href="/profile-page" Match="NavLinkMatch.All">
-                        <span class="bi bi-person" aria-hidden="true"></span> Profile Page
+                    <NavLink class="nav-link" href="/store-front" Match="NavLinkMatch.All">
+                        <span class="bi bi-controller" aria-hidden="true"></span> Products
                     </NavLink>
                 </div>
-            </Authorized>
-        </AuthorizeView>
-
-        <AuthorizeView Roles="admin">
-            <Authorized>
                 <div class="nav-item">
-                    <NavLink class="nav-link" id="nav-admin" href="/admin-page" Match="NavLinkMatch.All">
-                        <span class="bi bi-lock" aria-hidden="true" ></span> Admin Page
+                    <NavLink class="nav-link" href="/forum" Match="NavLinkMatch.All">
+                        <span class="bi bi-people" aria-hidden="true"></span> Forum
                     </NavLink>
                 </div>
-            </Authorized>
-        </AuthorizeView>
-        <div class="nav-item">
-            <NavLink class="nav-link" id="nav-products" href="/store-front" Match="NavLinkMatch.All">
-                <span class="bi bi-controller" aria-hidden="true"></span> Products
-            </NavLink>
-        </div>
-        <div class="nav-item">
-            <NavLink class="nav-link" id="nav-forum" href="/forum" Match="NavLinkMatch.All">
-                <span class="bi bi-people" aria-hidden="true"></span> Forum
-            </NavLink>
-        </div>
-        <div class="nav-item">
-            <NavLink class="nav-link" id="nav-events" href="/events" Match="NavLinkMatch.All">
-                <span class="bi bi-calendar-event" aria-hidden="true"></span> Events
-            </NavLink>
-        </div>
-
-        <div class="nav-item">
-            <NavLink class="nav-link" id="nav-contact" href="/contact" Match="NavLinkMatch.All">
-                <span class="bi bi-pin-map-fill" aria-hidden="true"></span> Contact
-            </NavLink>
-        </div>
-
-        <AuthorizeView>
-            <Authorized>
                 <div class="nav-item">
-                    <NavLink class="nav-link" id="nav-logout" @onclick="OnSignOutClicked" Match="NavLinkMatch.All">
-                        <span class="bi bi-door-open" aria-hidden="true"></span> Logout
+                    <NavLink class="nav-link" href="/events" Match="NavLinkMatch.All">
+                        <span class="bi bi-calendar-event" aria-hidden="true"></span> Events
                     </NavLink>
                 </div>
-            </Authorized>
-        </AuthorizeView>
+                <div class="nav-item">
+                    <NavLink class="nav-link" href="/contact" Match="NavLinkMatch.All">
+                        <span class="bi bi-pin-map-fill" aria-hidden="true"></span> Contact
+                    </NavLink>
+                </div>
 
-    </nav>
-</div>
+                <AuthorizeView>
+                    <Authorized>
+                        <div class="nav-item">
+                            <NavLink class="nav-link"
+                                     href="#"
+                                     @onclick="OnSignOutClicked"
+                                     Match="NavLinkMatch.All">
+                                <span class="bi bi-door-open" aria-hidden="true"></span> Logout
+                            </NavLink>
+                        </div>
+                    </Authorized>
+                </AuthorizeView>
+            </div>
+        </div>
 
-<style>
-    .nav-link span {
-    font-size: 1.2rem;
-    line-height: 1;
-    }
-</style>
+       
+        <div class="cart-button-wrapper align-items-center position-relative pe-3">
+            <button id="cartToggleButton"
+                    class="arcade-cart-btn"
+                    @onclick="ToggleCart"
+                    aria-label="Shopping Cart">
+                <i class="bi bi-cart-fill"></i>
+                
+                @if (_cartItemCount > 0)
+                {
+                    <span class="arcade-cart-badge">@_cartItemCount</span>
+                }
+            </button>
+            <ShoppingCart Visible="_isCartOpen" OnClose="ToggleCart" />
+        </div>
+    </div>
+</nav>
+<link rel="stylesheet" href="css/HeaderStyle.css" />
 
 @code {
     private ConfirmDialog confirmed = default!;
     private Cart Cart { get; set; } = new();
+    private bool _isCartOpen = false;
+    private int _cartItemCount;
+
+    protected override void OnInitialized()
+    {
+        CartStorage.OnChange += UpdateCartCount;
+        UpdateCartCount();
+    }
+
+    private void UpdateCartCount()
+    {
+        _cartItemCount = CartStorage.GetCartItemCount();
+        StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        CartStorage.OnChange -= UpdateCartCount;
+    }
+
+    private void ToggleCart()
+    {
+        _isCartOpen = !_isCartOpen;
+    }
     private async Task OnSignOutClicked()
     {
         try

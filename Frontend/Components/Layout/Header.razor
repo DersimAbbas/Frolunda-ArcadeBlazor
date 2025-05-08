@@ -2,30 +2,45 @@
 @using Frontend.Components.Store.Components
 @using Frontend.Services.Interfaces
 @inject ILocalCartStorageService LocalCartStorageService
+<div class="container header">
+    <div class="d-flex align-items-center px-5 py-2">
+      <!-- ◀ Left: logo + title -->
+      <div class="d-flex align-items-center">
+        <a href="/" class="header-logo">
+          <img src="images/logo.png" alt="Logo" />
+        </a>
+        <div class="header-title fs-3 fw-bold">
+          Frölunda Arcade
+        </div>
+      </div>
+      <div class="d-flex align-items-center justify-content-evenly">
+        <NavMenu />
 
-<div class="header d-flex align-items-center px-3">
-    <a href="" class="header-logo me-3">
-        <img src="images/logo.png" alt="Logo" />
-    </a>
+      </div>
 
-    <div class="header-title flex-grow-1">
-        Frölunda Arcade
-    </div>
-
-    <div class="cart-button-wrapper position-relative">
-        <button id="cartToggleButton" class="arcade-cart-btn" @onclick="ToggleCart" aria-label="Shopping Cart">
-            <i class="bi bi-cart-fill"></i>
-            CART
-            @if (_cartItemCount > 0)
-            {
-            <span class="arcade-cart-badge">
-                @_cartItemCount
-            </span>
-            }
+      <div class="cart-button-wrapper position-relative ps-3">
+        <button
+          id="cartToggleButton"
+          class="arcade-cart-btn"
+          @onclick="ToggleCart"
+          aria-label="Shopping Cart">
+          <i class="bi bi-cart-fill"></i>
+          CART
+          @if (_cartItemCount > 0)
+          {
+            <span class="arcade-cart-badge">@_cartItemCount</span>
+          }
         </button>
         <ShoppingCart Visible="_isCartOpen" OnClose="ToggleCart" />
+      </div>
     </div>
+
+
 </div>
+  <!-- ● Center: navigation menu now lives here -->
+
+  <!-- ▶ Right: cart button -->
+
 
 <link rel="stylesheet" href="css/HeaderStyle.css" />
 
