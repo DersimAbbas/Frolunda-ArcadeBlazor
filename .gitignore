@@ -12,6 +12,8 @@
 *.idea/*
 # User-specific files (MonoDevelop/Xamarin Studio)
 *.userprefs
+appsettings.json
+appsettings.*.json
 
 appsettings.json
 appsettings.*.json
@@ -364,3 +366,5 @@ MigrationBackup/
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
 /Frontend/Properties/ServiceDependencies/frolunda-arcadeDev - Zip Deploy
+/Frontend/appsettings.Development.json
+/Frontend/appsettings.json
