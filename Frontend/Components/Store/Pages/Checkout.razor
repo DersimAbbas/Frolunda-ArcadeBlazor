@@ -148,7 +148,7 @@
         }
 
         _paymentComplete = true;
-        await PaymentService.RegisterOrderAfterPayment(_userId,CartItems);
+        await PaymentService.RegisterOrderAfterPayment(_userId, CartItems, _customerEmail);
 
         _statusMessage = "";
         _isLoading = false;
