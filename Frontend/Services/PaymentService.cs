@@ -47,20 +47,17 @@ public class PaymentService(HttpClient httpClient) : IPaymentService
 
     }
 
-    public async Task<bool> RegisterOrderAfterPayment(string userId, Dictionary<string, int> products)
+    public async Task<bool> RegisterOrderAfterPayment(string userId,Dictionary<string, int> products, string email)
     {
-        var createOrder = new RegisterOrder
+        var createOrder = new RegisterOrderDTO
         {
              
             UserId = userId,
-            Products = products
-            
+            Products = products,
+            UserEmail = email
+
         };
-        var opts = new JsonSerializerOptions
-        {
-            PropertyNamingPolicy = JsonNamingPolicy.CamelCase
-        };
-        var json = JsonSerializer.Serialize(createOrder, opts);
+        var json = JsonSerializer.Serialize(createOrder);
         
         using var client = new HttpClient();
         var content = new StringContent(json, Encoding.UTF8, "application/json");
