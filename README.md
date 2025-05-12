@@ -1,7 +1,7 @@
 ## [Live-Demo](https://arcade-frolunda.azurewebsites.net/)
 # Frolunda-Arcade
 
-**Frolunda-Arcade** is a modern, full-stack web application designed to bring the excitement of retro arcade gaming to the browser. Our platform lets users browse, play, and purchase classic-style arcade games through a polished, performant interface.
+**Frolunda-Arcade** is a e-commerce webstore that offer games and board games for purchase. Our platform provides a seamless shopping experience, secure transactions, and automated email notifications for orders and support inquiries.
 
 **Core Features**
 - Immersive Blazor Server frontend, enhanced with JavaScript integrations for dynamic UI elements
